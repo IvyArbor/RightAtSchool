@@ -1,0 +1,10 @@
+# Environment configuration - deployment specific
+.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDEs
+.idea
