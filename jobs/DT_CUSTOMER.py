@@ -9,13 +9,16 @@ Port: 3306
 Master User: ras
 Master Pass: RaS1p38!BV44jw
 '''
+
+
+# class for customer dimension
 class DT_CUSTOMER(CSVJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'customer_dimension'
         self.delimiter = ","
         self.quotechar = '"'
-        #self.pick_file_to_process(folder = None, pattern = 'LDI_reject_claim_detail_06_05_2017.txt')
+        # self.pick_file_to_process(folder = None, pattern = 'LDI_reject_claim_detail_06_05_2017.txt')
         # self.bucket_name = 'ldi.datafile.to-process'
         # self.bucket_folder = 'Rebate'
         self.source_table = ''
@@ -31,7 +34,7 @@ class DT_CUSTOMER(CSVJob):
             'site_id',
             'grade_id',
             'firstname',
-            'lastname,'
+            'lastname',
             'address1',
             'address2',
             'city',
@@ -120,102 +123,114 @@ class DT_CUSTOMER(CSVJob):
             'Subscription List']
 
     def getTarget(self):
-        # RebateRejectReason = Dimension(
-        #     name='RebateRejectReason',
-        #     key='RebateRejectPK',
-        #     attributes = ['RecType','SubNbr20','PatSexCd'],
-        #     #ALL columns except the Natural Keys (lookupatts) are Type1 so no need to list them
-        #     #PygramETL will include ALL of the non-lookupatts as type1atts
-        #     #type1atts=[]
-        # )
-        # return RebateRejectReason
+        # print('target')
         return self.target_connection.cursor()
 
     # Override the following method if the data needs to be transformed before insertion
-    # def prepareRow(self, row):
-    #     self.updateAuditTracking(row)
-    #     return row
+    def prepareRow(self, row):
+        # print('prepare')
+        myfields = [
+            'customer_id',
+            'firstname',
+            'lastname',
+            'email',
+            'homephone',
+            'workphone',
+            'cellphone',
+            'address1',
+            'address2',
+            'city',
+            'state',
+            'zipcode',
+            'mailingaddress1',
+            'mailingaddress2',
+            'mailingcity',
+            'mailingstate',
+            'mailingzipcode',
+            'FamilyID1',
+            'FamilyName1',
+            'FamilyRole1',
+            'FamilyID2',
+            'FamilyName2',
+            'FamilyRole2',
+            'FamilyID3',
+            'FamilyName3',
+            'FamilyRole3',
+            'FamilyID4',
+            'FamilyName4',
+            'FamilyRole4',
+            'FamilyID5',
+            'FamilyName5',
+            'FamilyRole5',
+            'FamilyID6',
+            'FamilyName6',
+            'FamilyRole6',
+            'FamilyID7',
+            'FamilyName7',
+            'FamilyRole7',
+            'FamilyID8',
+            'FamilyName8',
+            'FamilyRole8',
+            'FamilyID9',
+            'FamilyName9',
+            'FamilyRole9',
+            'FamilyID10',
+            'FamilyName10',
+            'FamilyRole10',
+            'FamilyID11',
+            'FamilyName11',
+            'FamilyRole11',
+            'FamilyID12',
+            'FamilyName12',
+            'FamilyRole12',
+            'birthdate',
+            'grade_id',
+            'site_id',
+            'site_id_other', #changed from site_id because duplicate values
+            'customertype_id',
+            'nomail',
+            'nopostalmail',
+            'retired',
+            'MedicalAlert',
+            'GeneralAlert',
+            'SpecialHandling',
+            'notes',
+            'emergencyfname1',
+            'emergencylname1',
+            'emergencyphone1',
+            'emergencyrelation1',
+            'emergencyfname2',
+            'emergencylname2',
+            'emergencyphone2',
+            'emergencyrelation2',
+            'emergency_other_phone1',
+            'emergency_other_phone2',
+            'agree_receive_text_message',
+            'additional_email',
+        ]
+        # print(myfields)
+        newrow = {}
+        for f in myfields:
+            newrow[f] = row[f] if f in row else None
+        # newrow = { f:row[f] for f in set(myfields) }
+        print('new:', newrow)
+
+        return newrow
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
+        # print('prep:',row)
         # print(row['RecType'])
-        #target.insert(row)
+        # target.insert(row)
         # print("Inserting row:")
         # row.keys()
-        try:
-            del row[
-                'geographic_area_id',
-                'lastpayee_id',
-                'faxphone',
-                'pagerphone',
-                'otherphone',
-                'ssn',
-                'carddate',
-                'entrydate',
-                'gender',
-                'headofhousehold',
-                'lastwaiverdate',
-                'occupation',
-                'resident',
-                'lastphotographed',
-                'password1',
-                'password2',
-                'question',
-                'answer',
-                'pa_popid',
-                'externalid',
-                'datemodified',
-                'externalidtext',
-                'gradeagedelta',
-                'not_online_activated',
-                'login_created',
-                'login_used',
-                'occupation_id',
-                'interest_date',
-                'county',
-                'membership_overusage',
-                'country',
-                'mailingcountry',
-                'mailing_name',
-                'can_be_scheduled',
-                'human_resource_id',
-                'failed_logon_count',
-                'age_category_id',
-                'customer_title_id',
-                'middlename',
-                'residency_expires_date',
-                'soundex_firstname',
-                'emergency_other_phone2',
-                'soundex_middlename',
-                'is_temp_password',
-                'legal_name',
-                'late_fee_date',
-                'carrier_id',
-                'Created',
-                'Online / Staff',
-                'Side',
-                'lighting_pin',
-                'row_version',
-                'person_id',
-                'is_enc_password',
-                'password_id',
-                'Subscription List'
-            ]
-            #row['RejectYearMonth'] = datetime.today().strftime('%Y%m')
-            #row['PatBirthDt'] = row['PatBirthDt'][:8]
-            #row['SubmitDate'] = row['SubmitDate'][:8]
-            #row['PaidCendt'] = row['PaidCendt'][:8]
-            #row['FillCentdt'] = row['FillCentdt'][:8]
-
+        if row["customer_id"] != "customer_id":
             name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
             value_placeholders = ", ".join(['%s'] * len(row))
-            sql = "INSERT INTO `{}` ({}) VALUES ({})".format(self.target_table, name_placeholders, value_placeholders)
+            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,
+                                                                value_placeholders)
             cursor.execute(sql, tuple(row.values()))
-            # print(tuple(row.values()))
-            # print(sql)
-        except Exception as e:
-            print(e)
-        self.target_connection.commit()
+            self.target_connection.commit()
 
     def close(self):
         """Here we should archive the file instead"""
