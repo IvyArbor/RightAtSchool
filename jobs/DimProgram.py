@@ -2,20 +2,12 @@ from base.jobs import CSVJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 
-'''
-DB Name: rightatschool_testdb
-Host: rightatschool-test.c6ac6cyneqii.us-east-1.rds.amazonaws.com
-Port: 3306
-Master User: ras
-Master Pass: RaS1p38!BV44jw
-'''
-
 
 # class for customer dimension
-class DT_PROGRAM(CSVJob):
+class DimProgram(CSVJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
-        self.target_table = 'program_dimension'
+        self.target_table = 'DimProgram'
         self.delimiter = ","
         self.quotechar = '"'
         # self.pick_file_to_process(folder = None, pattern = 'LDI_reject_claim_detail_06_05_2017.txt')
@@ -23,7 +15,7 @@ class DT_PROGRAM(CSVJob):
         # self.bucket_folder = 'Rebate'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'C:/Users/Nurane/PycharmProjects/rightatschool/sources/Right_Clubs_Electives_Extract.csv'
+        self.file_name = 'sources/Right_Clubs_Electives_Extract.csv'
 
     def getColumnMapping(self):
         return [
@@ -1142,10 +1134,13 @@ class DT_PROGRAM(CSVJob):
         # print("Inserting row:")
         # row.keys()
         if row["Right Club & Elective Number"] != "Right Club & Elective Number":
-            name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
+            databasevalues = [ 'RightClubElectiveNumber', 'RightClubElectiveName', 'RightClubElectiveType', 'Season',
+                               'RightClubElectiveCategory', 'RightClubElectiveOtherCategory', 'CatalogDescription', 'RegistrationFeeName',
+                               'SiteName','LocationDescription', 'DateDescription', 'NumberofMeetingDates', 'NumberofCalendarWeeks',
+                               'MinimumAge', 'MaximumAge','AllowWaitingList', 'EnrollmentNotificationEmails', 'WithdrawalNotificationEmails', 'Supervisor' ]
+            name_placeholders = ", ".join(["`{}`".format(s) for s in databasevalues])
             value_placeholders = ", ".join(['%s'] * len(row))
-            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,
-                                                                value_placeholders)
+            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,value_placeholders)
             cursor.execute(sql, tuple(row.values()))
             self.target_connection.commit()
 

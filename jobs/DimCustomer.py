@@ -2,20 +2,11 @@ from base.jobs import CSVJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 
-'''
-DB Name: rightatschool_testdb
-Host: rightatschool-test.c6ac6cyneqii.us-east-1.rds.amazonaws.com
-Port: 3306
-Master User: ras
-Master Pass: RaS1p38!BV44jw
-'''
-
-
 # class for customer dimension
-class DT_CUSTOMER(CSVJob):
+class DimCustomer(CSVJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
-        self.target_table = 'customer_dimension'
+        self.target_table = 'DimCustomer'
         self.delimiter = ","
         self.quotechar = '"'
         # self.pick_file_to_process(folder = None, pattern = 'LDI_reject_claim_detail_06_05_2017.txt')
@@ -23,7 +14,7 @@ class DT_CUSTOMER(CSVJob):
         # self.bucket_folder = 'Rebate'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'C:/Users/Nurane/PycharmProjects/rightatschool/sources/Customers_Extract.csv'
+        self.file_name = 'sources/Customers_Extract.csv'
 
     def getColumnMapping(self):
         return [
@@ -225,10 +216,24 @@ class DT_CUSTOMER(CSVJob):
         # print("Inserting row:")
         # row.keys()
         if row["customer_id"] != "customer_id":
-            name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
+            databasefieldvalues = [
+                'CustomerId', 'FirstName', 'LastName', 'Email', 'HomePhone', 'WorkPhone', 'CellPhone', 'Address1',
+                'Address2', 'City', 'State', 'Zipcode', 'MailingAddress1', 'MailingAddress2', 'MailingCity',
+                'MailingState', 'MailingZipcode', 'FamilyID1', 'FamilyName1', 'FamilyRole1', 'FamilyID2', 'FamilyName2',
+                'FamilyRole2', 'FamilyID3', 'FamilyName3', 'FamilyRole3', 'FamilyID4', 'FamilyName4', 'FamilyRole4',
+                'FamilyID5', 'FamilyName5', 'FamilyRole5', 'FamilyID6', 'FamilyName6', 'FamilyRole6', 'FamilyID7',
+                'FamilyName7', 'FamilyRole7', 'FamilyID8', 'FamilyName8', 'FamilyRole8', 'FamilyID9', 'FamilyName9',
+                'FamilyRole9', 'FamilyID10', 'FamilyName10', 'FamilyRole10', 'FamilyID11', 'FamilyName11',
+                'FamilyRole11', 'FamilyID12', 'FamilyName12', 'FamilyRole12', 'Birthdate', 'GradeId', 'SiteId',
+                'SiteIdOther','CustomertypeId', 'NoMail', 'NoPostalMail', 'Retired', 'MedicalAlert', 'GeneralAlert',
+                'SpecialHandling', 'Notes', 'EmergencyFName1', 'EmergencyLName1', 'EmergencyPhone1', 'EmergencyRelation1',
+                'EmergencyFName2', 'EmergencyLName2', 'EmergencyPhone2', 'EmergencyRelation2', 'EmergencyOtherPhone1',
+                'EmergencyOtherPhone2', 'AgreeReceiveTextMessage', 'AdditionalEmail'
+            ]
+            name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
+            print(name_placeholders)
             value_placeholders = ", ".join(['%s'] * len(row))
-            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,
-                                                                value_placeholders)
+            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,value_placeholders)
             cursor.execute(sql, tuple(row.values()))
             self.target_connection.commit()
 
