@@ -57,4 +57,3 @@ Additionally, one can pass one or both of the following options when running a j
 
 Example: `$ python job.py <JobName> -d -v`
 
-#### ull requests:
