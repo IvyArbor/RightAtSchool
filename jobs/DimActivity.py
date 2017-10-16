@@ -2,6 +2,7 @@ from base.jobs import CSVJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
+import math
 
 # class for customer dimension
 class DimActivity(CSVJob):
@@ -109,3 +110,16 @@ class DimActivity(CSVJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+    def parseTime(self, dt):
+        date = parser.parse(dt)
+
+        result = {}
+        result["Year"] = date.year
+        result["Quarter"] = int(math.ceil(date.month / 3.))
+        result["Month"] = date.month
+        result["Week"] = date.isocalendar()[1]
+        result["Day"] = date.day
+        result["DayOfWeek"] = date.weekday() + 1
+
+        return result
