@@ -1,6 +1,7 @@
 from base.jobs import CSVJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
+from dateutil import parser
 
 # class for customer dimension
 class DimCustomer(CSVJob):
@@ -230,6 +231,10 @@ class DimCustomer(CSVJob):
                 'EmergencyFName2', 'EmergencyLName2', 'EmergencyPhone2', 'EmergencyRelation2', 'EmergencyOtherPhone1',
                 'EmergencyOtherPhone2', 'AgreeReceiveTextMessage', 'AdditionalEmail'
             ]
+
+            #row["birthdate"] = parser.parse(row["birthdate"])
+
+            row["birthdate"] = parser.parse(row["birthdate"])
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
             print(name_placeholders)
             value_placeholders = ", ".join(['%s'] * len(row))

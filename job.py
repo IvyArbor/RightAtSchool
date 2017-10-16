@@ -12,10 +12,10 @@ def main():
     user_name = os.path.split(userhome)[-1]
 
     # Get the name of the class from arguments
-    #class_name = sys.argv[1]
+    class_name = sys.argv[1]
     #test on IDE
     #class_name = "DimCustomer"
-    class_name = "DimProgram"
+    #class_name = "DimProgram"
 
     # Dynamically load the job class
     cls = getattr(import_module('jobs.' + class_name), class_name)
