@@ -1134,10 +1134,26 @@ class DimProgram(CSVJob):
         # print("Inserting row:")
         # row.keys()
         if row["Right Club & Elective Number"] != "Right Club & Elective Number":
-            databasevalues = [ 'RightClubElectiveNumber', 'RightClubElectiveName', 'RightClubElectiveType', 'Season',
-                               'RightClubElectiveCategory', 'RightClubElectiveOtherCategory', 'CatalogDescription', 'RegistrationFeeName',
-                               'SiteName','LocationDescription', 'DateDescription', 'NumberofMeetingDates', 'NumberofCalendarWeeks',
-                               'MinimumAge', 'MaximumAge','AllowWaitingList', 'EnrollmentNotificationEmails', 'WithdrawalNotificationEmails', 'Supervisor' ]
+            databasevalues = [
+                'RightClubElectiveNumber',
+                'RightClubElectiveName',
+                'RightClubElectiveType',
+                'Season',
+                'RightClubElectiveCategory',
+                'RightClubElectiveOtherCategory',
+                'CatalogDescription',
+                'RegistrationFeeName',
+                'SiteName',
+                'LocationDescription',
+                'DateDescription',
+                'NumberofMeetingDates',
+                'NumberofCalendarWeeks',
+                'MinimumAge',
+                'MaximumAge',
+                'AllowWaitingList',
+                'EnrollmentNotificationEmails',
+                'WithdrawalNotificationEmails',
+                'Supervisor' ]
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasevalues])
             value_placeholders = ", ".join(['%s'] * len(row))
             sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,value_placeholders)
