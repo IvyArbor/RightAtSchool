@@ -1,0 +1,9 @@
+python-dotenv
+pymysql
+pygrametl
+paramiko
+openpyxl
+boto3
+paramiko
+pytest
+python-dateutil
