@@ -60,14 +60,24 @@ class DimCustomer(db.Model):
         return '<User %r>' % self.firstname
 
 
-class program_dimension(db.Model):
-    program_number = db.Column("Right Club & Elective Number", db.Integer, primary_key=True)
-    program_name = db.Column("Right Club & Elective Name", db.String())
-    program_type = db.Column("Right Club & Elective Type", db.String())
-    season = db.Column("season", db.String())
-    program_category = db.Column("Right Club & Elective Category", db.String())
-    program_category_other = db.Column("Right Club & Elective Other Category", db.String())
-    catalog_description = db.Column("Catalog Description", db.String())
+class DimActivity(db.Model):
+    ActivityId = db.Column(db.Integer(), primary_key=True)
+    ActivityCategory = db.Column(db.String())
+    ActivityName = db.Column(db.String())
+    ActivityNumber = db.Column(db.Integer())
+    ActivityStatus = db.Column(db.String())
+    ActivityType = db.Column(db.String())
+    DaysOfWeek = db.Column(db.String())
+    EndDate = db.Column(db.DateTime())
+    EndTime = db.Column(db.DateTime())
+    Organization = db.Column(db.String())
+    Season = db.Column(db.String())
+    Site = db.Column(db.String())
+    StartDate = db.Column(db.DateTime())
+    StartTime = db.Column(db.DateTime())
+    TransactionDate = db.Column(db.DateTime())
+    TransactionType = db.Column(db.String())
+    WeekOfMonth = db.Column(db.String())
 
     def serialize(self):
         return Serializer.serialize(self)
