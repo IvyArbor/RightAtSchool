@@ -11,6 +11,8 @@ class Serializer(object):
         return [m.serialize() for m in l]
 
 class DimCustomer(db.Model):
+    __tablename__ = "DimCustomer"
+
     CustomerId = db.Column(db.Integer, primary_key=True)
     FirstName = db.Column(db.String())
     LastName = db.Column(db.String())
@@ -56,11 +58,10 @@ class DimCustomer(db.Model):
     def serialize(self):
         return Serializer.serialize(self)
 
-    def __repr__(self):
-        return '<User %r>' % self.firstname
-
 
 class DimActivity(db.Model):
+    __tablename__ = "DimActivity"
+
     ActivityId = db.Column(db.Integer(), primary_key=True)
     ActivityCategory = db.Column(db.String())
     ActivityName = db.Column(db.String())
@@ -84,6 +85,8 @@ class DimActivity(db.Model):
 
 
 class DimProgram(db.Model):
+    __tablename__ = "DimProgram"
+
     RightClubElectiveNumber = db.Column(db.Integer(), primary_key=True)
     RightClubElectiveName = db.Column(db.String())
     RightClubElectiveType = db.Column(db.String())
@@ -109,6 +112,8 @@ class DimProgram(db.Model):
 
 
 class FactActivityEnrollment(db.Model):
+    __tablename__ = "FactActivityEnrollment"
+
     Id = db.Column(db.Integer(), primary_key=True)
     ActivityId = db.Column(db.Integer())
     CustomerId = db.Column(db.Integer())
@@ -121,6 +126,8 @@ class FactActivityEnrollment(db.Model):
 
 
 class FactFlexRegistration(db.Model):
+    __tablename__ = "FactFlexRegistration"
+
     Id = db.Column(db.Integer(), primary_key=True)
     ProgramId = db.Column(db.Integer())
     ProgramLocationId = db.Column(db.String())
