@@ -103,3 +103,32 @@ class DimProgram(db.Model):
     EnrollmentNotificationEmails = db.Column(db.String())
     WithdrawalNotificationEmails = db.Column(db.String())
     Supervisor = db.Column(db.String())
+
+    def serialize(self):
+        return Serializer.serialize(self)
+
+
+class FactActivityEnrollment(db.Model):
+    Id = db.Column(db.Integer(), primary_key=True)
+    ActivityId = db.Column(db.Integer())
+    CustomerId = db.Column(db.Integer())
+    Amount = db.Column(db.String())
+    AmountIncTax = db.Column(db.String())
+    TotalEnrolled = db.Column(db.String())
+
+    def serialize(self):
+        return Serializer.serialize(self)
+
+
+class FactFlexRegistration(db.Model):
+    Id = db.Column(db.Integer(), primary_key=True)
+    ProgramId = db.Column(db.Integer())
+    ProgramLocationId = db.Column(db.String())
+    CustomerId = db.Column(db.Integer())
+    CustomerLocationId = db.Column(db.String())
+    NumberOfEnrolled = db.Column(db.Integer())
+    NumberOfHours = db.Column(db.Integer())
+    NumberOfClasses = db.Column(db.Integer())
+
+    def serialize(self):
+        return Serializer.serialize(self)
