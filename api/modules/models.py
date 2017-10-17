@@ -81,3 +81,25 @@ class DimActivity(db.Model):
 
     def serialize(self):
         return Serializer.serialize(self)
+
+
+class DimProgram(db.Model):
+    RightClubElectiveNumber = db.Column(db.Integer(), primary_key=True)
+    RightClubElectiveName = db.Column(db.String())
+    RightClubElectiveType = db.Column(db.String())
+    Season = db.Column(db.String())
+    RightClubElectiveCategory = db.Column(db.String())
+    RightClubElectiveOtherCategory = db.Column(db.String())
+    CatalogDescription = db.Column(db.String())
+    RegistrationFeeName = db.Column(db.String())
+    SiteName = db.Column(db.String())
+    LocationDescription = db.Column(db.String())
+    DateDescription = db.Column(db.String())
+    NumberofMeetingDates = db.Column(db.String())
+    NumberofCalendarWeeks = db.Column(db.String())
+    MinimumAge = db.Column(db.String())
+    MaximumAge = db.Column(db.String())
+    AllowWaitingList = db.Column(db.String())
+    EnrollmentNotificationEmails = db.Column(db.String())
+    WithdrawalNotificationEmails = db.Column(db.String())
+    Supervisor = db.Column(db.String())
