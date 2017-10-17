@@ -16,7 +16,6 @@ def main():
     #test on IDE
     #class_name = "DimCustomer"
     #class_name = "DimProgram"
-    #class_name = "FactFlexRegistration"
 
     # Dynamically load the job class
     cls = getattr(import_module('jobs.' + class_name), class_name)
