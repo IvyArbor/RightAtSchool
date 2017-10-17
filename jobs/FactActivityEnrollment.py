@@ -15,25 +15,69 @@ class FactActivityEnrollment(CSVJob):
         # self.bucket_folder = 'Rebate'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/ActivityEnrollment.csv'
+        self.file_name = 'sources/ActivityEnrollmentSample.csv'
 
     def getColumnMapping(self):
         return [
-                'Activity Category',
-                'Activity Name',
-                'Activity Number',
-                'Activity Status',
-                'Activity Type',
-                'Customer ID',
-                'Organization',
-                'Season',
-                'Site',
-                'Transaction Date',
-                'Transaction Type',
-                'Week of Month',
-                'Amount',
-                'Amount Incl Tax',
-                'Total Enrolled'
+                 'Activity Category',
+            'Activity Department',
+            'Activity External Number',
+            'Activity Name',
+            'Activity Number',
+            'Activity Status',
+            'Activity Type',
+            'Center',
+            'Customer ID',
+            'Days of Week',
+            'End Date',
+            'End Time',
+            'Facility',
+            'Facility Type',
+            'Instructor End Date',
+            'Instructor Name',
+            'Instructor Role',
+            'Instructor Start Date',
+            'League Name',
+            'Max Age',
+            'Maximum Grade',
+            'Min Age',
+            'Minimum Grade',
+            'Organization',
+            'Parent Activity',
+            'Payer Address 1',
+            'Payer Address 2',
+            'Payer City',
+            'Payer Cell Phone',
+            'Payer Email',
+            'Payer First Name',
+            'Payer Home Phone',
+            'Payer ID',
+            'Payer Last Name',
+            'Payer State',
+            'Payer Work Phone',
+            'Payer Zipcode',
+            'Private Lesson First Date',
+            'Private Lesson Last Date',
+            'Season',
+            'Site',
+            'Start Date',
+            'Start Time',
+            'Sub Category Name',
+            'Supervisor',
+            'Tax Receipt Eligibility',
+            'Team Contact First Name',
+            'Team Contact Last Name',
+            'Team Name',
+            'Term',
+            'Transaction Date',
+            'Transaction Type',
+            'Week of Month',
+            'Amount',
+            'Amount Incl Tax',
+            'Total Enrolled',
+            'Nbr of Hours',
+            'Nbr of Sessions',
+            'Number of Attendance'
             ]
 
     def getTarget(self):
@@ -68,11 +112,11 @@ class FactActivityEnrollment(CSVJob):
         # row.keys()
         if row["Activity Number"] != "Activity Number":
             databasefieldvalues = [
-            'CustomerId',
-            'ActivityId',
-            'Amount',
-            'AmountIncTax',
-            'TotalEnrolled'
+                'ActivityId',
+                'CustomerId',
+                'Amount',
+                'AmountIncTax',
+                'TotalEnrolled'
             ]
 
 
