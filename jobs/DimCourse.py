@@ -11,11 +11,8 @@ class DimCourse(JSONJob):
         self.auth_user = 'Right At School'
         self.auth_password = '29AD1B22C11CA60D3CB34D65C063103636F0D35D65ED45A751F98FC5C1CA293C'
         self.object_key = 'course'
-
         self.target_database = 'rightatschool_testdb'
-        self.target_table = 'DimUser'
-
-
+        self.target_table = 'DimCourse'
         self.source_table = ''
         self.source_database = ''
         #self.file_name = 'sources/ActivityEnrollmentSample.csv'
@@ -59,11 +56,10 @@ class DimCourse(JSONJob):
         # print("Inserting row:")
         # row.keys()
         databasefieldvalues = [
-            'UserId',
-            'id',
-            'title',
-            'score',
-            'expiration'
+            'Id',
+            'Title',
+            'Score',
+            'Expiration'
         ]
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
