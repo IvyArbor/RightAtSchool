@@ -237,3 +237,22 @@ class CSVJob(FileJob):
     def close(self):
         self.reader.close()
         self.archive_file()
+
+
+import requests
+import json
+from readers.jsonreader import JSONReader
+
+class JSONJob(Job):
+    def getSource(self):
+        if not self.url: return []
+
+        response = requests.get(self.url, auth=(self.auth_user, self.auth_password))
+        self.column_mapping = self.getColumnMapping()
+
+        source = JSONReader(response, self.column_mapping, object_key=self.object_key)
+
+        return source.rows()
+
+
+
