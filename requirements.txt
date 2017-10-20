@@ -9,3 +9,4 @@ pytest
 python-dateutil
 flask
 flask_sqlalchemy
+requests
