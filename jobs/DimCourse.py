@@ -1,16 +1,16 @@
-from base.jobs import JSONJob
+from base.jobs import JSONJob, JSONCypherWorxJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
 import math
 
 # class for customer_controller dimension
-class DimCourse(JSONJob):
+class DimCourse(JSONCypherWorxJob):
     def configure(self):
         self.url = 'https://collabornation.net/lms/api/0.06/course.json'
         self.auth_user = 'Right At School'
         self.auth_password = '29AD1B22C11CA60D3CB34D65C063103636F0D35D65ED45A751F98FC5C1CA293C'
-        self.object_key = 'course'
+        self.data = 'course'
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'DimCourse'
         self.source_table = ''

@@ -12,3 +12,19 @@ class JSONReader(object):
         for line in self.response.json()[self.object_key]:
             lst = [val if val and val != 'NULL' else None for val in list(line.values())]
             yield dict(zip(self.column_mapping, lst))
+
+class JSONReaderCypherWorx(object):
+    '''iterator that reads a text file line by line'''
+
+    def __init__(self, response, column_mapping, data):
+        self.response = response
+        self.column_mapping = column_mapping
+        self.data = data
+
+    def rows(self):
+        if self.data == "course":
+            for line in self.response.json()["course"]:
+                lst = [val if val and val != 'NULL' else None for val in list(line.values())]
+                yield dict(zip(self.column_mapping, lst))
+
+

@@ -241,7 +241,7 @@ class CSVJob(FileJob):
 
 import requests
 import json
-from readers.jsonreader import JSONReader
+from readers.jsonreader import JSONReader, JSONReaderCypherWorx
 
 class JSONJob(Job):
     def getSource(self):
@@ -254,5 +254,15 @@ class JSONJob(Job):
 
         return source.rows()
 
+class JSONCypherWorxJob(Job):
+    def getSource(self):
+        if not self.url: return []
+
+        response = requests.get(self.url, auth=(self.auth_user, self.auth_password))
+        self.column_mapping = self.getColumnMapping()
+
+        source = JSONReaderCypherWorx(response, self.column_mapping, data=self.data)
+
+        return source.rows()
 
 
