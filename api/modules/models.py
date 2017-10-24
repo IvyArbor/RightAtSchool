@@ -139,3 +139,28 @@ class FactFlexRegistration(db.Model):
 
     def serialize(self):
         return Serializer.serialize(self)
+
+
+class DimCourse(db.Model):
+    __tablename__ = "DimCourse"
+
+    Id = db.Column(db.Integer(), primary_key=True)
+    Title = db.Column(db.String())
+    Score = db.Column(db.Integer())
+    Expiration = db.Column(db.String())
+
+    def serialize(self):
+        return Serializer.serialize(self)
+
+class DimUser (db.Model):
+    __tablename__ = "DimUser"
+
+    Id = db.Column(db.Integer(), primary_key=True)
+    FirstName = db.Column(db.String())
+    Lastname = db.Column(db.String())
+    Email = db.Column(db.String())
+    Team = db.Column(db.Text())
+    Role = db.Column(db.Text())
+
+    def serialize(self):
+        return Serializer.serialize(self)
