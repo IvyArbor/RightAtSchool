@@ -30,5 +30,13 @@ class JSONReaderCypherWorx(object):
             for key in self.response.json()["user"]:
                 lst = [val if val and val != 'NULL' else None for val in list(self.response.json()["user"][key].values())]
                 yield dict(zip(self.column_mapping, lst))
+        elif self.data == "record":
+            for user in self.response.json()["user"]:
+                for record in self.response.json()["user"][user]["record"]:
+                    lst = [val if val and val != 'NULL' else None for val in list(self.response.json()["user"][user]["record"][record].values())]
+                    lst.insert(0, record)
+                    lst.insert(1, user)
+                    lst.insert(2, self.response.json()["user"][user]["record"][record]["course"]["id"])
+                    yield dict(zip(self.column_mapping, lst))
 
 
