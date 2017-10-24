@@ -1,5 +1,6 @@
 from modules.app import db
 from sqlalchemy.inspection import inspect
+from datetime import date, datetime
 
 class Serializer(object):
 
@@ -161,6 +162,25 @@ class DimUser (db.Model):
     Email = db.Column(db.String())
     Team = db.Column(db.Text())
     Role = db.Column(db.Text())
+
+    def serialize(self):
+        return Serializer.serialize(self)
+
+class FactRecord (db.Model):
+    __tablename__ = "FactRecord"
+
+    Id = db.Column(db.Integer(), primary_key=True)
+    UserId = db.Column(db.Integer())
+    CourseId = db.Column(db.Integer())
+    Status = db.Column(db.String())
+    AssignmentSource = db.Column(db.String())
+    Score = db.Column(db.Integer())
+    FinishDate = db.Column(db.DateTime())
+    CreateDate = db.Column(db.DateTime())
+    ExpirationDate = db.Column(db.DateTime())
+    Time = db.Column(db.String())
+    CourseLink = db.Column(db.String())
+    Link = db.Column(db.String())
 
     def serialize(self):
         return Serializer.serialize(self)
