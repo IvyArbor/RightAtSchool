@@ -58,7 +58,7 @@ class DimUser(JSONCypherWorxJob):
         # print("Inserting row:")
         # row.keys()
         databasefieldvalues = [
-            'Id',
+            'UserId',
             'FirstName',
             'LastName',
             'Email',
@@ -69,6 +69,7 @@ class DimUser(JSONCypherWorxJob):
         row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
         row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
         del row["extra_registration"]
+
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))

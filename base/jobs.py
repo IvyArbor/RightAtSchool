@@ -238,7 +238,6 @@ class CSVJob(FileJob):
         self.reader.close()
         self.archive_file()
 
-
 import requests
 import json
 from readers.jsonreader import JSONReader, JSONReaderCypherWorx

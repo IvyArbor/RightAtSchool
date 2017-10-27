@@ -56,7 +56,7 @@ class DimCourse(JSONCypherWorxJob):
         # print("Inserting row:")
         # row.keys()
         databasefieldvalues = [
-            'Id',
+            'CourseId',
             'Title',
             'Score',
             'Expiration'
