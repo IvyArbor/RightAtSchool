@@ -98,10 +98,10 @@ class DimPeople(JSONJob):
             'open_deals_count',
             'next_activity_date',
             'last_activity_dat',
-            'closed_deals_count',
-            'title', #not in data set
             'won_deals_count',
             'lost_deals_count',
+            'closed_deals_count',
+            'title', #not in data set
             'last_incoming_mail_time',
             'last_outgoing_mail_time',
             ]
