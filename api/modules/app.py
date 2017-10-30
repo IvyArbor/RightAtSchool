@@ -12,6 +12,9 @@ from modules.activity_enrollment_controller.views import activity_enrollment
 from modules.course_controller.views import course
 from modules.user_controller.views import user
 from modules.record_controller.views import record
+from modules.people_controller.views import people
+from modules.organization_controller.views import organization
+from modules.deals_controller.views import deals
 
 
 app.register_blueprint(customer)
@@ -21,3 +24,6 @@ app.register_blueprint(activity_enrollment)
 app.register_blueprint(course)
 app.register_blueprint(user)
 app.register_blueprint(record)
+app.register_blueprint(people)
+app.register_blueprint(organization)
+app.register_blueprint(deals)

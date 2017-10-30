@@ -141,6 +141,7 @@ class FactFlexRegistration(db.Model):
     def serialize(self):
         return Serializer.serialize(self)
 
+#CyperWorx data souurce
 
 class DimCourse(db.Model):
     __tablename__ = "DimCourse"
@@ -181,6 +182,85 @@ class FactRecord (db.Model):
     Time = db.Column(db.String())
     CourseLink = db.Column(db.String())
     Link = db.Column(db.String())
+
+    def serialize(self):
+        return Serializer.serialize(self)
+
+
+#Pipedrive data source
+
+class DimPeople (db.Model):
+    __tablename__ = "DimPeople"
+
+    PersonId = db.Column(db.Integer(), primary_key=True)
+    Name = db.Column(db.String())
+    Phone = db.Column(db.String())
+    Email = db.Column(db.String())
+    PersonCreated = db.Column(db.DateTime())
+    UpdateTime = db.Column(db.DateTime())
+    Organization = db.Column(db.String())
+    Owner = db.Column(db.String())
+    OpenDeals = db.Column(db.String())
+    NextActivityDate = db.Column(db.String())
+    LastActivityDate = db.Column(db.String())
+    WonDeals = db.Column(db.String())
+    LostDeals = db.Column(db.String())
+    ClosedDeals = db.Column(db.String())
+    Title = db.Column(db.String())
+    LastEmailReceived = db.Column(db.DateTime())
+    LastEmailSent = db.Column(db.DateTime())
+
+
+    def serialize(self):
+        return Serializer.serialize(self)
+
+
+class DimOrganization (db.Model):
+    __tablename__ = "DimOrganization"
+
+    OrganizationId = db.Column(db.Integer(), primary_key=True)
+    Name = db.Column(db.String())
+    Owner = db.Column(db.String())
+    People = db.Column(db.Integer())
+    OpenDeals = db.Column(db.Integer())
+    OrganizationCreated = db.Column(db.DateTime())
+    UpdateTime = db.Column(db.DateTime())
+    NextActivityDate = db.Column(db.String())
+    LastActivityDate = db.Column(db.String())
+    WonDeals = db.Column(db.Integer())
+    LostDeals = db.Column(db.Integer())
+    ClosedDeals = db.Column(db.Integer())
+    NumberOfElementarySchools =db.Column(db.Integer())
+    FreeAndReducedLunch = db.Column(db.Integer())
+    HowIntroduced = db.Column(db.String())
+    CurrentProvider = db.Column(db.String())
+
+    def serialize(self):
+        return Serializer.serialize(self)
+
+class FactDeals (db.Model):
+    __tablename__ = "FactDeal"
+
+    DealId = db.Column(db.Integer(), primary_key=True)
+    Title = db.Column(db.String())
+    Owner = db.Column(db.String())
+    Value = db.Column(db.Integer())
+    WeightedValue =db.Column(db.Integer())
+    Currency = db.Column(db.String())
+    Organization = db.Column(db.String())
+    ContactPerson = db.Column(db.String())
+    Stage = db.Column(db.String())
+    Status =db.Column(db.String())
+    DealCreated = db.Column(db.DateTime())
+    UpdateTime = db.Column(db.DateTime())
+    LastStageChange = db.Column(db.DateTime())
+    NextActivityDate = db.Column(db.String())
+    LastActivityDate = db.Column(db.String())
+    WonTime = db.Column(db.DateTime())
+    LostTime = db.Column(db.DateTime())
+    DealClosedOn = db.Column(db.DateTime())
+    LostReason = db.Column(db.String())
+    ExpectedCloseDate = db.Column(db.String())
 
     def serialize(self):
         return Serializer.serialize(self)
