@@ -126,9 +126,9 @@ class CustomerLocation(CSVJob):
             'address2',
             'city',
             'zipcode',
-            '',
+            'district',
             'state',
-            ''
+            'region'
         ]
         # print(myfields)
         newrow = {}
@@ -158,8 +158,8 @@ class CustomerLocation(CSVJob):
             ]
 
 
-            row['District'] = ""
-            row['Region'] = ""
+            row['district'] = ""
+            row['region'] = ""
 
 
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
