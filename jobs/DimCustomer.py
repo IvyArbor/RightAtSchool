@@ -15,7 +15,7 @@ class DimCustomer(CSVJob):
         # self.bucket_folder = 'Rebate'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/Customers_Extract.csv'
+        self.file_name = 'sources/Customer_Test.csv'
 
     def getColumnMapping(self):
         return [
@@ -274,7 +274,7 @@ class DimCustomer(CSVJob):
                 'Birthdate',
                 'GradeId',
                 'SiteId',
-                'SiteIdOther',
+                'Gender',
                 'CustomertypeId',
                 'NoMail',
                 'NoPostalMail',

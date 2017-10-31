@@ -19,7 +19,7 @@ class FactActivityEnrollment(CSVJob):
 
     def getColumnMapping(self):
         return [
-                 'Activity Category',
+            'Activity Category',
             'Activity Department',
             'Activity External Number',
             'Activity Name',

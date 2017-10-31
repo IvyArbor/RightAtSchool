@@ -1,0 +1,5 @@
+﻿Employee ID,First Name,Middle Name,Last Name,Effective Date,Location Name,Department Name,Rate Type,Pay Rate,Job Title,Employment Status
+12345,John,D.,Smith,18-10-17,Pioneer Middle,Administration,Hourly,14.5,Subsitute,Active/Part Time/Temporary
+54321,,,,01-10-17,,,Hourly,17,,
+98745,,,,15-10-17,,,,,,Terminated/Part Time/Temporary
+56478,,,,12-10-17,Park Campus School,Field,,,,
