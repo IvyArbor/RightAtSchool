@@ -1146,14 +1146,15 @@ class DimProgram(CSVJob):
                 'SiteName',
                 'LocationDescription',
                 'DateDescription',
-                'NumberofMeetingDates',
-                'NumberofCalendarWeeks',
+                'NumberOfMeetingDates',
+                'NumberOfCalendarWeeks',
                 'MinimumAge',
                 'MaximumAge',
                 'AllowWaitingList',
                 'EnrollmentNotificationEmails',
                 'WithdrawalNotificationEmails',
-                'Supervisor' ]
+                'Supervisor'
+                ]
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasevalues])
             value_placeholders = ", ".join(['%s'] * len(row))
             sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,value_placeholders)
