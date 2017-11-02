@@ -123,6 +123,7 @@ class DimCustomer(CSVJob):
         # print('prepare')
         myfields = [
             'customer_id',
+            'location_id',
             'firstname',
             'lastname',
             'email',
@@ -139,42 +140,42 @@ class DimCustomer(CSVJob):
             'mailingcity',
             'mailingstate',
             'mailingzipcode',
-            'FamilyID1',
-            'FamilyName1',
-            'FamilyRole1',
-            'FamilyID2',
-            'FamilyName2',
-            'FamilyRole2',
-            'FamilyID3',
-            'FamilyName3',
-            'FamilyRole3',
-            'FamilyID4',
-            'FamilyName4',
-            'FamilyRole4',
-            'FamilyID5',
-            'FamilyName5',
-            'FamilyRole5',
-            'FamilyID6',
-            'FamilyName6',
-            'FamilyRole6',
-            'FamilyID7',
-            'FamilyName7',
-            'FamilyRole7',
-            'FamilyID8',
-            'FamilyName8',
-            'FamilyRole8',
-            'FamilyID9',
-            'FamilyName9',
-            'FamilyRole9',
-            'FamilyID10',
-            'FamilyName10',
-            'FamilyRole10',
-            'FamilyID11',
-            'FamilyName11',
-            'FamilyRole11',
-            'FamilyID12',
-            'FamilyName12',
-            'FamilyRole12',
+            # 'FamilyID1',
+            # 'FamilyName1',
+            # 'FamilyRole1',
+            # 'FamilyID2',
+            # 'FamilyName2',
+            # 'FamilyRole2',
+            # 'FamilyID3',
+            # 'FamilyName3',
+            # 'FamilyRole3',
+            # 'FamilyID4',
+            # 'FamilyName4',
+            # 'FamilyRole4',
+            # 'FamilyID5',
+            # 'FamilyName5',
+            # 'FamilyRole5',
+            # 'FamilyID6',
+            # 'FamilyName6',
+            # 'FamilyRole6',
+            # 'FamilyID7',
+            # 'FamilyName7',
+            # 'FamilyRole7',
+            # 'FamilyID8',
+            # 'FamilyName8',
+            # 'FamilyRole8',
+            # 'FamilyID9',
+            # 'FamilyName9',
+            # 'FamilyRole9',
+            # 'FamilyID10',
+            # 'FamilyName10',
+            # 'FamilyRole10',
+            # 'FamilyID11',
+            # 'FamilyName11',
+            # 'FamilyRole11',
+            # 'FamilyID12',
+            # 'FamilyName12',
+            # 'FamilyRole12',
             'birthdate',
             'grade_id',
             'site_id',
@@ -205,7 +206,7 @@ class DimCustomer(CSVJob):
         for f in myfields:
             newrow[f] = row[f] if f in row else None
         # newrow = { f:row[f] for f in set(myfields) }
-        print('new:', newrow)
+        #print('new:', newrow)
 
         return newrow
 
@@ -219,58 +220,59 @@ class DimCustomer(CSVJob):
         if row["customer_id"] != "customer_id":
             databasefieldvalues = [
                 'CustomerId',
+                'LocationId',
                 'FirstName',
                 'LastName',
                 'Email',
                 'HomePhone',
                 'WorkPhone',
                 'CellPhone',
-                'Address1',
-                'Address2',
-                'City',
-                'State',
-                'Zipcode',
+                # 'Address1',
+                # 'Address2',
+                # 'City',
+                # 'State',
+                # 'Zipcode',
                 'MailingAddress1',
                 'MailingAddress2',
                 'MailingCity',
                 'MailingState',
                 'MailingZipcode',
-                'FamilyID1',
-                'FamilyName1',
-                'FamilyRole1',
-                'FamilyID2',
-                'FamilyName2',
-                'FamilyRole2',
-                'FamilyID3',
-                'FamilyName3',
-                'FamilyRole3',
-                'FamilyID4',
-                'FamilyName4',
-                'FamilyRole4',
-                'FamilyID5',
-                'FamilyName5',
-                'FamilyRole5',
-                'FamilyID6',
-                'FamilyName6',
-                'FamilyRole6',
-                'FamilyID7',
-                'FamilyName7',
-                'FamilyRole7',
-                'FamilyID8',
-                'FamilyName8',
-                'FamilyRole8',
-                'FamilyID9',
-                'FamilyName9',
-                'FamilyRole9',
-                'FamilyID10',
-                'FamilyName10',
-                'FamilyRole10',
-                'FamilyID11',
-                'FamilyName11',
-                'FamilyRole11',
-                'FamilyID12',
-                'FamilyName12',
-                'FamilyRole12',
+                # 'FamilyID1',
+                # 'FamilyName1',
+                # 'FamilyRole1',
+                # 'FamilyID2',
+                # 'FamilyName2',
+                # 'FamilyRole2',
+                # 'FamilyID3',
+                # 'FamilyName3',
+                # 'FamilyRole3',
+                # 'FamilyID4',
+                # 'FamilyName4',
+                # 'FamilyRole4',
+                # 'FamilyID5',
+                # 'FamilyName5',
+                # 'FamilyRole5',
+                # 'FamilyID6',
+                # 'FamilyName6',
+                # 'FamilyRole6',
+                # 'FamilyID7',
+                # 'FamilyName7',
+                # 'FamilyRole7',
+                # 'FamilyID8',
+                # 'FamilyName8',
+                # 'FamilyRole8',
+                # 'FamilyID9',
+                # 'FamilyName9',
+                # 'FamilyRole9',
+                # 'FamilyID10',
+                # 'FamilyName10',
+                # 'FamilyRole10',
+                # 'FamilyID11',
+                # 'FamilyName11',
+                # 'FamilyRole11',
+                # 'FamilyID12',
+                # 'FamilyName12',
+                # 'FamilyRole12',
                 'Birthdate',
                 'GradeId',
                 'SiteId',
@@ -297,14 +299,55 @@ class DimCustomer(CSVJob):
                 'AdditionalEmail'
             ]
 
+
+            row["location_id"] = self.getLocationId(cursor, row)
+            del row["address1"]
+            del row["address2"]
+            del row["city"]
+            del row["zipcode"]
+            del row["state"]
+
             row["birthdate"] = parser.parse(row["birthdate"])
+
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
-            print(name_placeholders)
+            #print(name_placeholders)
             value_placeholders = ", ".join(['%s'] * len(row))
-            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,value_placeholders)
+            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
             cursor.execute(sql, tuple(row.values()))
             self.target_connection.commit()
 
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+
+    def getLocationId(self, cursor, row):
+        query = """
+            SELECT `LocationId`
+            FROM `DimLocation`
+            WHERE `Street` = %s AND `City` = %s AND `Zipcode` = %s AND `State` = %s
+            ORDER BY `LocationId` DESC
+            LIMIT 1
+        """
+        
+        cursor.execute(query, (row["address1"], row["city"], row["zipcode"], row["state"]))
+        result = cursor.fetchone()
+        if result == None:
+            return self.insertLocation(cursor, row)
+        else:
+            return result[0]
+
+    def insertLocation(self, cursor, row):
+        databasefieldvalues = ["Street", 'AppartmentNu', 'City', 'Zipcode', 'District', 'State', 'Region']
+        values = [row["address1"], None, row["city"], row["zipcode"], None, row["state"], None]
+
+        name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
+        value_placeholders = ", ".join(['%s'] * len(values))
+        sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format("DimLocation", name_placeholders, value_placeholders)
+
+        values = [row["address1"], None, row["city"], row["zipcode"], '', row["state"], '']
+        cursor.execute(sql, tuple(values))
+        self.target_connection.commit()
+        inserted_id = cursor.lastrowid
+
+        return inserted_id
