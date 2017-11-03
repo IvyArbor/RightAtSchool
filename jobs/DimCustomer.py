@@ -3,8 +3,10 @@ from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from dateutil import parser
 from datetime import datetime
 
+
 # class for customer dimension
 class DimCustomer(CSVJob):
+
     def configure(self):
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'DimCustomer'
@@ -15,7 +17,7 @@ class DimCustomer(CSVJob):
         # self.bucket_folder = 'Rebate'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/Customer_Test.csv'
+        self.file_name = 'sources/Customers_Extract.csv'
 
     def getColumnMapping(self):
         return [
@@ -45,7 +47,7 @@ class DimCustomer(CSVJob):
             'entrydate',
             'gender',
             'generalalert',
-            'headofhousehold',
+            'headofhousehold'
             'lastwaiverdate',
             'mailingaddress1',
             'mailingaddress2',
@@ -129,11 +131,11 @@ class DimCustomer(CSVJob):
             'homephone',
             'workphone',
             'cellphone',
-            'address1',
-            'address2',
-            'city',
-            'state',
-            'zipcode',
+            #'address1',
+            #'address2',
+            #'city',
+            #'state',
+            #'zipcode',
             'mailingaddress1',
             'mailingaddress2',
             'mailingcity',
@@ -178,7 +180,7 @@ class DimCustomer(CSVJob):
             'birthdate',
             'grade_id',
             'site_id',
-            'site_id_other', #changed from site_id because duplicate values
+            'gender', #changed from site_id because duplicate values
             'customertype_id',
             'nomail',
             'nopostalmail',
@@ -219,6 +221,7 @@ class DimCustomer(CSVJob):
         if row["customer_id"] != "customer_id":
             databasefieldvalues = [
                 'CustomerId',
+                'LocationId',
                 'FirstName',
                 'LastName',
                 'Email',
@@ -297,13 +300,15 @@ class DimCustomer(CSVJob):
                 'AdditionalEmail'
             ]
 
+
             row["birthdate"] = parser.parse(row["birthdate"])
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
             print(name_placeholders)
             value_placeholders = ", ".join(['%s'] * len(row))
-            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,value_placeholders)
+            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
             cursor.execute(sql, tuple(row.values()))
             self.target_connection.commit()
+
 
     def close(self):
         """Here we should archive the file instead"""

@@ -3,8 +3,11 @@ from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from dateutil import parser
 from datetime import datetime
 
+
+# IN ORDER TO FUNCTION ADD CUSTOMERID TO FIELD NAMES AND DATABASE FIELDS
+
 # class for customer dimension
-class CustomerLocation(CSVJob):
+class Location(CSVJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'DimLocation'
