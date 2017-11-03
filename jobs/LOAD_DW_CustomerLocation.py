@@ -3,6 +3,8 @@ from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from dateutil import parser
 from datetime import datetime
 
+#customer-location
+
 # class for customer dimension
 class LOAD_DW_CustomerLocation(CSVJob):
 
