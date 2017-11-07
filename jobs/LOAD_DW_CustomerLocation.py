@@ -2,6 +2,7 @@ from base.jobs import CSVJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from dateutil import parser
 from datetime import datetime
+import math
 
 #customer-location
 
@@ -294,18 +295,15 @@ class LOAD_DW_CustomerLocation(CSVJob):
             del row["city"]
             del row["zipcode"]
             del row["state"]
-            row["birthdate"] = parser.parse(row["birthdate"])
+
+            row["birthdate"] = self.getTimeId(cursor, row)
+
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
             print(name_placeholders)
             value_placeholders = ", ".join(['%s'] * len(row))
 
-
             sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
             cursor.execute(sql, tuple(row.values()))
-
-
-
-
 
             self.target_connection.commit()
 
@@ -313,3 +311,62 @@ class LOAD_DW_CustomerLocation(CSVJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+
+    def getTimeId(self, cursor, row):
+        query = """
+            SELECT `TimeId`
+            FROM `DimTime`
+            WHERE `Year` = %s AND `DayOfYear` = %s AND `Quarter` = %s AND `Month` = %s
+            AND `MonthName` = %s AND `DayOfMonth` = %s AND `Week` = %s AND `DayOfWeek` = %s
+            AND `CalendarDate` = %s AND `DateTimeStamp` = %s
+            ORDER BY `TimeId` DESC
+            LIMIT 1
+        """
+
+        result = self.parseTime(row["birthdate"])
+        cursor.execute(query, (result["Year"], result["DayOfYear"], result["Quarter"], result["Month"], result["MonthName"],
+                  result["DayOfMonth"], result["Week"], result["DayOfWeek"], result["CalendarDate"],
+                  result["DateTimeStamp"]))
+
+        query_result = cursor.fetchone()
+        if query_result == None:
+            return self.insertTime(cursor, row)
+        else:
+            return query_result[0]
+
+    def insertTime(self, cursor, row):
+        databasefieldvalues = ["Year", 'DayOfYear', 'Quarter', 'Month', 'MonthName', 'DayOfMonth', 'Week', 'DayOfWeek', 'CalendarDate', 'DateTimeStamp']
+
+        result = self.parseTime(row["birthdate"])
+        values = [result["Year"], result["DayOfYear"], result["Quarter"], result["Month"], result["MonthName"], result["DayOfMonth"], result["Week"], result["DayOfWeek"], result["CalendarDate"], result["DateTimeStamp"]]
+
+        name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
+        value_placeholders = ", ".join(['%s'] * len(values))
+        sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format("DimTime", name_placeholders, value_placeholders)
+
+        cursor.execute(sql, tuple(values))
+        self.target_connection.commit()
+        inserted_id = cursor.lastrowid
+
+        print ("Time ID: {}".format(inserted_id))
+        return inserted_id
+
+
+    def parseTime(self, dt):
+        date = parser.parse(dt)
+
+        result = {}
+        result["Year"] = date.year
+        result["DayOfYear"] = date.timetuple().tm_yday
+        result["Quarter"] = int(math.ceil(date.month / 3.))
+        result["Month"] = date.month
+        result["MonthName"] = date.strftime('%B')
+        result["DayOfMonth"] = date.timetuple().tm_mday
+        result["Week"] = date.isocalendar()[1]
+        # DayOfWeek can have values from 1 to 7 (1 for Monday - 7 for Sunday)
+        result["DayOfWeek"] = date.weekday() + 1
+        result["CalendarDate"] = date
+        # I don't like this part
+        result["DateTimeStamp"] = (date - datetime(1970, 1, 1)).total_seconds()
+        return result
