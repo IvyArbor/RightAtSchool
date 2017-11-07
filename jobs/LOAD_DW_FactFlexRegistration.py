@@ -5,7 +5,7 @@ from dateutil import parser
 import math
 
 # class for customer dimension
-class FactFlexRegistration(CSVJob):
+class LOAD_DW_FactFlexRegistration(CSVJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'FactFlexRegistration'
@@ -64,7 +64,7 @@ class FactFlexRegistration(CSVJob):
             #'Program Type',
             'Catalog Number',
             #'Program Status',
-            'Program Site',
+            #'Program Site',
             #'Parent Season',
             #'Daycare Category',
             #'Supervisor',
@@ -79,7 +79,7 @@ class FactFlexRegistration(CSVJob):
             #'Customer Addr2',
             #'Customer City',
             #'Customer State',
-            'Customer Zipcode',
+            #'Customer Zipcode',
             #'Date of birth',
             #'Customer Gender',
             'Session Nbr of Enrolled',
@@ -103,12 +103,12 @@ class FactFlexRegistration(CSVJob):
         # target.insert(row)
         # print("Inserting row:")
         # row.keys()
-        if row["Customer ID"] != "Customer ID":
+        if row["Catalog Number"] != "Catalog Number":
             databasefieldvalues = [
                 'ProgramId',
-                'ProgramLocationId',
+                #'ProgramLocationId',
                 'CustomerId',
-                'CustomerLocationId',
+                #'CustomerLocationId',
                 'NumberOfEnrolled',
                 'NumberOfHours',
                 'NumberOfClasses'

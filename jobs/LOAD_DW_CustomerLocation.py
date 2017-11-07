@@ -302,11 +302,6 @@ class LOAD_DW_CustomerLocation(CSVJob):
 
             sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
             cursor.execute(sql, tuple(row.values()))
-
-
-
-
-
             self.target_connection.commit()
 
 
