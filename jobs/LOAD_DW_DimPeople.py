@@ -4,9 +4,11 @@ from datetime import datetime
 from dateutil import parser
 import math
 # class for customer_controller dimension
-class DimPeople(JSONJob):
+class LOAD_DW_DimPeople(JSONJob):
     def configure(self):
         self.url = 'https://companydomain.pipedrive.com/v1/persons/?api_token=5119919dca43c62ca026750611806c707f78a745'
+        #https://api.pipedrive.com/v1/persons/1/flow?start=10&limit=10&api_token=5119919dca43c62ca026750611806c707f78a745
+        # https://api.pipedrive.com/v1/persons?start=10&api_token=5119919dca43c62ca026750611806c707f78a745
         self.auth_user = 'Right At School'
         self.auth_password = '29AD1B22C11CA60D3CB34D65C063103636F0D35D65ED45A751F98FC5C1CA293C'
         #self.data = 'people'
@@ -144,7 +146,7 @@ class DimPeople(JSONJob):
 
         row["phone"] = row["phone"][0]["value"]
         row["email"] = row["email"][0]["value"]
-        row["title"] = ""
+        #row["title"] = ""
 
         print ("ROW: ")
         print (row)
