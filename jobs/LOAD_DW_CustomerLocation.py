@@ -295,6 +295,7 @@ class LOAD_DW_CustomerLocation(CSVJob):
             del row["zipcode"]
             del row["state"]
             row["birthdate"] = parser.parse(row["birthdate"])
+            row["birthdate"] = self.getTimeId(cursor, row)
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
             print(name_placeholders)
             value_placeholders = ", ".join(['%s'] * len(row))
@@ -308,3 +309,5 @@ class LOAD_DW_CustomerLocation(CSVJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+
