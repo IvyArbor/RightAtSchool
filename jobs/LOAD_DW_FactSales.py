@@ -5,14 +5,14 @@ from dateutil import parser
 import math
 
 # class for customer_controller dimension
-class FactDeals(JSONJob):
+class FactSales(JSONJob):
     def configure(self):
         self.url = 'https://companydomain.pipedrive.com/v1/deals/?api_token=5119919dca43c62ca026750611806c707f78a745'
         self.auth_user = 'Right At School'
         self.auth_password = 'https://companydomain.pipedrive.com/v1/persons/?api_token=5119919dca43c62ca026750611806c707f78a745'
         #self.data = 'deals'
         self.target_database = 'rightatschool_testdb'
-        self.target_table = 'FactDeal'
+        self.target_table = 'FactSales'
         self.source_table = ''
         self.source_database = ''
         self.object_key = "data"
@@ -26,7 +26,7 @@ class FactDeals(JSONJob):
             'person_id',
             'org_id',
             'stage_id',
-            'title"',
+            'title',
             'value',
             'currency',
             'add_time',
@@ -94,7 +94,7 @@ class FactDeals(JSONJob):
             'currency',
             'org_name',
             'person_name',
-            'stage',
+            'stage_id',
             'status',
             'add_time',
             'update_time',
@@ -125,7 +125,7 @@ class FactDeals(JSONJob):
         # print("Inserting row:")
         # row.keys()
         databasefieldvalues = [
-            'DealId',
+            'SalesId',
             'Title',
             'Owner',
             'Value',
@@ -133,7 +133,7 @@ class FactDeals(JSONJob):
             'Currency',
             'Organization',
             'ContactPerson',
-            'Stage',
+            'StageId',
             'Status',
             'DealCreated',
             'UpdateTime',
@@ -146,7 +146,6 @@ class FactDeals(JSONJob):
             'LostReason',
             'ExpectedCloseDate'
         ]
-        row["title"] = ""
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
