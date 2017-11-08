@@ -1,11 +1,7 @@
-from base.jobs import JSONJob, JSONCypherWorxJob
-from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
-from datetime import datetime
-from dateutil import parser
-import math
+from base.jobs import JSONJob
+from helpers.time import getTimeId
 
-# class for customer_controller dimension
-class FactSales(JSONJob):
+class LOAD_DW_FactSales(JSONJob):
     def configure(self):
         self.url = 'https://companydomain.pipedrive.com/v1/deals/?api_token=5119919dca43c62ca026750611806c707f78a745'
         self.auth_user = 'Right At School'
@@ -20,62 +16,62 @@ class FactSales(JSONJob):
 
     def getColumnMapping(self):
         return [
-            'id',
-            'creator_user_id',
-            'user_id',
-            'person_id',
-            'org_id',
-            'stage_id',
-            'title',
-            'value',
-            'currency',
-            'add_time',
-            'update_time',
-            'stage_change_time',
-            'active',
-            'deleted',
-            'status',
-            'probability',
-            'next_activity_date',
-            'next_activity_time',
-            'next_activity_id',
-            'last_activity_id',
-            'last_activity_date',
-            'lost_reason',
-            'visible_to',
-            'close_time',
-            'pipeline_id',
-            'won_time',
-            'first_won_time',
-            'lost_time',
-            'products_count',
-            'files_count',
-            'notes_count',
-            'followers_count',
-            'email_messages_count',
-            'activities_count',
-            'done_activities_count',
-            'undone_activities_count',
-            'reference_activities_count',
-            'participants_count',
-            'expected_close_date',
-            'last_incoming_mail_time',
-            'last_outgoing_mail_time',
-            'stage_order_nr',
-            'person_name',
-            'org_name',
-            'next_activity_subject',
-            'next_activity_type',
-            'next_activity_duration',
-            'next_activity_note',
-            'formatted_value',
-            'rotten_time',
-            'weighted_value',
-            'formatted_weighted_value',
-            'owner_name',
-            'cc_email',
-            'org_hidden',
-            'person_hidden'
+                'id',
+                'creator_user_id',
+                'user_id',
+                'person_id',
+                'org_id',
+                'stage_id',
+                'title',
+                'value',
+                'currency',
+                'add_time',
+                'update_time',
+                'stage_change_time',
+                'active',
+                'deleted',
+                'status',
+                'probability',
+                'next_activity_date',
+                'next_activity_time',
+                'next_activity_id',
+                'last_activity_id',
+                'last_activity_date',
+                'lost_reason',
+                'visible_to',
+                'close_time',
+                'pipeline_id',
+                'won_time',
+                'first_won_time',
+                'lost_time',
+                'products_count',
+                'files_count',
+                'notes_count',
+                'followers_count',
+                'email_messages_count',
+                'activities_count',
+                'done_activities_count',
+                'undone_activities_count',
+                'reference_activities_count',
+                'participants_count',
+                'expected_close_date',
+                'last_incoming_mail_time',
+                'last_outgoing_mail_time',
+                'stage_order_nr',
+                'person_name',
+                'org_name',
+                'next_activity_subject',
+                'next_activity_type',
+                'next_activity_duration',
+                'next_activity_note',
+                'formatted_value',
+                'rotten_time',
+                'weighted_value',
+                'formatted_weighted_value',
+                'owner_name',
+                'cc_email',
+                'org_hidden',
+                'person_hidden'
             ]
 
     def getTarget(self):
@@ -84,46 +80,37 @@ class FactSales(JSONJob):
 
     # Override the following method if the data needs to be transformed before insertion
     def prepareRow(self, row):
-        # print('prepare')
         myfields = [
-            'id',
-            'title',
-            'owner_name',
-            'value',
-            'weighted_value',
-            'currency',
-            'org_name',
-            'person_name',
-            'stage_id',
-            'status',
-            'add_time',
-            'update_time',
-            'stage_change_time',
-            'next_activity_date',
-            'last_activity_date',
-            'won_time',
-            'lost_time',
-            'close_time',
-            'lost_reason',
-            'expected_close_date',
+                'id',
+                'title',
+                'owner_name',
+                'value',
+                'weighted_value',
+                'currency',
+                'org_name',
+                'person_name',
+                'stage_id',
+                'status',
+                'add_time',
+                'update_time',
+                'stage_change_time',
+                'next_activity_date',
+                'last_activity_date',
+                'won_time',
+                'lost_time',
+                'close_time',
+                'lost_reason',
+                'expected_close_date'
             ]
-        # print(myfields)
+
         newrow = {}
         for f in myfields:
             newrow[f] = row[f] if f in row else None
-        # newrow = { f:row[f] for f in set(myfields) }
-
-        #print('new:', newrow)
 
         return newrow
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
-        # print('prep:',row)
-        # print(row['RecType'])
-        # target.insert(row)
-        # print("Inserting row:")
-        # row.keys()
         databasefieldvalues = [
             'SalesId',
             'Title',
@@ -147,6 +134,16 @@ class FactSales(JSONJob):
             'ExpectedCloseDate'
         ]
 
+        row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
+        row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
+        row["stage_change_time"] = getTimeId(cursor, self.target_connection, row["stage_change_time"])
+        row["next_activity_date"] = getTimeId(cursor, self.target_connection, row["next_activity_date"])
+        row["last_activity_date"] = getTimeId(cursor, self.target_connection, row["last_activity_date"])
+        row["won_time"] = getTimeId(cursor, self.target_connection, row["won_time"])
+        row["lost_time"] = getTimeId(cursor, self.target_connection, row["lost_time"])
+        row["close_time"] = getTimeId(cursor, self.target_connection, row["close_time"])
+        row["expected_close_date"] = getTimeId(cursor, self.target_connection, row["expected_close_date"])
+
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
 
@@ -157,16 +154,3 @@ class FactSales(JSONJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
-
-    def parseTime(self, dt):
-        date = parser.parse(dt)
-
-        result = {}
-        result["Year"] = date.year
-        result["Quarter"] = int(math.ceil(date.month / 3.))
-        result["Month"] = date.month
-        result["Week"] = date.isocalendar()[1]
-        result["Day"] = date.day
-        result["DayOfWeek"] = date.weekday() + 1
-
-        return result
