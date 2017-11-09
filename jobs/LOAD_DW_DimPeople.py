@@ -4,9 +4,27 @@ from datetime import datetime
 from dateutil import parser
 import math
 # class for customer_controller dimension
+
+import pymysql
+
+cnx = pymysql.connect(user='ras', password='RaS1p38!BV44jw',
+                              host='rightatschool-test.c6ac6cyneqii.us-east-1.rds.amazonaws.com',
+                              database='rightatschool_testdb')
+cursor = cnx.cursor()
+
+query = ("SELECT * FROM DimPeople")
+
+
+lastid = cursor.execute(query)
+print("LAST IDDDDDDDDDDD")
+print(lastid)
+newid = lastid + 1
+cursor.close()
+cnx.close()
+
 class LOAD_DW_DimPeople(JSONJob):
     def configure(self):
-        self.url = 'https://companydomain.pipedrive.com/v1/persons/?api_token=5119919dca43c62ca026750611806c707f78a745'
+        self.url = 'https://api.pipedrive.com/v1/persons?start='+ str(newid) + '&api_token=5119919dca43c62ca026750611806c707f78a745'
         #https://api.pipedrive.com/v1/persons/1/flow?start=10&limit=10&api_token=5119919dca43c62ca026750611806c707f78a745
         # https://api.pipedrive.com/v1/persons?start=10&api_token=5119919dca43c62ca026750611806c707f78a745
         self.auth_user = 'Right At School'
