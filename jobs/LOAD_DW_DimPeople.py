@@ -2,6 +2,7 @@ from base.jobs import JSONJob, JSONCypherWorxJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
+from helpers.time import getTimeId
 import math
 import pymysql
 
@@ -166,6 +167,15 @@ class LOAD_DW_DimPeople(JSONJob):
 
         print ("ROW: ")
         print (row)
+
+        #relate values to DimTime values
+        row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
+        row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
+        row["next_activity_date"] = getTimeId(cursor, self.target_connection, row["next_activity_date"])
+        row["last_activity_dat"] = getTimeId(cursor, self.target_connection, row["last_activity_dat"])
+        row["last_incoming_mail_time"] = getTimeId(cursor, self.target_connection, row["last_incoming_mail_time"])
+        row["last_outgoing_mail_time"] = getTimeId(cursor, self.target_connection, row["last_outgoing_mail_time"])
+
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
