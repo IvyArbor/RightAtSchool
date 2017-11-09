@@ -15,7 +15,7 @@ query = ("SELECT * FROM DimPeople")
 lastid = cursor.execute(query)
 print("LAST IDDDDDDDDDDD")
 print(lastid)
-newid = lastid + 1
+newid = lastid
 cursor.close()
 cnn.close()
 
@@ -161,7 +161,7 @@ class LOAD_DW_DimPeople(JSONJob):
 
         row["phone"] = row["phone"][0]["value"]
         row["email"] = row["email"][0]["value"]
-        row["title"] = row["1cb167aaf7f9439b006b550192a04e869c43dade"]
+        #row["title"] = row["1cb167aaf7f9439b006b550192a04e869c43dade"]
 
         print ("ROW: ")
         print (row)
@@ -176,6 +176,7 @@ class LOAD_DW_DimPeople(JSONJob):
         sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
         self.target_connection.commit()
+        newid = lastid + 1
 
     def close(self):
         """Here we should archive the file instead"""
