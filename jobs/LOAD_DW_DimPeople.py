@@ -3,24 +3,21 @@ from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
 import math
-# class for customer_controller dimension
-
 import pymysql
 
-cnx = pymysql.connect(user='ras', password='RaS1p38!BV44jw',
+cnn = pymysql.connect(user='ras', password='RaS1p38!BV44jw',
                               host='rightatschool-test.c6ac6cyneqii.us-east-1.rds.amazonaws.com',
                               database='rightatschool_testdb')
-cursor = cnx.cursor()
+cursor = cnn.cursor()
 
 query = ("SELECT * FROM DimPeople")
-
 
 lastid = cursor.execute(query)
 print("LAST IDDDDDDDDDDD")
 print(lastid)
 newid = lastid + 1
 cursor.close()
-cnx.close()
+cnn.close()
 
 class LOAD_DW_DimPeople(JSONJob):
     def configure(self):
