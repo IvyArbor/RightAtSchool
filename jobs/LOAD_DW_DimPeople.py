@@ -118,7 +118,7 @@ class LOAD_DW_DimPeople(JSONJob):
             'won_deals_count',
             'lost_deals_count',
             'closed_deals_count',
-            'title', #not in data set
+            '1cb167aaf7f9439b006b550192a04e869c43dade',
             'last_incoming_mail_time',
             'last_outgoing_mail_time',
             ]
@@ -161,7 +161,7 @@ class LOAD_DW_DimPeople(JSONJob):
 
         row["phone"] = row["phone"][0]["value"]
         row["email"] = row["email"][0]["value"]
-        #row["title"] = ""
+        row["title"] = row["1cb167aaf7f9439b006b550192a04e869c43dade"]
 
         print ("ROW: ")
         print (row)
