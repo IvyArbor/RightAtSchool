@@ -15,6 +15,7 @@ query = ("SELECT * FROM DimPeople")
 lastid = cursor.execute(query)
 print("LAST IDDDDDDDDDDD")
 print(lastid)
+#start with id =0
 newid = lastid
 cursor.close()
 cnn.close()
@@ -176,6 +177,7 @@ class LOAD_DW_DimPeople(JSONJob):
         sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
         self.target_connection.commit()
+        #next call start from next id
         newid = lastid + 1
 
     def close(self):
