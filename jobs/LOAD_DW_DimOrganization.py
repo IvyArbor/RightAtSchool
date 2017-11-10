@@ -109,6 +109,7 @@ class LOAD_DW_DimOrganization(JSONJob):
             'won_deals_count',
             'lost_deals_count',
             'closed_deals_count',
+            'LocationId',
             'address',
             'address_subpremise',
             'address_street_number',
@@ -120,6 +121,8 @@ class LOAD_DW_DimOrganization(JSONJob):
             'address_country',
             'address_postal_code',
             'address_formatted_address',
+            'c8d36c70267b1df922299591d3d08e1d7992fd56',
+            '71274bbb5d87c782d9419647bc7b94e0f50eeb38'
             ]
         # print(myfields)
         newrow = {}
@@ -208,8 +211,6 @@ class LOAD_DW_DimOrganization(JSONJob):
         row["owner_id"] = row["owner_id"]["name"]
 
         #these values are currently missing, that is why they are null
-        row['NumberOfElementarySchools'] = ""
-        row['FreeAndReducedLunch'] = ""
         row['HowIntroduced'] = ""
         row['CurrentProvider'] = ""
 
