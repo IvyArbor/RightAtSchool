@@ -2,6 +2,7 @@ from base.jobs import JSONJob, JSONCypherWorxJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
+from helpers.time import getTimeId
 import math
 import pymysql
 
@@ -15,7 +16,8 @@ query = ("SELECT * FROM DimPeople")
 lastid = cursor.execute(query)
 print("LAST IDDDDDDDDDDD")
 print(lastid)
-newid = lastid + 1
+#start with id =0
+newid = lastid
 cursor.close()
 cnn.close()
 
@@ -75,8 +77,8 @@ class LOAD_DW_DimPeople(JSONJob):
             'last_activity_id',
             'last_activity_dat',
             'timeline_last_activity_time',
-            'timeline_last_activity_time_by_owner": nul',
-            '1cb167aaf7f9439b006b550192a04e869c43dade": nul',
+            'timeline_last_activity_time_by_owner',
+            '1cb167aaf7f9439b006b550192a04e869c43dade',
             'im',
             'postal_address',
             'postal_address_subpremise',
@@ -161,21 +163,28 @@ class LOAD_DW_DimPeople(JSONJob):
 
         row["phone"] = row["phone"][0]["value"]
         row["email"] = row["email"][0]["value"]
-        row["title"] = row["1cb167aaf7f9439b006b550192a04e869c43dade"]
+        #row["title"] = row["1cb167aaf7f9439b006b550192a04e869c43dade"]
 
         print ("ROW: ")
         print (row)
 
+        #relate values to DimTime values
+        row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
+        row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
+        row["next_activity_date"] = getTimeId(cursor, self.target_connection, row["next_activity_date"])
+        row["last_activity_dat"] = getTimeId(cursor, self.target_connection, row["last_activity_dat"])
+        row["last_incoming_mail_time"] = getTimeId(cursor, self.target_connection, row["last_incoming_mail_time"])
+        row["last_outgoing_mail_time"] = getTimeId(cursor, self.target_connection, row["last_outgoing_mail_time"])
+
+
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
-
-        print(name_placeholders)
-        print("----------------------------")
-        print(value_placeholders)
 
         sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
         self.target_connection.commit()
+        #next call start from next id
+        newid = lastid + 1
 
     def close(self):
         """Here we should archive the file instead"""
