@@ -3,7 +3,7 @@ from helpers.time import getTimeId
 
 class LOAD_DW_FactSales(JSONJob):
     def configure(self):
-        self.url = 'https://companydomain.pipedrive.com/v1/deals/?api_token=5119919dca43c62ca026750611806c707f78a745'
+        self.url = 'https://companydomain.pipedrive.com/v1/deals/?api_token=5119919dca43c62ca026750611806c707f78a745&start=100&limit=500'
         self.auth_user = 'Right At School'
         self.auth_password = 'https://companydomain.pipedrive.com/v1/persons/?api_token=5119919dca43c62ca026750611806c707f78a745'
         #self.data = 'deals'
@@ -83,12 +83,15 @@ class LOAD_DW_FactSales(JSONJob):
         myfields = [
                 'id',
                 'title',
-                'owner_name',
+                'creator_user_id',
+                #'owner_name',
                 'value',
                 'weighted_value',
                 'currency',
-                'org_name',
-                'person_name',
+                'org_id',
+                #'org_name',
+                'person_id',
+                #'person_name',
                 'stage_id',
                 'status',
                 'add_time',
@@ -114,12 +117,12 @@ class LOAD_DW_FactSales(JSONJob):
         databasefieldvalues = [
             'SalesId',
             'Title',
-            'Owner',
+            'UserId',
             'Value',
             'WeightedValue',
             'Currency',
-            'Organization',
-            'ContactPerson',
+            'OrganizationId',
+            'PersonId',
             'StageId',
             'Status',
             'DealCreated',
@@ -143,6 +146,10 @@ class LOAD_DW_FactSales(JSONJob):
         row["lost_time"] = getTimeId(cursor, self.target_connection, row["lost_time"])
         row["close_time"] = getTimeId(cursor, self.target_connection, row["close_time"])
         row["expected_close_date"] = getTimeId(cursor, self.target_connection, row["expected_close_date"])
+
+        row["creator_user_id"] = row["creator_user_id"]["id"]
+        row["org_id"] = row["org_id"]["value"]
+        row["person_id"] = row["person_id"]["value"]
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))

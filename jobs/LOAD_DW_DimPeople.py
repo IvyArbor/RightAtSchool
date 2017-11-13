@@ -77,8 +77,8 @@ class LOAD_DW_DimPeople(JSONJob):
             'last_activity_id',
             'last_activity_dat',
             'timeline_last_activity_time',
-            'timeline_last_activity_time_by_owner": nul',
-            '1cb167aaf7f9439b006b550192a04e869c43dade": nul',
+            'timeline_last_activity_time_by_owner',
+            '1cb167aaf7f9439b006b550192a04e869c43dade',
             'im',
             'postal_address',
             'postal_address_subpremise',
@@ -179,10 +179,6 @@ class LOAD_DW_DimPeople(JSONJob):
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
-
-        print(name_placeholders)
-        print("----------------------------")
-        print(value_placeholders)
 
         sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
