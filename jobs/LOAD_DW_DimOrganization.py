@@ -122,7 +122,9 @@ class LOAD_DW_DimOrganization(JSONJob):
             'address_postal_code',
             'address_formatted_address',
             'c8d36c70267b1df922299591d3d08e1d7992fd56',
-            '71274bbb5d87c782d9419647bc7b94e0f50eeb38'
+            '71274bbb5d87c782d9419647bc7b94e0f50eeb38',
+            'e77369569ad28775e07f07f64179aa730fe80a89',
+            'd9d3c11ed8ab078eb2cf1aaedcfb2f4c638a2c6b'
             ]
         # print(myfields)
         newrow = {}
@@ -209,10 +211,6 @@ class LOAD_DW_DimOrganization(JSONJob):
         del row["address_formatted_address"]
 
         row["owner_id"] = row["owner_id"]["name"]
-
-        #these values are currently missing, that is why they are null
-        row['HowIntroduced'] = ""
-        row['CurrentProvider'] = ""
 
         # modifying DATETIME fields
         row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
