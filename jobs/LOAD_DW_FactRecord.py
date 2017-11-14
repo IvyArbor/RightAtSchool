@@ -1,11 +1,9 @@
-from base.jobs import JSONJob, JSONCypherWorxJob
-from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
+from base.jobs import JSONCypherWorxJob
 from datetime import datetime
-from dateutil import parser
-import math
+from helpers.time import getTimeId
 
 # class for customer_controller dimension
-class FactRecord(JSONCypherWorxJob):
+class LOAD_DW_FactRecord(JSONCypherWorxJob):
     def configure(self):
         self.url = 'https://collabornation.net/lms/api/0.06/record.json'
         self.auth_user = 'Right At School'
@@ -45,7 +43,7 @@ class FactRecord(JSONCypherWorxJob):
                 'record_id',
                 'user_id',
                 'course_id',
-                'course',
+                #'course',
                 'status',
                 'assignment_source',
                 'score',
@@ -68,11 +66,6 @@ class FactRecord(JSONCypherWorxJob):
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
-        # print('prep:',row)
-        # print(row['RecType'])
-        # target.insert(row)
-        # print("Inserting row:")
-        # row.keys()
         databasefieldvalues = [
             'Id',
             'UserId',
@@ -88,10 +81,12 @@ class FactRecord(JSONCypherWorxJob):
             'Link'
         ]
 
-        row["finish_date"] = datetime.fromtimestamp(int(row["finish_date"])) if row["finish_date"] != "0" else print ("Can't get time for finish_date")
-        row["created_date"] = datetime.fromtimestamp(int(row["created_date"])) if row["created_date"] != "0" else print ("Can't get time for created_date")
-        row["expiration_date"] = datetime.fromtimestamp(int(row["expiration_date"])) if row["expiration_date"] != "0" else print ("Can't get time for expiration_date")
-        del row["course"]
+        row["finish_date"] = getTimeId(cursor, self.target_connection, str(datetime.fromtimestamp(int(row["finish_date"])))) if row["finish_date"] != "0" else print ("Can't get time for finish_date")
+        row["created_date"] = getTimeId(cursor, self.target_connection, str(datetime.fromtimestamp(int(row["created_date"])))) if row["created_date"] != "0" else print ("Can't get time for created_date")
+        row["expiration_date"] = getTimeId(cursor, self.target_connection, str(datetime.fromtimestamp(int(row["expiration_date"])))) if row["expiration_date"] != "0" else print ("Can't get time for expiration_date")
+        # row["finish_date"] = datetime.fromtimestamp(int(row["finish_date"])) if row["finish_date"] != "0" else print ("Can't get time for finish_date")
+        # row["created_date"] = datetime.fromtimestamp(int(row["created_date"])) if row["created_date"] != "0" else print ("Can't get time for created_date")
+        # row["expiration_date"] = datetime.fromtimestamp(int(row["expiration_date"])) if row["expiration_date"] != "0" else print ("Can't get time for expiration_date")
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
@@ -103,16 +98,3 @@ class FactRecord(JSONCypherWorxJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
-
-    def parseTime(self, dt):
-        date = parser.parse(dt)
-
-        result = {}
-        result["Year"] = date.year
-        result["Quarter"] = int(math.ceil(date.month / 3.))
-        result["Month"] = date.month
-        result["Week"] = date.isocalendar()[1]
-        result["Day"] = date.day
-        result["DayOfWeek"] = date.weekday() + 1
-
-        return result
