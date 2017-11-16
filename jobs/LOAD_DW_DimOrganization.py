@@ -4,8 +4,8 @@ from helpers.time import getTimeId
 import pymysql
 
 # connection to database RAS; takes the ID of the last inserted row which later is used for pagination
-cnn = pymysql.connect(user='ras', password='RaS1p38!BV44jw',
-                              host='rightatschool-test.c6ac6cyneqii.us-east-1.rds.amazonaws.com',
+cnn = pymysql.connect(user='rastestmaster', password='RasTest0',
+                              host='rightatschool-testenv.cblobk4u47xy.us-east-2.rds.amazonaws.com',
                               database='rightatschool_testdb')
 cursor = cnn.cursor()
 
