@@ -7,7 +7,7 @@ import math
 import pymysql
 
 cnn = pymysql.connect(user='ras', password='RaS1p38!BV44jw',
-                              host='rightatschool-test.c6ac6cyneqii.us-east-1.rds.amazonaws.com',
+                              host='rightatschool-testenv.cblobk4u47xy.us-east-2.rds.amazonaws.com',
                               database='rightatschool_testdb')
 cursor = cnn.cursor()
 
@@ -27,7 +27,7 @@ class LOAD_DW_DimPeople(JSONJob):
         #https://api.pipedrive.com/v1/persons/1/flow?start=10&limit=10&api_token=5119919dca43c62ca026750611806c707f78a745
         # https://api.pipedrive.com/v1/persons?start=10&api_token=5119919dca43c62ca026750611806c707f78a745
         self.auth_user = 'Right At School'
-        self.auth_password = '29AD1B22C11CA60D3CB34D65C063103636F0D35D65ED45A751F98FC5C1CA293C'
+        self.auth_password = '5119919dca43c62ca026750611806c707f78a745'
         #self.data = 'people'
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'DimPeople'
