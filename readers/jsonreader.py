@@ -49,7 +49,11 @@ class JSONReaderQuickBooks(object):
 
     def rows(self):
         for line in self.response.json()["QueryResponse"][self.object_key]:
-            lst = [val if val and val != 'NULL' else None for val in list(line.values())]
-            yield dict(zip(self.column_mapping, lst))
+            for column in self.column_mapping:
+                if column not in line:
+                    line[column] = None
+            yield dict(line)
+            #lst = [val if val and val != 'NULL' else None for val in list(line.values())]
+            #yield dict(zip(self.column_mapping, lst))
 
 
