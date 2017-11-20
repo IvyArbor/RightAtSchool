@@ -14,7 +14,7 @@ class LOAD_DW_DimVendor(JSONQuickBooks):
         self.headers = {
             'Accept': 'application/json',
             #Read this Key from Configuration
-            'authorization': "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..WxjPZskglUFSfa8R60X_uA.u8AG1cqrCSQBda9neQKSc3lnkYGrvW9wVKNYFJVd7IF5uFmqgrh_LENfEoLIm2m59WwDSbxc26Yqf5Jb7f4geKQketq1xExwryJa7Agr6pllya8un_rboPDcVort2XioqbsKa_1-DqwHSWH_B72Cnxr0b7lIAq02Qdy2ETQVpB2KY4DiM1rNF_6sZcUVcC0LgLEygwG97m_PRA1KLmA9vPVf-O249KV6xzx0nerBrHkLCZff_ZH60IcJY5bL3v4DMQp4ffVAiJZPvWVFCMcp0E39RryUvId2C52JMvSZ7qP7DaXC1mqb3NLqlz71REy0Fp8UtkrQfW_NPoFPmiS77e3nfCWKforyy-PUDbtQderuUqcj2JHFdCj3uGGr6qoGa0XSjBypIKxBoa29KT1-GSVuiJB3TVKIjsMNBg-No-_D-wcpWxRC0HAHXwJXlKDvQiHbl9ukdn0mN3hlgjDeKGZsxfEV2yW_WqdokcTrOzLtYUfJSwvTGQp37Xm_Uum1GyVasoOd9OvckI0o21t8RIV64sns78b2A5LR6hMQnQKg1jBZKohRb7kp0nIKu8JlsXyxecpd3Xs4B4Tjsujo4SoFHBh8U5UAWsM6IVX5i-IxOLdNaKqnTNDPw9ZThbzDIGQvKUEExg-mD3JpRwrQPnHriw6bvc5HwyzZX4y21ljzZJnioYQxRPTJwIpERXK8-D1gqJKFC2MjCAGzcauDsgWP9wiNU7fHA6u--HMQFhlsIorCAl3c0RtHZ3t0J_OpL2YTI1MRyEu6vEcEZHinzs93OpRBu1nvXd9A-NmPhiyt1fWVA5ZMeUvCk2MRsGvanYucU2CazU1BYhG_LWwSKg.sqYfElj3ffdBkMvsT4TMOQ",
+            'authorization': "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..m-ykyYq7SrpzyJxEHcXs3g.P6oLnN34fhE6Vw_rkKWBd5CRFOcgOr_V6la_dKuC3mOhLL5_SBgJY5Nb32Zh5PFZE-ucAz-DMUGMsA4nKPL9SiilSveSOQKkWPQC0B8EYsCwJzoqpf3zttPaQ93y26GJ_tyFJq4fT_xjhNDxe78sEGDrP3ITjEh2DByFVn1SxGzg3_Ilj70-F_KxLyBjchu_4h4n2AxI6eJk5NcUJH2xqXjt8wW4W5Mki9QsYJRZVrqkrQcGXOMRXJFOyM5Nchzaj83XSr4wv_7AUF3fKr8byfMfxgU7Nqcdi9t5xFZ62VRp3I4-9OPHmjL_1SQdWxFnA98E7PlH3ovca4yfPeGbMASj76Iz2iKUv-IZPsP553hzgxKmRRKGnY0n5wVwzf4XN1Q92lZNatzBZqiWIljsPqaN3lo3TAvpR_eFsn0ysFnP3MIe1MiXrMVEPivtx2t77M8a7c0oN0QQWJ7-JyVp3U7N9nlje8oMdVLX0yGF71soEpRtI_S_QWaCtnAOtAUq27U8g6Pmk_Pmikot3GspXBaX_9jtu0RgbUd0PLD0Tjm4LasL4jKbiZrYvcYb68kwmVAhWf0Nq3kaklGz1g1abvFaCw5ZmCUmdvjO6CxgG6wvLmhrhAYZYALj_vfqKZknTwme_fwwGe-B-fnE_5BSCaaG7N5111DdxsXZu4JnuCrAmPOr1hl7KSOwkJeblxyKIocd1WXwNViB___q9iSwrjS3Nd75rjNWPrXOGGu29RRLS2KPDKZdQnnG5QulKcKM5h8XztTSkOzgXyqPzkzxNYf7IBpAmBwZui5g5Kx3A1oTj96DJ5RbtHWqY-97vxArf9jzbxVyrq0VhcIXTPS0OQ.nuCryeklWgbL27z8B1Uu6A",
             'cache-control': "no-cache",
             #'User-Agent': 'python-quickbooks V3 library',
         }
@@ -33,7 +33,9 @@ class LOAD_DW_DimVendor(JSONQuickBooks):
                 'MetaData',
                 'DisplayName',
                 'PrintOnCheckName',
-                'Active'
+                'Active',
+                'BillAddr',
+                'AcctNum'
             ]
 
     def getTarget(self):
@@ -53,7 +55,9 @@ class LOAD_DW_DimVendor(JSONQuickBooks):
                 'sparse',
                 'SyncToken',
                 'MetaData',
-                'Active'
+                'Active',
+                'BillAddr',
+                'AcctNum'
             ]
 
         newrow = {}
