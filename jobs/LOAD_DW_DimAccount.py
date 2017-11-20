@@ -1,21 +1,21 @@
-from base.jobs import JSONJob, JSONCypherWorxJob
+from base.jobs import JSONQuickBooks
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
 from helpers.time import getTimeId
 
-class LOAD_DW_DimAccount(JSONJob):
+class LOAD_DW_DimAccount(JSONQuickBooks):
     def configure(self):
         self.url = 'https://quickbooks.api.intuit.com/v3/company/492414475/query?query=select%20%2A%20from%20account'
         self.auth_user = 'Right At School'
         self.auth_password = '5119919dca43c62ca026750611806c707f78a745'
         #self.data = 'people'
         self.target_database = 'rightatschool_testdb'
-        self.target_table = 'DimPeople'
+        self.target_table = 'DimAccount'
         self.source_table = ''
 
         self.source_database = ''
-        self.object_key = "data"
+        self.object_key = "Account"
         #self.file_name = 'sources/ActivityEnrollmentSample.csv'
 
     def getColumnMapping(self):
