@@ -12,21 +12,24 @@ class LOAD_DW_DimAccount(JSONQuickBooks):
             self.source_table = ''
             self.source_database = ''
             self.object_key = 'Account'
-
             self.headers = {
                 'Accept': 'application/json',
                 #Read this Key from Configuration
-                'authorization': "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..-Dt8E64kx1clGkRi5yBN3g.VTGKUVmenr55vhWbPsu-reKTxwrHfySNocbH5S_Kc9rc9VnaskA9qygfU1yW6pf7d-rWimUqC81DDCQ26s_7UEFd8m4j0R7W-mMNcufmH7HcNIO-AuhbKBNcR6r0_v6et3BBRaY7pAw0BcCVCkTtnfB9qkSXROLYIqqUCIOyrH0KpOD3d5O9upCXlfFjqwqTCzy_JnQftyRf2ICBpFDnEB7HquODhmetnFcZKrq21UyiTW7PI4KKW1H7E91ZEovbBYss4NDTOxn_DhQJGB4RavLfidJPu-3KvTW0-UHsW0wGP0ZB6SJBVHF5tqWw0RoR7dqOEIAt1KZvk1CSi9oek18nKC8JWjdakch9a_ZbwUirat6LWCQawpNNGR_WmiJWqLfMDKNS3SxxSa7MUAMk2tnZSr4KhTTl0zhBbYaSiHdP_Gm405at1Xb2Wk7nj62_KbapoOL6vfNi_iHsb100IC2_090ujCxM4QSPhwLbRjeof_4HutSqarH9mTMwppwEyK8roO8P8haBsXWBMG0ZzQ5VeO9glU11W7IUbNkx4enivP11qfsXaCSrjVhYj6ewATcsntSmLOgVRo2H5G7Xvt7Ph-1XvGbLzF_CJ7SBGTU33ALyGX7XHaJ7m0guaQr4-ntER5bn6NZQwuTE6P_vCGU0F7rKaFU0cwK8nePs2pYTxKDN0Gpxj2oDCUxRG5u2YlxbGQbl5ssRjcT5UgpZYqBnIulosbmIFv5ejInlGz9Nw_MlWhTMgR2E-x2dmNE-36xm7m2MnHM6d0rR22WCJ8rilv1nS7NdwsGtGq3F6wa1VQ5XQ82secs1dKS4Vc5Rvdjzpre-Q4WtmqbvNIEf0g.rIrlEFtKhwof87D4RAbvSQ",
+                'authorization': "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..nuaYCRN4pL8OI_pS0E8Uiw.fQVIHFnGvWMspVJ9gxcFbvE2IoDZ5Ov7thB4C9yQZiLBLVyBqr2fw9dvThAR16bkrSFNWphdCIVGmzT80TM4Eh94ogQfhz3uFs3E7mWlS2OyP2skvJVzkT6GfS7sL0mSaWS2bC5z6JobJAxIwV3tcbPQQo3ZlX1VEN6uCLgoyKJOzec0NeDDQPe16k_Zt_ezIe3HQKX6MpqbExjUEOjeLNNtjlcFPalcXntEBMdz0yT0RAzMMdC7b6ZFpUhNIxmiyXNkzuDENjwgMlxr9_jjB__Lfm0rrYxhYd3ypdhbSkF3FZzNbv7bnnQ_C9B0pQWJWt04fQynfNwvmERJ2yDx77i7aJuKDSXAx7lsITYAOSFCRUCFQ-YYhpfL3MFU5h8xD2fCd6yfuo3_b0lbVE4_mAvQJ0BVJDKZjELdgxbZD8I4K5dv-p503pL8aRYHTn9YslE_7A5jeSwytA467XnQ7Zy4DbzNG2sFHAr1upvdivE4aT20BlC-bnbRF8WFAyjKN6_MMDPVp5E3041KaSQNLNKlBdQ7vDLc6HoUAV2iIvFPaMwj_boHAe5cSukfof5sz2z4v4rd51LoCLGsroiBdkO3MqR6yzh1nOMwfPNPE4fbyLeXL_pKW9MFZ6cQuJkrS8hM44fmfxQOh-R53roYP1pTokz2Wo9mViNARD_G2IpXSENICoeVtOxxLFjJtmVA_e4TzNs3gFPO_uF-U1SUychJxbzBFLiDis86YlzjGLGBNsQHIH1gxUfIY-OC1JZ46advLFeGNTKzvlOT2A9ykuD7XGg1T-lBZSzY_8c0FQcjJTsRsEWbp96EXCAnXScaW9Q7wVWVybKeeV0VywZ1Ug.i-PRvkGrvwLrJLtKWJGmmQ",
                 'cache-control': "no-cache",
                 #'User-Agent': 'python-quickbooks V3 library',
             }
 
-            self.querystring = {"query": "SELECT * FROM Account", "minorversion": "4"}
+            self.querystring = {"query": "SELECT * FROM Account STARTPOSITION 1 MAXRESULTS 400", "minorversion": "4"}
             #SELECT * FROM Account STARTPOSITION 1 MAXRESULTS 400
 
     def getColumnMapping(self):
         return [
+            'Id',
             'Name',
+            'domain',
+            'sparse',
+            'SyncToken',
             'SubAccount',
             'ParentRef',
             'Description',
@@ -35,18 +38,14 @@ class LOAD_DW_DimAccount(JSONQuickBooks):
             'Classification',
             'AccountType',
             'AccountSubType',
+            'AcctNum',
             'CurrentBalance',
             'CurrentBalanceWithSubAccounts',
-            'AcctNum',
             'CurrencyRef',
-            'domain',
-            'sparse',
-            'Id',
-            'SyncToken',
-            'MetaData',
             'TaxCodeRef',
             'AccountAlias',
             'TxnLocationType',
+            'MetaData'
             ]
 
     def getTarget(self):
@@ -62,7 +61,6 @@ class LOAD_DW_DimAccount(JSONQuickBooks):
             'domain',
             'sparse',
             'SyncToken',
-            'MetaData'
             'SubAccount',
             'ParentRef',
             'Description',
@@ -78,6 +76,7 @@ class LOAD_DW_DimAccount(JSONQuickBooks):
             'TaxCodeRef',
             'AccountAlias',
             'TxnLocationType',
+            'MetaData'
             ]
         # print(myfields)
         newrow = {}
@@ -102,8 +101,6 @@ class LOAD_DW_DimAccount(JSONQuickBooks):
             'Domain',
             'Sparse',
             'SyncToken',
-            'CreateTime',
-            'LastUpdatedTime',
             'SubAccount',
             'ParentRef',
             'Description',
@@ -119,14 +116,16 @@ class LOAD_DW_DimAccount(JSONQuickBooks):
             'TaxCodeRef',
             'AccountAlias',
             'TxnLocationType',
+            'CreateTime',
+            'LastUpdatedTime',
         ]
         print("ROW: ")
         print(row)
 
-        row["CurrencyRef"] = row["CurrencyRef"]["value"] if row["CurrencyRef"] != None else None
+        row["Id"] = int(row["Id"])
+        row["CurrencyRef"] = row["CurrencyRef"]['value'] if row["CurrencyRef"] != None else None
         row["CreateTime"] = row["MetaData"]["CreateTime"] if row["MetaData"] != None else None
         row["LastUpdatedTime"] = row["MetaData"]["LastUpdatedTime"] if row["MetaData"] != None else None
-        del row["CurrencyRef"]
         del row["MetaData"]
 
         #relate values to DimTime values
@@ -134,12 +133,11 @@ class LOAD_DW_DimAccount(JSONQuickBooks):
         # row["LastUpdatedTime"] = getTimeId(cursor, self.target_connection, row["LastUpdatedTime"])
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
-        print('name_placeholders')
-        print (name_placeholders)
-
+        # print('NAME PLACEHOLDERS')
+        # print(name_placeholders)
         value_placeholders = ", ".join(['%s'] * len(row))
-        print('value_placeholders')
-        print(value_placeholders)
+        # print('VALUE PLACEHOLDERS')
+        # print(value_placeholders)
 
         sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
