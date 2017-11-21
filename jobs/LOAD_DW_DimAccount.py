@@ -1,29 +1,28 @@
-from base.jobs import JSONJob, JSONCypherWorxJob
+from base.jobs import JSONQuickBooks
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
 from helpers.time import getTimeId
 
-class LOAD_DW_DimAccount(JSONJob):
+class LOAD_DW_DimAccount(JSONQuickBooks):
     def configure(self):
-        def configure(self):
             self.url = 'https://sandbox-quickbooks.api.intuit.com/v3/company/193514649567984/query'
-
             self.target_database = 'rightatschool_testdb'
-            self.target_table = 'DimAccount
+            self.target_table = 'DimAccount'
             self.source_table = ''
             self.source_database = ''
-            self.object_key = "Account"
+            self.object_key = 'Account'
 
             self.headers = {
                 'Accept': 'application/json',
                 #Read this Key from Configuration
-                'authorization': "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..m-ykyYq7SrpzyJxEHcXs3g.P6oLnN34fhE6Vw_rkKWBd5CRFOcgOr_V6la_dKuC3mOhLL5_SBgJY5Nb32Zh5PFZE-ucAz-DMUGMsA4nKPL9SiilSveSOQKkWPQC0B8EYsCwJzoqpf3zttPaQ93y26GJ_tyFJq4fT_xjhNDxe78sEGDrP3ITjEh2DByFVn1SxGzg3_Ilj70-F_KxLyBjchu_4h4n2AxI6eJk5NcUJH2xqXjt8wW4W5Mki9QsYJRZVrqkrQcGXOMRXJFOyM5Nchzaj83XSr4wv_7AUF3fKr8byfMfxgU7Nqcdi9t5xFZ62VRp3I4-9OPHmjL_1SQdWxFnA98E7PlH3ovca4yfPeGbMASj76Iz2iKUv-IZPsP553hzgxKmRRKGnY0n5wVwzf4XN1Q92lZNatzBZqiWIljsPqaN3lo3TAvpR_eFsn0ysFnP3MIe1MiXrMVEPivtx2t77M8a7c0oN0QQWJ7-JyVp3U7N9nlje8oMdVLX0yGF71soEpRtI_S_QWaCtnAOtAUq27U8g6Pmk_Pmikot3GspXBaX_9jtu0RgbUd0PLD0Tjm4LasL4jKbiZrYvcYb68kwmVAhWf0Nq3kaklGz1g1abvFaCw5ZmCUmdvjO6CxgG6wvLmhrhAYZYALj_vfqKZknTwme_fwwGe-B-fnE_5BSCaaG7N5111DdxsXZu4JnuCrAmPOr1hl7KSOwkJeblxyKIocd1WXwNViB___q9iSwrjS3Nd75rjNWPrXOGGu29RRLS2KPDKZdQnnG5QulKcKM5h8XztTSkOzgXyqPzkzxNYf7IBpAmBwZui5g5Kx3A1oTj96DJ5RbtHWqY-97vxArf9jzbxVyrq0VhcIXTPS0OQ.nuCryeklWgbL27z8B1Uu6A",
+                'authorization': "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..-Dt8E64kx1clGkRi5yBN3g.VTGKUVmenr55vhWbPsu-reKTxwrHfySNocbH5S_Kc9rc9VnaskA9qygfU1yW6pf7d-rWimUqC81DDCQ26s_7UEFd8m4j0R7W-mMNcufmH7HcNIO-AuhbKBNcR6r0_v6et3BBRaY7pAw0BcCVCkTtnfB9qkSXROLYIqqUCIOyrH0KpOD3d5O9upCXlfFjqwqTCzy_JnQftyRf2ICBpFDnEB7HquODhmetnFcZKrq21UyiTW7PI4KKW1H7E91ZEovbBYss4NDTOxn_DhQJGB4RavLfidJPu-3KvTW0-UHsW0wGP0ZB6SJBVHF5tqWw0RoR7dqOEIAt1KZvk1CSi9oek18nKC8JWjdakch9a_ZbwUirat6LWCQawpNNGR_WmiJWqLfMDKNS3SxxSa7MUAMk2tnZSr4KhTTl0zhBbYaSiHdP_Gm405at1Xb2Wk7nj62_KbapoOL6vfNi_iHsb100IC2_090ujCxM4QSPhwLbRjeof_4HutSqarH9mTMwppwEyK8roO8P8haBsXWBMG0ZzQ5VeO9glU11W7IUbNkx4enivP11qfsXaCSrjVhYj6ewATcsntSmLOgVRo2H5G7Xvt7Ph-1XvGbLzF_CJ7SBGTU33ALyGX7XHaJ7m0guaQr4-ntER5bn6NZQwuTE6P_vCGU0F7rKaFU0cwK8nePs2pYTxKDN0Gpxj2oDCUxRG5u2YlxbGQbl5ssRjcT5UgpZYqBnIulosbmIFv5ejInlGz9Nw_MlWhTMgR2E-x2dmNE-36xm7m2MnHM6d0rR22WCJ8rilv1nS7NdwsGtGq3F6wa1VQ5XQ82secs1dKS4Vc5Rvdjzpre-Q4WtmqbvNIEf0g.rIrlEFtKhwof87D4RAbvSQ",
                 'cache-control': "no-cache",
                 #'User-Agent': 'python-quickbooks V3 library',
             }
 
             self.querystring = {"query": "SELECT * FROM Account", "minorversion": "4"}
+            #SELECT * FROM Account STARTPOSITION 1 MAXRESULTS 400
 
     def getColumnMapping(self):
         return [
@@ -47,7 +46,7 @@ class LOAD_DW_DimAccount(JSONJob):
             'MetaData',
             'TaxCodeRef',
             'AccountAlias',
-            'TxnLocationType'
+            'TxnLocationType',
             ]
 
     def getTarget(self):
@@ -58,13 +57,12 @@ class LOAD_DW_DimAccount(JSONJob):
     def prepareRow(self, row):
         # print('prepare')
         myfields = [
-            'AccountId',
+            'Id',
             'Name',
-            'Domain',
-            'Sparse',
+            'domain',
+            'sparse',
             'SyncToken',
-            'CreateTime',
-            'LastUpdatedTime',
+            'MetaData'
             'SubAccount',
             'ParentRef',
             'Description',
@@ -122,22 +120,26 @@ class LOAD_DW_DimAccount(JSONJob):
             'AccountAlias',
             'TxnLocationType',
         ]
+        print("ROW: ")
+        print(row)
 
-        row["CurrencyRef"] = row["CurrencyRef"][0]["value"]
-        row["CreateTime"] = row["MetaData"][0]["CreateTime"]
-        row["LastUpdatedTime"] = row["MetaData"][0]["LastUpdatedTime"]
+        row["CurrencyRef"] = row["CurrencyRef"]["value"] if row["CurrencyRef"] != None else None
+        row["CreateTime"] = row["MetaData"]["CreateTime"] if row["MetaData"] != None else None
+        row["LastUpdatedTime"] = row["MetaData"]["LastUpdatedTime"] if row["MetaData"] != None else None
         del row["CurrencyRef"]
         del row["MetaData"]
 
-        print ("ROW: ")
-        print (row)
-
         #relate values to DimTime values
-        row["CreateTime"] = getTimeId(cursor, self.target_connection, row["CreateTime"])
-        row["LastUpdatedTime"] = getTimeId(cursor, self.target_connection, row["LastUpdatedTime"])
+        # row["CreateTime"] = getTimeId(cursor, self.target_connection, row["CreateTime"])
+        # row["LastUpdatedTime"] = getTimeId(cursor, self.target_connection, row["LastUpdatedTime"])
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
+        print('name_placeholders')
+        print (name_placeholders)
+
         value_placeholders = ", ".join(['%s'] * len(row))
+        print('value_placeholders')
+        print(value_placeholders)
 
         sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
