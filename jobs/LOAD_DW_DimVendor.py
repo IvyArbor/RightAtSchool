@@ -23,19 +23,25 @@ class LOAD_DW_DimVendor(JSONQuickBooks):
 
     def getColumnMapping(self):
         return [
-                'Balance',
+                'Id',
+                'GivenName',
+                'FamilyName',
+                'CompanyName',
+                'DisplayName',
+                'PrintOnCheckName',
+                'BillAddr',
                 'Vendor1099',
                 'CurrencyRef',
                 'domain',
                 'sparse',
-                'Id',
                 'SyncToken',
-                'MetaData',
-                'DisplayName',
-                'PrintOnCheckName',
                 'Active',
-                'BillAddr',
-                'AcctNum'
+                'AcctNum',
+                'WebAddr',
+                'PrimaryPhone',
+                'PrimaryEmailAddr',
+                'Balance',
+                'MetaData'
             ]
 
     def getTarget(self):
@@ -46,18 +52,24 @@ class LOAD_DW_DimVendor(JSONQuickBooks):
     def prepareRow(self, row):
         myfields = [
                 'Id',
+                'GivenName',
+                'FamilyName',
+                'CompanyName',
                 'DisplayName',
                 'PrintOnCheckName',
-                'Balance',
+                'BillAddr',
                 'Vendor1099',
                 'CurrencyRef',
                 'domain',
                 'sparse',
                 'SyncToken',
-                'MetaData',
                 'Active',
-                'BillAddr',
-                'AcctNum'
+                'AcctNum',
+                'WebAddr',
+                'PrimaryPhone',
+                'PrimaryEmailAddr',
+                'Balance',
+                'MetaData'
             ]
 
         newrow = {}
@@ -69,11 +81,42 @@ class LOAD_DW_DimVendor(JSONQuickBooks):
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
         databasefieldvalues = [
-            #TBD
+            'VendorId',
+            'GivenName',
+            'FamilyName',
+            'CompanyName',
+            'DisplayName',
+            'PrintOnCheckName',
+            'BillAddr',
+            'Vendor1099',
+            'Currency',
+            'Domain',
+            'Sparse',
+            'SyncToken',
+            'Active',
+            'AcctNum',
+            'WebAddr',
+            'Phone',
+            'Email',
+            'Balance',
+            'CreateTime',
+            'UpdateTime'
         ]
 
         print ("ROW:")
         print (row)
+        row["Id"] = int(row["Id"])
+        row["BillAddr"] = row["BillAddr"]["Id"] if row["BillAddr"] != None else None
+        row["CurrencyRef"] = row["CurrencyRef"]["value"] if row["CurrencyRef"] != None else None
+        row["CreateTime"] = row["MetaData"]["CreateTime"] if row["MetaData"] != None else None
+        row["UpdateTime"] = row["MetaData"]["LastUpdatedTime"] if row["MetaData"] != None else None
+        del row["MetaData"]
+        row["WebAddr"] = row["WebAddr"]["URI"] if row["WebAddr"] != None else None
+        row["PrimaryPhone"] = row["PrimaryPhone"]["FreeFormNumber"] if row["PrimaryPhone"] != None else None
+        row["PrimaryEmailAddr"] = row["PrimaryEmailAddr"]["Address"] if row["PrimaryEmailAddr"] != None else None
+        row["Balance"] = int(row["Balance"])
+
+
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
