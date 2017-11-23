@@ -22,22 +22,22 @@ class LOAD_DW_FactFinance(ExcelJob):
         self.file_name = 'sources/Quickbooks_FactFinance.xlsx'
         self.source_database = ''
         self.source_table = ''
-        self.sheet_name = 'Transaction Detail by Account'
+        self.sheet_name = 'QuickbooksFactFinance'
 
 
     def getColumnMapping(self):
         return [
+            '',
             'Account #',
-            'Account',
             'Customer',
             'Vendor',
             'Class',
-            'Transaction Type',
             'Date',
+            'Transaction Type',
             'Num',
             'Name',
-            'Memo/Description',
             'Split',
+            'Memo/Description',
             'Amount',
             'Balance',
             ]
@@ -65,8 +65,8 @@ class LOAD_DW_FactFinance(ExcelJob):
             'Transaction Type',
             'Num',
             'Name',
-            'Memo/Description',
             'Split',
+            'Memo/Description',
             'Amount',
             'Balance',
 
@@ -91,8 +91,8 @@ class LOAD_DW_FactFinance(ExcelJob):
                 'TransactionType',
                 'Num',
                 'Name',
-                'MemoDescription',
                 'Split',
+                'MemoDescription',
                 'Amount',
                 'Balance',
             ]
