@@ -198,25 +198,25 @@ class TextJob(FileJob):
         """Here we should archive the file instead"""
         self.archive_file()
 
-
+from readers.streamreader import LocalStreamReader
 from readers.excelreader import ExcelReader
 from readers.s3reader import S3Reader
 class ExcelJob(FileJob):
     def getSource(self):
         if not self.file_name: return []
-
-        reader = S3Reader(self.bucket_name, self.file_name)
+        reader = LocalStreamReader(self.file_name)
+        #reader = S3Reader(self.bucket_name, self.file_name)
         self.column_mapping = self.getColumnMapping()
-        self.reader = ExcelReader(reader, self.sheet_name, self.column_mapping, self.first_data_row)
+        source = ExcelReader(reader, self.sheet_name, self.column_mapping, self.first_data_row)
 # self.reader = ExcelReader(self.file_name, self.sheet_name, self.column_mapping, self.first_data_row)
         # Get a reader of S3
         # Get a text parser using the column specs
         # Return an iterator of rows
-        return self.reader.rows()
+        return source.rows()
 
-    @abstractmethod
-    def getColumnMapping(self):
-        pass
+    # @abstractmethod
+    # def getColumnMapping(self):
+    #     pass
 
     def close(self):
         self.reader.close()
@@ -227,7 +227,6 @@ from readers.csvreader import CSVReader
 class CSVJob(FileJob):
     def getSource(self):
         if not self.file_name: return []
-
         reader = LocalStreamReader(self.file_name)
         self.column_mapping = self.getColumnMapping()
         source = CSVReader(reader, column_mapping=self.column_mapping, delimiter=self.delimiter, quotechar=self.quotechar)

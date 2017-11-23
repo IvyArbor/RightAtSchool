@@ -2,14 +2,19 @@ class LocalStreamReader(object):
     """ Reads a file from a local disk by chunks
     Iterates through the lines of the content
     """
+    file_path = ''
 
     def __init__(self, file_path, chunk_size = 1048576): # 1M = 1048576
         self.chunk_size = chunk_size
+        self.file_path = file_path
         self.stream = open(file_path, 'r')
 
     def nextChunk(self):
         data = self.stream.read(self.chunk_size)
         return data
+
+    def getFile(self):
+        return self.file_path
 
     def lines(self):
         buffer = ''

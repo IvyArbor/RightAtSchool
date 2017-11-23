@@ -123,6 +123,7 @@ class LOAD_DW_DimAccount(JSONQuickBooks):
         print(row)
 
         row["Id"] = int(row["Id"])
+        row["ParentRef"] = row["ParentRef"]['value'] if row["ParentRef"] != None else None
         row["CurrencyRef"] = row["CurrencyRef"]['value'] if row["CurrencyRef"] != None else None
         row["CreateTime"] = row["MetaData"]["CreateTime"] if row["MetaData"] != None else None
         row["LastUpdatedTime"] = row["MetaData"]["LastUpdatedTime"] if row["MetaData"] != None else None

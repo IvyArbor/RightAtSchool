@@ -13,6 +13,7 @@ def main():
 
     # Get the name of the class from arguments
     class_name = sys.argv[1]
+    #class_name = 'LOAD_DW_FactFinance'
     #test on IDE
     #class_name = "DimCustomer"
     #class_name = "DimProgram"

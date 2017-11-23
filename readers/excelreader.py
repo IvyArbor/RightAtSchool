@@ -6,6 +6,7 @@ class ExcelReader(object):
     def __init__(self, reader, sheet_name, col_names=None, first_data_row = 2):
         self.col_names = col_names
         self.reader = reader
+        # self.workbook = load_workbook('sources/Quickbooks_FactFinance.xlsx', data_only=True)
         self.workbook = load_workbook(filename = reader.getFile(), data_only=True)
         #Specifying the sheet name we want to read.
         self.sheet = self.workbook.get_sheet_by_name(sheet_name)
