@@ -58,7 +58,6 @@ class LOAD_DW_FactFinance(ExcelJob):
         # print('prepare')
         myfields = [
             'Account #',
-            'Account',
             'Customer',
             'Vendor',
             'Class',
@@ -84,7 +83,6 @@ class LOAD_DW_FactFinance(ExcelJob):
         # target.scdensure(row)
         if row["Account #"] != "Account #":
             databasefieldvalues = [
-                'FinanceId',
                 'AccountId',
                 'CustomerId',
                 'VendorId',
