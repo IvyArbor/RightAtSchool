@@ -6,7 +6,7 @@ from helpers.time import getTimeId
 
 class LOAD_DW_DimAccount(JSONQuickBooks):
     def configure(self):
-            self.url = 'https://sandbox-quickbooks.api.intuit.com/v3/company/193514649567984/query'
+            self.url = 'https://quickbooks.api.intuit.com/v3/company/492414475/query'
             self.target_database = 'rightatschool_testdb'
             self.target_table = 'DimAccount'
             self.source_table = ''
@@ -15,7 +15,7 @@ class LOAD_DW_DimAccount(JSONQuickBooks):
             self.headers = {
                 'Accept': 'application/json',
                 #Read this Key from Configuration
-                'authorization': "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..nuaYCRN4pL8OI_pS0E8Uiw.fQVIHFnGvWMspVJ9gxcFbvE2IoDZ5Ov7thB4C9yQZiLBLVyBqr2fw9dvThAR16bkrSFNWphdCIVGmzT80TM4Eh94ogQfhz3uFs3E7mWlS2OyP2skvJVzkT6GfS7sL0mSaWS2bC5z6JobJAxIwV3tcbPQQo3ZlX1VEN6uCLgoyKJOzec0NeDDQPe16k_Zt_ezIe3HQKX6MpqbExjUEOjeLNNtjlcFPalcXntEBMdz0yT0RAzMMdC7b6ZFpUhNIxmiyXNkzuDENjwgMlxr9_jjB__Lfm0rrYxhYd3ypdhbSkF3FZzNbv7bnnQ_C9B0pQWJWt04fQynfNwvmERJ2yDx77i7aJuKDSXAx7lsITYAOSFCRUCFQ-YYhpfL3MFU5h8xD2fCd6yfuo3_b0lbVE4_mAvQJ0BVJDKZjELdgxbZD8I4K5dv-p503pL8aRYHTn9YslE_7A5jeSwytA467XnQ7Zy4DbzNG2sFHAr1upvdivE4aT20BlC-bnbRF8WFAyjKN6_MMDPVp5E3041KaSQNLNKlBdQ7vDLc6HoUAV2iIvFPaMwj_boHAe5cSukfof5sz2z4v4rd51LoCLGsroiBdkO3MqR6yzh1nOMwfPNPE4fbyLeXL_pKW9MFZ6cQuJkrS8hM44fmfxQOh-R53roYP1pTokz2Wo9mViNARD_G2IpXSENICoeVtOxxLFjJtmVA_e4TzNs3gFPO_uF-U1SUychJxbzBFLiDis86YlzjGLGBNsQHIH1gxUfIY-OC1JZ46advLFeGNTKzvlOT2A9ykuD7XGg1T-lBZSzY_8c0FQcjJTsRsEWbp96EXCAnXScaW9Q7wVWVybKeeV0VywZ1Ug.i-PRvkGrvwLrJLtKWJGmmQ",
+                'authorization': "Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..1cCnQxXQJF6HJwDHvFjSqg.FjCHjyl4aRj4PHnhRXsclcaK_mMZ5T9_pyzlx1eRB1zDTtYkiJnTJu-TvADSyK3hQq2gYQXXZvUuriF8PxJoFLxlw1gLj3gstXXKkuZ6T4KmZKWE1ercGDac3tNXmRHjNsYp7tGeRoHIap235YS2MGXvmG_E6aHyv4AmbKI2CvZ3XUCVrt96gdLaSjqba8xdoshzXpsp4kOFYLvFb3BeklmJLpDfxqbmgdSuxCwEzMHSHIKV5fY9YtnrzbMIeAfYtYB3cMLS097m7n7P-_6YlKkiD8WaHJ856XIJSrHWs9d63FIfgOpjvPvSKUMZmieGPB4iSAu9oS9UJSF__6hGbnvXVuc94eWEH85PcqUu6s7fdnRqeBOu7k8NoRZ4Y3zD2ioBa1qADJn3wYp1PrZl6E0X5zumGAm-SRaLsRdTxerBNX4ufw_3eQC4dArJNjUPqiYCjgHQEeR5GiOsNNZIExSGFKUcm_FUOJt0gPVlJAZb6cqfG3FN-_2XFCTgXQNoC8ZDWD7qxmwgcfRMqNhUv0FetWG6XWI48Tof0nTyuK8pwuMF2fAvmtN2RQVkaDpQfsKA4ScQkVqxL6juxlqnX6UIriVAyJ68r5hmTLwLt_cdmcndOhFsjmaHJu3Dk6fXGPOKEz-UG2CQKrvkfSsw0db5R8AFMveyY4Tjv8DHgqdV4XxDZFrKD8V3yJDiQld4D55-PDgtkzrL1ZQe6jLwGOL_kUcA5kS22Awk4BxqVts9A4nlJwjrSjJ94qar8Sor2leexP2OxnGJyOSEFthLXrK0D4nDrm4jYwU8aLJJaGv7I0fR_vTGVYxAefxaKyS8.Ue2HSoUu7TacHWPHsGIzUQ",
                 'cache-control': "no-cache",
                 #'User-Agent': 'python-quickbooks V3 library',
             }
