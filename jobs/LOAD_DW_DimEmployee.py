@@ -61,7 +61,6 @@ class LOAD_DW_DimEmployee(CSVJob):
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
-
         if row["Employee ID"] != "Employee ID":
             databasefieldvalues = [
                 'EmployeeId',
@@ -80,10 +79,10 @@ class LOAD_DW_DimEmployee(CSVJob):
                 'Role'
             ]
 
-            #converts data from '25-10-2017' to '2017-10-25'
-        #    row["Effective Date"]= datetime.strptime(row["Effective Date"],'%d-%m-%y').strftime('%Y/%m/%d')
+            #converts the dates in standardized format for MySQL database
             row["Effective Date"] = parser.parse(row["Effective Date"])
             row["Hire Date"] = parser.parse(row["Hire Date"])
+
             row['Team']=""
             row['Role']=""
 
