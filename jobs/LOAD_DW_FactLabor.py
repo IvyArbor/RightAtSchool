@@ -1,13 +1,17 @@
-from base.jobs import CSVJob
+from base.jobs import ExcelJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
+from helpers.time import getTimeId
+
 
 # class for customer dimension
-class FactLabor(CSVJob):
+class LOAD_DW_FactLabor(ExcelJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'FactLabor'
+        self.target_table1 = 'DimDepartment'
+        self.first_data_row = 2
         self.delimiter = ","
         self.quotechar = '"'
         # self.pick_file_to_process(folder = None, pattern = 'LDI_reject_claim_detail_06_05_2017.txt')
@@ -15,7 +19,8 @@ class FactLabor(CSVJob):
         # self.bucket_folder = 'Rebate'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/NovaTimeDetailReportLC.csv'
+        self.file_name = 'sources/LABOR-REPORT-JHSU_JHSU_-6228-4107.xlsx'
+        self.sheet_name = 'LABOR REPORT-JHSU'
 
     def getColumnMapping(self):
         return [
@@ -27,18 +32,14 @@ class FactLabor(CSVJob):
             'Approval Status',
             'TIME.DCOMP',
             'Date',
-            'Paycode',
+            'Department   Description',
+            'Location     Description',
             'IN',
-            'In Ex',
             'OUT',
-            'Out Ex',
-            'Reason',
-            'Division    ',
-            'Sh/Pay Ex',
             'Reg Hrs',
-            'OT-1',
-            'OT-2',
+            'Work Date # 1',
             'Daily Total',
+            'Combined Rate',
             'Total Pay',
             'COUNT'
             ]
@@ -59,21 +60,16 @@ class FactLabor(CSVJob):
             'Approval Status',
             'TIME.DCOMP',
             'Date',
-            'Paycode',
+            'Department   Description',
+            'Location     Description',
             'IN',
-            'In Ex',
             'OUT',
-            'Out Ex',
-            'Reason',
-            'Division    ',
-            'Sh/Pay Ex',
             'Reg Hrs',
-            'OT-1',
-            'OT-2',
+            'Work Date # 1',
             'Daily Total',
+            'Combined Rate',
             'Total Pay',
             'COUNT'
-
         ]
         # print(myfields)
         newrow = {}
@@ -86,40 +82,68 @@ class FactLabor(CSVJob):
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
-        # print('prep:',row)
-        # print(row['RecType'])
-        # target.insert(row)
-        # print("Inserting row:")
-        # row.keys()
-        if row["Location    (G1)"] != "Location    (G1)":
+            # split field values
+            row["Location    (G1)"] = row["Location    (G1)"].split(" ")[0].strip()
+            row["Department  (G2)"] = row["Department  (G2)"].split(" ")[0].strip()
+            row["Employee"] = row["Employee"].split(" ")[0].strip()
+
             databasefieldvalues = [
                     'LocationId',
                     'DepartmentId',
-                    'EmpSeq',
-                    'Employee',
+                    'EmployeeSeq',
+                    'EmployeeId',
                     'WorkDate',
                     'ApprovalStatus',
                     'TimedComp',
                     'Date',
-                    'Paycode',
+                    'LocationDescription',
                     'In',
-                    'InEx',
                     'Out',
-                    'OutEx',
-                    'Reason',
-                    'Division',
-                    'ShPayEx',
                     'RegHrs',
-                    'OT1',
-                    'OT2',
+                    'WorkDate1',
                     'DailyTotal',
+                    'CombinedRate',
                     'TotalPay',
                     'Count',
             ]
-            #converts data from '10/25/2017' to '2017/10/25'
-            #row["Work Date"]= datetime.strptime(row["Work Date"],'%m/%d/%Y').strftime('%Y/%m/%d')
-            row["Work Date"] = parser.parse(row["Work Date"])
-            
+
+            DepartmentFields = [
+                row["Department  (G2)"],
+                row["Department   Description"],
+
+            ]
+            databasefieldvalues1 = [
+                'DepartmentId',
+                'DepartmentName'
+            ]
+
+            row["Date"] = getTimeId(cursor, self.target_connection, row["Date"])
+            row["Work Date"] = getTimeId(cursor, self.target_connection, row["Work Date"])
+            row["Work Date # 1"] = getTimeId(cursor, self.target_connection, row["Work Date # 1"])
+
+            #assign new values to Approval Status field based on condition
+            if row['Approval Status'] == '1':
+                row['Approval Status'] = 'Open Status'
+                print('The Approval Status value should be Open Status!')
+            elif row['Approval Status'] =='2':
+                row['Approval Status'] = 'Approved Status'
+                print('The Approval Status value should be Approved Status!')
+            elif row['Approval Status'] == '3':
+                row['Approval Status'] = 'Payroll Status'
+                print('The Approval Status value should be Payroll Status!')
+            else:
+                row['Approval Status'] = ''
+                print('The Approval Status value is blank!')
+
+
+            name_placeholders1 = ", ".join(["`{}`".format(s) for s in databasefieldvalues1])
+            value_placeholders1 = ", ".join(['%s'] * len(DepartmentFields))
+
+            # insert only unique values for department, ignore duplicates
+            sql1 = "INSERT IGNORE INTO `{}` ({}) VALUES ({}) ".format(self.target_table1, name_placeholders1, value_placeholders1)
+            cursor.execute(sql1, tuple(DepartmentFields))
+            del row["Department   Description"]
+
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
             print(name_placeholders)
             value_placeholders = ", ".join(['%s'] * len(row))
