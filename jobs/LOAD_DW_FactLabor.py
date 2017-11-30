@@ -24,24 +24,24 @@ class LOAD_DW_FactLabor(ExcelJob):
 
     def getColumnMapping(self):
         return [
-            'Location    (G1)',
-            'Department  (G2)',
-            'EmpSeq',
-            'Employee',
-            'Work Date',
-            'Approval Status',
-            'TIME.DCOMP',
+            'LocationId',
+            'DepartmentId',
+            'EmployeeSeq',
+            'EmployeeId',
+            'WorkDate',
+            'ApprovalStatus',
+            'TimedComp',
             'Date',
-            'Department   Description',
-            'Location     Description',
-            'IN',
-            'OUT',
-            'Reg Hrs',
-            'Work Date # 1',
-            'Daily Total',
-            'Combined Rate',
-            'Total Pay',
-            'COUNT'
+            'DepartmentName',
+            'LocationDescription',
+            'In',
+            'Out',
+            'RegHrs',
+            'WorkDate1',
+            'DailyTotal',
+            'CombinedRate',
+            'TotalPay',
+            'Count',
             ]
 
     def getTarget(self):
@@ -50,109 +50,93 @@ class LOAD_DW_FactLabor(ExcelJob):
 
     # Override the following method if the data needs to be transformed before insertion
     def prepareRow(self, row):
-        # print('prepare')
-        myfields = [
-            'Location    (G1)',
-            'Department  (G2)',
-            'EmpSeq',
-            'Employee',
-            'Work Date',
-            'Approval Status',
-            'TIME.DCOMP',
-            'Date',
-            'Department   Description',
-            'Location     Description',
-            'IN',
-            'OUT',
-            'Reg Hrs',
-            'Work Date # 1',
-            'Daily Total',
-            'Combined Rate',
-            'Total Pay',
-            'COUNT'
-        ]
-        # print(myfields)
-        newrow = {}
-        for f in myfields:
-            newrow[f] = row[f] if f in row else None
-        # newrow = { f:row[f] for f in set(myfields) }
-        #print('new:', newrow)
+        row["LocationId"] = row["LocationId"].lstrip().split(" ")[0]
+        row["DepartmentId"] = row["DepartmentId"].split(" ")[0].strip()
+        row["EmployeeId"] = row["EmployeeId"].split(" ")[0].strip()
 
-        return newrow
+        statusvalues = {
+            '1': 'Open Status',
+            '2': 'Approved Status',
+            '3': 'Payroll Status',
+        }
+        try:
+            row['ApprovalStatus'] = statusvalues[row['ApprovalStatus']]
+        except KeyError:
+            row['DepartmentCategory'] = 'The Approval Status value is blank!'
+
+        decriptionvalues = {
+            'ADMINISTRATION': 'Non-Program Time',
+            'RC BEFORE SCHOOL': 'Program Time',
+            'RC AFTER SCHOOL': 'Program Time',
+            'RECESS': 'Recess',
+            'Training': 'Program Time',
+            'SPECIALTY': 'Program Time',
+            'JK WRAP': 'Program Time',
+            '5TH DAY': 'Program Time',
+            'Licensing': 'Non-Program Time',
+            'RAS ELC': 'Program Time',
+            'None': 'None',
+        }
+        try:
+            row['DepartmentCategory'] = decriptionvalues[row['DepartmentName']]
+        except KeyError:
+            row['DepartmentCategory'] = ''
+           # row['DepartmentCategory'] = None
+        return row
+
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
-            # split field values
-            row["Location    (G1)"] = row["Location    (G1)"].split(" ")[0].strip()
-            row["Department  (G2)"] = row["Department  (G2)"].split(" ")[0].strip()
-            row["Employee"] = row["Employee"].split(" ")[0].strip()
+        row["Date"] = getTimeId(cursor, self.target_connection, row["Date"])
+        row["WorkDate"] = getTimeId(cursor, self.target_connection, row["WorkDate"])
+        row["WorkDate1"] = getTimeId(cursor, self.target_connection, row["WorkDate1"])
 
-            databasefieldvalues = [
-                    'LocationId',
-                    'DepartmentId',
-                    'EmployeeSeq',
-                    'EmployeeId',
-                    'WorkDate',
-                    'ApprovalStatus',
-                    'TimedComp',
-                    'Date',
-                    'LocationDescription',
-                    'In',
-                    'Out',
-                    'RegHrs',
-                    'WorkDate1',
-                    'DailyTotal',
-                    'CombinedRate',
-                    'TotalPay',
-                    'Count',
-            ]
+        departmentFields = [
+            'DepartmentId',
+            'DepartmentName',
+            'DepartmentCategory',
+        ]
+        department = {k:row[k] for k in departmentFields}
+        cursor.execute('SELECT count(*) FROM {} WHERE DepartmentId = %s'.format(self.target_table1),
+                       (department['DepartmentId']))
+        if not cursor.fetchone()[0] > 0:
+            self.insertDict(cursor, department, self.target_table1)
+        self.target_connection.commit()
 
-            DepartmentFields = [
-                row["Department  (G2)"],
-                row["Department   Description"],
+        laborFields = [
+            'LocationId',
+            'DepartmentId',
+            'EmployeeSeq',
+            'EmployeeId',
+            'WorkDate',
+            'ApprovalStatus',
+            'TimedComp',
+            'Date',
+            'LocationDescription',
+            'In',
+            'Out',
+            'RegHrs',
+            'WorkDate1',
+            'DailyTotal',
+            'CombinedRate',
+            'TotalPay',
+            'Count',
+        ]
+        labor = {k: row[k] for k in laborFields}
+        self.insertDict(cursor, labor, self.target_table)
+        self.target_connection.commit()
 
-            ]
-            databasefieldvalues1 = [
-                'DepartmentId',
-                'DepartmentName'
-            ]
+    def insertDict(self, cursor, row, table_name):
+        print("ROW",row)
+        print(table_name)
+        name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
+        value_placeholders = ", ".join(['%s'] * len(row))
 
-            row["Date"] = getTimeId(cursor, self.target_connection, row["Date"])
-            row["Work Date"] = getTimeId(cursor, self.target_connection, row["Work Date"])
-            row["Work Date # 1"] = getTimeId(cursor, self.target_connection, row["Work Date # 1"])
-
-            #assign new values to Approval Status field based on condition
-            if row['Approval Status'] == '1':
-                row['Approval Status'] = 'Open Status'
-                print('The Approval Status value should be Open Status!')
-            elif row['Approval Status'] =='2':
-                row['Approval Status'] = 'Approved Status'
-                print('The Approval Status value should be Approved Status!')
-            elif row['Approval Status'] == '3':
-                row['Approval Status'] = 'Payroll Status'
-                print('The Approval Status value should be Payroll Status!')
-            else:
-                row['Approval Status'] = ''
-                print('The Approval Status value is blank!')
+        # insert only unique values for department, ignore duplicates
+        sql1 = "INSERT INTO `{}` ({}) VALUES ({}) ".format(table_name, name_placeholders, value_placeholders)
+        cursor.execute(sql1, tuple(row.values()))
 
 
-            name_placeholders1 = ", ".join(["`{}`".format(s) for s in databasefieldvalues1])
-            value_placeholders1 = ", ".join(['%s'] * len(DepartmentFields))
-
-            # insert only unique values for department, ignore duplicates
-            sql1 = "INSERT IGNORE INTO `{}` ({}) VALUES ({}) ".format(self.target_table1, name_placeholders1, value_placeholders1)
-            cursor.execute(sql1, tuple(DepartmentFields))
-            del row["Department   Description"]
-
-            name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
-            print(name_placeholders)
-            value_placeholders = ", ".join(['%s'] * len(row))
-            print(value_placeholders)
-
-            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders,value_placeholders)
-            cursor.execute(sql, tuple(row.values()))
-            self.target_connection.commit()
-
-    def close(self):
+def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
