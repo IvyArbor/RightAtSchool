@@ -15,5 +15,6 @@ class CSVReader(object):
             buffer = StringIO(line)
             reader = csv.reader(buffer, delimiter=self.delimiter, quotechar=self.quotechar)
             for line in reader:
+                print (line)
                 lst = [val if val and val != 'NULL' else None for val in line]
                 yield dict(zip(self.column_mapping, lst))

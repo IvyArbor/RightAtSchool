@@ -237,6 +237,26 @@ class CSVJob(FileJob):
         self.reader.close()
         self.archive_file()
 
+
+from readers.streamreader import SFTPStreamReader
+class SFTCSVJob(FileJob):
+    def getSource(self):
+        if not self.file_path: return []
+        reader = SFTPStreamReader(self.file_path,
+                                  self.conf["sftp"]["hostname"],
+                                  22,
+                                  self.conf["sftp"]["username"],
+                                  self.conf["sftp"]["password"])
+
+        self.column_mapping = self.getColumnMapping()
+        source = CSVReader(reader, column_mapping=self.column_mapping, delimiter=self.delimiter, quotechar=self.quotechar)
+
+        return source.rows()
+
+    def close(self):
+        self.reader.close()
+        self.archive_file()
+
 import requests
 import json
 from readers.jsonreader import JSONReader, JSONReaderCypherWorx, JSONReaderQuickBooks
