@@ -80,8 +80,8 @@ class LOAD_DW_Stage(JSONJob):
             "PipelineName"
         ]
 
-        row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
-        row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
+        #row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
+        #row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))

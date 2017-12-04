@@ -21,7 +21,7 @@ cnn.close()
 class LOAD_DW_DimOrganization(JSONJob):
 
     def configure(self):
-        self.url = 'https://api.pipedrive.com/v1/organizations?start='+ str(newid) + '&api_token=5119919dca43c62ca026750611806c707f78a745'
+        self.url = 'https://api.pipedrive.com/v1/organizations?start='+ str(newid) + '&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'
         self.auth_user = 'Right At School'
         self.auth_password = '5119919dca43c62ca026750611806c707f78a745'
         self.object_key = 'data'
@@ -213,10 +213,10 @@ class LOAD_DW_DimOrganization(JSONJob):
         row["owner_id"] = row["owner_id"]["name"]
 
         # modifying DATETIME fields
-        row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
-        row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
-        row["next_activity_date"] = getTimeId(cursor, self.target_connection, row["next_activity_date"])
-        row["last_activity_date"] = getTimeId(cursor, self.target_connection, row["last_activity_date"])
+        #row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
+        #row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
+        #row["next_activity_date"] = getTimeId(cursor, self.target_connection, row["next_activity_date"])
+        #row["last_activity_date"] = getTimeId(cursor, self.target_connection, row["last_activity_date"])
 
         # inserting data in DimOrganization
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
