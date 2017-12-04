@@ -226,16 +226,25 @@ from readers.streamreader import LocalStreamReader
 from readers.csvreader import CSVReader
 class CSVJob(FileJob):
     def getSource(self):
-        if not self.file_name: return []
-        reader = LocalStreamReader(self.file_name)
-        self.column_mapping = self.getColumnMapping()
-        source = CSVReader(reader, column_mapping=self.column_mapping, delimiter=self.delimiter, quotechar=self.quotechar)
+        if not self.file_name:
+            return []
 
-        return source.rows()
+        #stream = self.getStream()
+        stream = LocalStreamReader(self.file_name)
+        self.column_mapping = self.getColumnMapping()
+
+        self.reader = CSVReader(
+            stream,
+            column_mapping=self.column_mapping,
+            delimiter=self.delimiter,
+            quotechar=self.quotechar,
+            ignore_firstline=self.ignore_firstline)
+
+        return self.reader.rows()
 
     def close(self):
         self.reader.close()
-        self.archive_file()
+        #self.archive_file()
 
 import requests
 import json
@@ -272,5 +281,3 @@ class JSONQuickBooks(Job):
 
         source = JSONReaderQuickBooks(response, self.column_mapping, object_key=self.object_key)
         return source.rows()
-
-
