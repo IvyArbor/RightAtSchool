@@ -56,6 +56,31 @@ class S3StreamReader(LocalStreamReader):
         return data
 
 
+import paramiko
+
+class SFTPStreamReader(LocalStreamReader):
+    def __init__(self, file_path, host, port, username, password, chunk_size = 1048576):
+        self.chunk_size = chunk_size
+        self.file_path = file_path
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
+
+        #Using paramiko to read the file
+        transport = paramiko.Transport(self.host, self.port)
+        transport.connect(username=self.username, password=self.password)
+        sftp = paramiko.SFTPClient.from_transport(transport)
+
+        self.stream = sftp.open(self.file_path)
+
+
+    def nextChunk(self):
+        data = self.stream.read(self.chunk_size).decode('ISO-8859-1')
+        return data
+
+
+
 
 from io import BytesIO
 import zipfile
