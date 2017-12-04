@@ -11,7 +11,7 @@ class LOAD_DW_DimEmployee(CSVJob):
         self.target_table = 'DimEmployee'
         self.delimiter = ","
         self.quotechar = '"'
-        self.file_name = 'sources/RightAtSchool_11212017.csv'
+        self.file_name = 'sources/RightAtSchool_11292017.csv'
         self.ignore_firstline = True
         self.source_table = ''
         self.source_database = ''
@@ -49,11 +49,15 @@ class LOAD_DW_DimEmployee(CSVJob):
         row["EffectiveDate"] = parser.parse(row["EffectiveDate"])
         row["HireDate"] = parser.parse(row["HireDate"])
 
-        row['Team']=""
-        row['Role']=""
+        row['Team'] = ""
+        row['Role'] = ""
 
-        #employee = {k:row[k] for k in databasefieldvalues}
-        self.insertDict(cursor,row,self.target_table)
+
+        if self._checkRow(cursor, row) == None:
+            self.insertDict(cursor, row, self.target_table)
+        else:
+            self.updateDict(cursor, row, self.target_table)
+
         self.target_connection.commit()
 
     def insertDict(self, cursor, row, table_name):
@@ -65,6 +69,34 @@ class LOAD_DW_DimEmployee(CSVJob):
         # insert values
         sql = "INSERT INTO `{}` ({}) VALUES ({})".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
+
+    def updateDict(self, cursor, row, table_name):
+        exclude_keys = []
+        for key in row:
+            if row[key] == "" or row[key] == None:
+                exclude_keys.append(key)
+
+        for key in exclude_keys:
+            del row[key]
+
+        sql = 'UPDATE {} SET {} WHERE `EmployeeId`={}'.format(table_name, ', '.join('{}=%s'.format(k) for k in row), row["EmployeeId"])
+        cursor.execute(sql, tuple(row.values()))
+
+    def _checkRow(self, cursor, row):
+        query = """
+            SELECT `EmployeeId`
+            FROM `DimEmployee`
+            WHERE `EmployeeId` = %s
+            LIMIT 1
+        """
+
+        cursor.execute(query, (row["EmployeeId"]))
+
+        query_result = cursor.fetchone()
+        if query_result == None:
+            return None
+        else:
+            return 1
 
     def close(self):
         """Here we should archive the file instead"""
