@@ -1,8 +1,7 @@
 from base.jobs import JSONJob, JSONCypherWorxJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
-from datetime import datetime
-from dateutil import parser
-import math
+
+#User from Cyperworx ->> DimEmployee in database
 
 # class for customer_controller dimension
 class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
@@ -34,8 +33,8 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
     def prepareRow(self, row):
         # print('prepare')
         myfields = [
+                'EmployeeId',
                 'id',
-                'userid',
                 'firstname',
                 'MiddleName',
                 'lastname',
@@ -47,6 +46,7 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
                 'PayRate',
                 'JobTitle',
                 'EmploymentStatus',
+                'HireDate',
                 'extra_registration'
             ]
         # print(myfields)
@@ -61,11 +61,6 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
-        # print('prep:',row)
-        # print(row['RecType'])
-        # target.insert(row)
-        # print("Inserting row:")
-        # row.keys()
         databasefieldvalues = [
             'EmployeeId',
             'UserId',
@@ -80,6 +75,7 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
             'PayRate',
             'JobTitle',
             'EmploymentStatus',
+            'HireDate',
             'Team',
             'Role'
         ]
@@ -87,20 +83,12 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
         row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
         row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
         del row["extra_registration"]
-        row["userid"] = row["id"]
-        #row['EmployeeId'] = ""
-        row['MiddleName'] = ""
-        row['EffectiveDate'] = ""
-        row['LocationName'] = ""
-        row['DepartmentName'] = ""
-        row['RateType'] = ""
-        row['PayRate'] = ""
-        row['JobTitle'] = ""
-        row['EmploymentStatus'] = ""
-
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
+
+        print('NAMES', name_placeholders)
+        print('VALUES', value_placeholders)
 
         sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
@@ -110,15 +98,3 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
 
-    def parseTime(self, dt):
-        date = parser.parse(dt)
-
-        result = {}
-        result["Year"] = date.year
-        result["Quarter"] = int(math.ceil(date.month / 3.))
-        result["Month"] = date.month
-        result["Week"] = date.isocalendar()[1]
-        result["Day"] = date.day
-        result["DayOfWeek"] = date.weekday() + 1
-
-        return result
