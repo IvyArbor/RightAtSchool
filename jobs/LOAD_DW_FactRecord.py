@@ -67,7 +67,7 @@ class LOAD_DW_FactRecord(JSONCypherWorxJob):
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
         databasefieldvalues = [
-            'Id',
+            'RecordId',
             'UserId',
             'CourseId',
             'Status',

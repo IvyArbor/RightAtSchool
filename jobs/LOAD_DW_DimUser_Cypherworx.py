@@ -5,7 +5,7 @@ from dateutil import parser
 import math
 
 # class for customer_controller dimension
-class LOAD_DW_DimUser(JSONCypherWorxJob):
+class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
     def configure(self):
         self.url = 'https://collabornation.net/lms/api/0.06/user.json'
         self.auth_user = 'Right At School'

@@ -12,14 +12,17 @@ class DimSchoolLocation(CSVJob):
         self.quotechar = '"'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/School.csv'
+        self.ignore_firstline = True
+        self.file_name = 'sources/SCHOOL NCES IDs.csv'
 
     def getColumnMapping(self):
         return [
             'STATE',
             'DISTRICT',
             'SCHOOL NAME',
-            'NCES SCHOOL ID'
+            'NCES SCHOOL ID',
+            'NCES DISTRICT ID',
+            'QUICKBOOKS NAME'
         ]
 
     def getTarget(self):
