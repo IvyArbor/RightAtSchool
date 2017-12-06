@@ -3,7 +3,7 @@ from helpers.time import getTimeId
 
 class LOAD_DW_FactSales(JSONJob):
     def configure(self):
-        self.url = 'https://companydomain.pipedrive.com/v1/deals/?api_token=5119919dca43c62ca026750611806c707f78a745&start=100&limit=500'
+        self.url = 'https://companydomain.pipedrive.com/v1/deals/?api_token=5119919dca43c62ca026750611806c707f78a745&start=0&limit=500'
         self.auth_user = 'Right At School'
         self.auth_password = 'https://companydomain.pipedrive.com/v1/persons/?api_token=5119919dca43c62ca026750611806c707f78a745'
         #self.data = 'deals'
@@ -17,6 +17,7 @@ class LOAD_DW_FactSales(JSONJob):
     def getColumnMapping(self):
         return [
                 'id',
+                'public_id',
                 'creator_user_id',
                 'user_id',
                 'person_id',
@@ -136,6 +137,8 @@ class LOAD_DW_FactSales(JSONJob):
             'LostReason',
             'ExpectedCloseDate'
         ]
+
+        print (row)
 
         row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
         row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])

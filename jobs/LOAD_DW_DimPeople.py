@@ -6,7 +6,7 @@ from helpers.time import getTimeId
 import math
 import pymysql
 
-cnn = pymysql.connect(user='ras', password='RaS1p38!BV44jw',
+cnn = pymysql.connect(user='rastestmaster', password='RasTest0',
                               host='rightatschool-testenv.cblobk4u47xy.us-east-2.rds.amazonaws.com',
                               database='rightatschool_testdb')
 cursor = cnn.cursor()
@@ -23,7 +23,7 @@ cnn.close()
 
 class LOAD_DW_DimPeople(JSONJob):
     def configure(self):
-        self.url = 'https://api.pipedrive.com/v1/persons?start='+ str(newid) + '&api_token=5119919dca43c62ca026750611806c707f78a745'
+        self.url = 'https://api.pipedrive.com/v1/persons?start='+ str(newid) + '&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'
         #https://api.pipedrive.com/v1/persons/1/flow?start=10&limit=10&api_token=5119919dca43c62ca026750611806c707f78a745
         # https://api.pipedrive.com/v1/persons?start=10&api_token=5119919dca43c62ca026750611806c707f78a745
         self.auth_user = 'Right At School'
@@ -169,12 +169,12 @@ class LOAD_DW_DimPeople(JSONJob):
         print (row)
 
         #relate values to DimTime values
-        row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
-        row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
-        row["next_activity_date"] = getTimeId(cursor, self.target_connection, row["next_activity_date"])
-        row["last_activity_dat"] = getTimeId(cursor, self.target_connection, row["last_activity_dat"])
-        row["last_incoming_mail_time"] = getTimeId(cursor, self.target_connection, row["last_incoming_mail_time"])
-        row["last_outgoing_mail_time"] = getTimeId(cursor, self.target_connection, row["last_outgoing_mail_time"])
+        #row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
+        #row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
+        #row["next_activity_date"] = getTimeId(cursor, self.target_connection, row["next_activity_date"])
+        #row["last_activity_dat"] = getTimeId(cursor, self.target_connection, row["last_activity_dat"])
+        #row["last_incoming_mail_time"] = getTimeId(cursor, self.target_connection, row["last_incoming_mail_time"])
+        #row["last_outgoing_mail_time"] = getTimeId(cursor, self.target_connection, row["last_outgoing_mail_time"])
 
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])

@@ -11,89 +11,92 @@ class LOAD_DW_DimEmployee(CSVJob):
         self.target_table = 'DimEmployee'
         self.delimiter = ","
         self.quotechar = '"'
+        self.file_name = 'sources/RightAtSchool_11292017.csv'
+        self.ignore_firstline = True
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/RightAtSchool_11212017.csv'
 
+        # the same as those in the database
     def getColumnMapping(self):
         return [
-            'Employee ID',
-            'First Name',
-            'Middle Name',
-            'Last Name',
-            'Effective Date',
-            'Location Name',
-            'Department Name',
-            'Rate Type',
-            'Pay Rate',
-            'Job Title',
-            'Employment Status',
-            'Hire Date'
+            'EmployeeId',
+            'FirstName',
+            'MiddleName',
+            'LastName',
+            'EffectiveDate',
+            'LocationName',
+            'DepartmentName',
+            'RateType',
+            'PayRate',
+            'JobTitle',
+            'EmploymentStatus',
+            'HireDate'
             ]
 
     def getTarget(self):
+
         # print('target')
-        return self.target_connection.cursor()
+      return self.target_connection.cursor()
 
     # Override the following method if the data needs to be transformed before insertion
-    def prepareRow(self,row):
+    #def prepareRow(self,row):
         # print('prepare')
-        myfields = [
-           'Employee ID',
-           'First Name',
-           'Middle Name',
-           'Last Name',
-           'Effective Date',
-           'Location Name',
-           'Department Name',
-           'Rate Type',
-           'Pay Rate',
-           'Job Title',
-           'Employment Status',
-           'Hire Date'
-       ]
-
-        newrow = {}
-        for f in myfields:
-            newrow[f] = row[f] if f in row else None
-           #print('new:', newrow)
-        return newrow
+        #return row
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
-        if row["Employee ID"] != "Employee ID":
-            databasefieldvalues = [
-                'EmployeeId',
-                'FirstName',
-                'MiddleName',
-                'LastName',
-                'EffectiveDate',
-                'LocationName',
-                'DepartmentName',
-                'RateType',
-                'PayRate',
-                'JobTitle',
-                'EmploymentStatus',
-                'HireDate',
-                'Team',
-                'Role'
-            ]
+        #converts the dates in standardized format for MySQL database
+        row["EffectiveDate"] = parser.parse(row["EffectiveDate"])
+        row["HireDate"] = parser.parse(row["HireDate"])
 
-            #converts the dates in standardized format for MySQL database
-            row["Effective Date"] = parser.parse(row["Effective Date"])
-            row["Hire Date"] = parser.parse(row["Hire Date"])
+        row['Team'] = ""
+        row['Role'] = ""
 
-            row['Team']=""
-            row['Role']=""
 
-            name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
-            print('Name Placeholders:',name_placeholders)
-            value_placeholders = ", ".join(['%s'] * len(row))
-            print('Values:',value_placeholders)
+        if self._checkRow(cursor, row) == None:
+            self.insertDict(cursor, row, self.target_table)
+        else:
+            self.updateDict(cursor, row, self.target_table)
 
-            sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
-            cursor.execute(sql, tuple(row.values()))
-            self.target_connection.commit()
+        self.target_connection.commit()
+
+    def insertDict(self, cursor, row, table_name):
+        print("ROW:",row)
+        print("TableName:",table_name)
+        name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
+        value_placeholders = ", ".join(['%s'] * len(row))
+
+        # insert values
+        sql = "INSERT INTO `{}` ({}) VALUES ({})".format(table_name, name_placeholders, value_placeholders)
+        cursor.execute(sql, tuple(row.values()))
+
+    def updateDict(self, cursor, row, table_name):
+        exclude_keys = []
+        for key in row:
+            if row[key] == "" or row[key] == None:
+                exclude_keys.append(key)
+
+        for key in exclude_keys:
+            del row[key]
+
+        sql = 'UPDATE {} SET {} WHERE `EmployeeId`={}'.format(table_name, ', '.join('{}=%s'.format(k) for k in row), row["EmployeeId"])
+        cursor.execute(sql, tuple(row.values()))
+
+    def _checkRow(self, cursor, row):
+        query = """
+            SELECT `EmployeeId`
+            FROM `DimEmployee`
+            WHERE `EmployeeId` = %s
+            LIMIT 1
+        """
+
+        cursor.execute(query, (row["EmployeeId"]))
+
+        query_result = cursor.fetchone()
+        if query_result == None:
+            return None
+        else:
+            return 1
 
     def close(self):
         """Here we should archive the file instead"""
