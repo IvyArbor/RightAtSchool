@@ -19,7 +19,7 @@ class LOAD_DW_FactLabor(ExcelJob):
         # self.bucket_folder = 'Rebate'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/LABOR-REPORT-JHSU_JHSU_-6228-4107.xlsx'
+        self.file_name = 'sources/LABOR REPORT-JHSU(JHSU)-6351-4134.xlsx'
         self.sheet_name = 'LABOR REPORT-JHSU'
 
     def getColumnMapping(self):
@@ -32,8 +32,6 @@ class LOAD_DW_FactLabor(ExcelJob):
             'ApprovalStatus',
             'TimedComp',
             'Date',
-            'DepartmentName',
-            'LocationDescription',
             'In',
             'Out',
             'RegHrs',
@@ -41,6 +39,7 @@ class LOAD_DW_FactLabor(ExcelJob):
             'DailyTotal',
             'CombinedRate',
             'TotalPay',
+            'NCESID',
             'Count',
             ]
 
@@ -51,8 +50,10 @@ class LOAD_DW_FactLabor(ExcelJob):
     # Override the following method if the data needs to be transformed before insertion
     def prepareRow(self, row):
         row["LocationId"] = row["LocationId"].lstrip().split(" ")[0]
-        row["DepartmentId"] = row["DepartmentId"].split(" ")[0].strip()
-        row["EmployeeId"] = row["EmployeeId"].split(" ")[0].strip()
+        departmentName = row["DepartmentId"]
+        row["DepartmentId"] = departmentName.split(" ")[0]
+        row["EmployeeId"] = row["EmployeeId"].split(" ")[0]
+        row['DepartmentName'] = departmentName.split(" ",1)[1].strip('[]')
 
         statusvalues = {
             '1': 'Open Status',
@@ -82,6 +83,7 @@ class LOAD_DW_FactLabor(ExcelJob):
         except KeyError:
             row['DepartmentCategory'] = ''
            # row['DepartmentCategory'] = None
+        print('PREPARE', row)
         return row
 
 
@@ -112,7 +114,6 @@ class LOAD_DW_FactLabor(ExcelJob):
             'ApprovalStatus',
             'TimedComp',
             'Date',
-            'LocationDescription',
             'In',
             'Out',
             'RegHrs',
@@ -120,11 +121,13 @@ class LOAD_DW_FactLabor(ExcelJob):
             'DailyTotal',
             'CombinedRate',
             'TotalPay',
+            'NCESID',
             'Count',
         ]
         labor = {k: row[k] for k in laborFields}
         self.insertDict(cursor, labor, self.target_table)
         self.target_connection.commit()
+
 
     def insertDict(self, cursor, row, table_name):
         print("ROW",row)
