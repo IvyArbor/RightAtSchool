@@ -151,6 +151,7 @@ class LOAD_DW_DimPeople(JSONJob):
         self.target_connection.commit()
         #next call start from next id
         #newid = lastid + 1
+        self.new_id += 1
 
     def close(self):
         """Here we should archive the file instead"""

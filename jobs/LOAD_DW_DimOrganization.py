@@ -220,7 +220,8 @@ class LOAD_DW_DimOrganization(JSONJob):
         self.target_connection.commit()
 
         # increases pagination for the next call
-        newid = lastid + 1
+        #newid = lastid + 1
+        self.new_id += 1
 
     def close(self):
         """Here we should archive the file instead"""
