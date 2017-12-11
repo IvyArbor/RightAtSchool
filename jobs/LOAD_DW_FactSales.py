@@ -1,9 +1,10 @@
 from base.jobs import JSONJob
 from helpers.time import getTimeId
+import pymysql
+from settings import conf
 
 class LOAD_DW_FactSales(JSONJob):
     def configure(self):
-        self.url = 'https://companydomain.pipedrive.com/v1/deals/?api_token=5119919dca43c62ca026750611806c707f78a745&start=0&limit=500'
         self.auth_user = 'Right At School'
         self.auth_password = 'https://companydomain.pipedrive.com/v1/persons/?api_token=5119919dca43c62ca026750611806c707f78a745'
         #self.data = 'deals'
@@ -12,68 +13,70 @@ class LOAD_DW_FactSales(JSONJob):
         self.source_table = ''
         self.source_database = ''
         self.object_key = "data"
-        #self.file_name = 'sources/ActivityEnrollmentSample.csv'
+
+        self.new_id = self.getLastId()
+        self.url = 'https://companydomain.pipedrive.com/v1/deals/?api_token=5119919dca43c62ca026750611806c707f78a745&start={}&limit=500'.format(self.new_id)
 
     def getColumnMapping(self):
         return [
-                'id',
-                'public_id',
-                'creator_user_id',
-                'user_id',
-                'person_id',
-                'org_id',
-                'stage_id',
-                'title',
-                'value',
-                'currency',
-                'add_time',
-                'update_time',
-                'stage_change_time',
-                'active',
-                'deleted',
-                'status',
-                'probability',
-                'next_activity_date',
-                'next_activity_time',
-                'next_activity_id',
-                'last_activity_id',
-                'last_activity_date',
-                'lost_reason',
-                'visible_to',
-                'close_time',
-                'pipeline_id',
-                'won_time',
-                'first_won_time',
-                'lost_time',
-                'products_count',
-                'files_count',
-                'notes_count',
-                'followers_count',
-                'email_messages_count',
-                'activities_count',
-                'done_activities_count',
-                'undone_activities_count',
-                'reference_activities_count',
-                'participants_count',
-                'expected_close_date',
-                'last_incoming_mail_time',
-                'last_outgoing_mail_time',
-                'stage_order_nr',
-                'person_name',
-                'org_name',
-                'next_activity_subject',
-                'next_activity_type',
-                'next_activity_duration',
-                'next_activity_note',
-                'formatted_value',
-                'rotten_time',
-                'weighted_value',
-                'formatted_weighted_value',
-                'owner_name',
-                'cc_email',
-                'org_hidden',
-                'person_hidden'
-            ]
+            'id',
+            'public_id',
+            'creator_user_id',
+            'user_id',
+            'person_id',
+            'org_id',
+            'stage_id',
+            'title',
+            'value',
+            'currency',
+            'add_time',
+            'update_time',
+            'stage_change_time',
+            'active',
+            'deleted',
+            'status',
+            'probability',
+            'next_activity_date',
+            'next_activity_time',
+            'next_activity_id',
+            'last_activity_id',
+            'last_activity_date',
+            'lost_reason',
+            'visible_to',
+            'close_time',
+            'pipeline_id',
+            'won_time',
+            'first_won_time',
+            'lost_time',
+            'products_count',
+            'files_count',
+            'notes_count',
+            'followers_count',
+            'email_messages_count',
+            'activities_count',
+            'done_activities_count',
+            'undone_activities_count',
+            'reference_activities_count',
+            'participants_count',
+            'expected_close_date',
+            'last_incoming_mail_time',
+            'last_outgoing_mail_time',
+            'stage_order_nr',
+            'person_name',
+            'org_name',
+            'next_activity_subject',
+            'next_activity_type',
+            'next_activity_duration',
+            'next_activity_note',
+            'formatted_value',
+            'rotten_time',
+            'weighted_value',
+            'formatted_weighted_value',
+            'owner_name',
+            'cc_email',
+            'org_hidden',
+            'person_hidden'
+        ]
 
     def getTarget(self):
         # print('target')
@@ -82,30 +85,30 @@ class LOAD_DW_FactSales(JSONJob):
     # Override the following method if the data needs to be transformed before insertion
     def prepareRow(self, row):
         myfields = [
-                'id',
-                'title',
-                'creator_user_id',
-                #'owner_name',
-                'value',
-                'weighted_value',
-                'currency',
-                'org_id',
-                #'org_name',
-                'person_id',
-                #'person_name',
-                'stage_id',
-                'status',
-                'add_time',
-                'update_time',
-                'stage_change_time',
-                'next_activity_date',
-                'last_activity_date',
-                'won_time',
-                'lost_time',
-                'close_time',
-                'lost_reason',
-                'expected_close_date'
-            ]
+            'id',
+            'title',
+            'creator_user_id',
+            #'owner_name',
+            'value',
+            'weighted_value',
+            'currency',
+            'org_id',
+            #'org_name',
+            'person_id',
+            #'person_name',
+            'stage_id',
+            'status',
+            'add_time',
+            'update_time',
+            'stage_change_time',
+            'next_activity_date',
+            'last_activity_date',
+            'won_time',
+            'lost_time',
+            'close_time',
+            'lost_reason',
+            'expected_close_date'
+        ]
 
         newrow = {}
         for f in myfields:
@@ -164,3 +167,20 @@ class LOAD_DW_FactSales(JSONJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+    def getLastId(self):
+        cnn = pymysql.connect(user=conf["mysql"]["DW"]["user"], password=conf["mysql"]["DW"]["password"],
+                              host=conf["mysql"]["DW"]["host"],
+                              database=conf["mysql"]["DW"]["database"])
+        cursor = cnn.cursor()
+
+        query = ("SELECT * FROM {}".format(self.target_table))
+
+        lastid = cursor.execute(query)
+        print("LAST ID:")
+        print(lastid)
+        # start with id =0
+        newid = lastid
+        cursor.close()
+        cnn.close()
+        return newid
