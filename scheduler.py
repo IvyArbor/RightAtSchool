@@ -65,13 +65,12 @@ class RightAtSchoolScheduler(object):
     def integratePipeDrive(self):
         print("Integrate PipeDrive")
         pipeDriveJobs = ["LOAD_DW_DimCurrentProvider", "LOAD_DW_DimHowIntroduced",
-                         "LOAD_DW_DimPeople", "LOAD_DW_DimOrganization", "LOAD_DW_User", "LOAD_DW_Stage",
+                         "LOAD_DW_DimUser", "LOAD_DW_DimStage",
+                         "LOAD_DW_DimPeople", "LOAD_DW_DimOrganization",
                          "LOAD_DW_FactSales"]
 
         for job in pipeDriveJobs:
-            os.system("C:\Python36\python job.py {}".format(job))
-            #self.runJob(job_name=job)
-            #time.sleep(5)
+            os.system("python job.py {}".format(job))
 
 
     def integrateCypherWorx(self):
