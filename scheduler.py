@@ -35,7 +35,7 @@ class RightAtSchoolScheduler(object):
 
         self.initLogging()
 
-        self.scheduler.add_job(self.integratePipeDrive, 'cron', day="1-31", hour=7)
+        self.scheduler.add_job(self.integratePipeDrive, 'cron', day="1-31", hour="1-24")
         self.scheduler.add_job(self.integrateCypherWorx, 'cron', day="1-31", hour=8)
         self.scheduler.add_job(self.integrateQuickBooks, 'cron', day="1-31", hour=9)
         self.scheduler.add_job(self.integrateHR, 'cron', day="1-31", hour=10)
