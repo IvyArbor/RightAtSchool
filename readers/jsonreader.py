@@ -9,6 +9,8 @@ class JSONReader(object):
         self.object_key = object_key
 
     def rows(self):
+        if self.response.json()[self.object_key] == None:
+            return dict(zip(self.column_mapping, []))
         for line in self.response.json()[self.object_key]:
             lst = [val if val and val != 'NULL' else None for val in list(line.values())]
             yield dict(zip(self.column_mapping, lst))
