@@ -1,31 +1,9 @@
-from base.jobs import JSONJob, JSONCypherWorxJob
-from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
-from datetime import datetime
-from dateutil import parser
-from helpers.time import getTimeId
-import math
+from base.jobs import JSONJob
 import pymysql
-
-cnn = pymysql.connect(user='rastestmaster', password='RasTest0',
-                              host='rightatschool-testenv.cblobk4u47xy.us-east-2.rds.amazonaws.com',
-                              database='rightatschool_testdb')
-cursor = cnn.cursor()
-
-query = ("SELECT * FROM DimPeople")
-
-lastid = cursor.execute(query)
-print("LAST IDDDDDDDDDDD")
-print(lastid)
-#start with id =0
-newid = lastid
-cursor.close()
-cnn.close()
+from settings import conf
 
 class LOAD_DW_DimPeople(JSONJob):
     def configure(self):
-        self.url = 'https://api.pipedrive.com/v1/persons?start='+ str(newid) + '&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'
-        #https://api.pipedrive.com/v1/persons/1/flow?start=10&limit=10&api_token=5119919dca43c62ca026750611806c707f78a745
-        # https://api.pipedrive.com/v1/persons?start=10&api_token=5119919dca43c62ca026750611806c707f78a745
         self.auth_user = 'Right At School'
         self.auth_password = '5119919dca43c62ca026750611806c707f78a745'
         #self.data = 'people'
@@ -34,7 +12,9 @@ class LOAD_DW_DimPeople(JSONJob):
         self.source_table = ''
         self.source_database = ''
         self.object_key = "data"
-        #self.file_name = 'sources/ActivityEnrollmentSample.csv'
+
+        self.new_id = self.getLastId()
+        self.url = 'https://api.pipedrive.com/v1/persons?start='+ str(self.new_id) + '&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'
 
     def getColumnMapping(self):
         return [
@@ -96,7 +76,7 @@ class LOAD_DW_DimPeople(JSONJob):
             'org_name',
             'owner_name',
             'cc_email',
-            ]
+        ]
 
     def getTarget(self):
         # print('target')
@@ -123,7 +103,7 @@ class LOAD_DW_DimPeople(JSONJob):
             '1cb167aaf7f9439b006b550192a04e869c43dade',
             'last_incoming_mail_time',
             'last_outgoing_mail_time',
-            ]
+        ]
         # print(myfields)
         newrow = {}
         for f in myfields:
@@ -136,11 +116,6 @@ class LOAD_DW_DimPeople(JSONJob):
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
-        # print('prep:',row)
-        # print(row['RecType'])
-        # target.insert(row)
-        # print("Inserting row:")
-        # row.keys()
         databasefieldvalues = [
             'PersonId',
             'Name',
@@ -168,15 +143,6 @@ class LOAD_DW_DimPeople(JSONJob):
         print ("ROW: ")
         print (row)
 
-        #relate values to DimTime values
-        #row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
-        #row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
-        #row["next_activity_date"] = getTimeId(cursor, self.target_connection, row["next_activity_date"])
-        #row["last_activity_dat"] = getTimeId(cursor, self.target_connection, row["last_activity_dat"])
-        #row["last_incoming_mail_time"] = getTimeId(cursor, self.target_connection, row["last_incoming_mail_time"])
-        #row["last_outgoing_mail_time"] = getTimeId(cursor, self.target_connection, row["last_outgoing_mail_time"])
-
-
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
 
@@ -184,21 +150,25 @@ class LOAD_DW_DimPeople(JSONJob):
         cursor.execute(sql, tuple(row.values()))
         self.target_connection.commit()
         #next call start from next id
-        newid = lastid + 1
+        #newid = lastid + 1
 
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
 
-    def parseTime(self, dt):
-        date = parser.parse(dt)
+    def getLastId(self):
+        cnn = pymysql.connect(user=conf["mysql"]["DW"]["user"], password=conf["mysql"]["DW"]["password"],
+                              host=conf["mysql"]["DW"]["host"],
+                              database=conf["mysql"]["DW"]["database"])
+        cursor = cnn.cursor()
 
-        result = {}
-        result["Year"] = date.year
-        result["Quarter"] = int(math.ceil(date.month / 3.))
-        result["Month"] = date.month
-        result["Week"] = date.isocalendar()[1]
-        result["Day"] = date.day
-        result["DayOfWeek"] = date.weekday() + 1
+        query = ("SELECT * FROM {}".format(self.target_table))
 
-        return result
+        lastid = cursor.execute(query)
+        print("LAST IDDDDDDDDDDD")
+        print(lastid)
+        # start with id =0
+        newid = lastid
+        cursor.close()
+        cnn.close()
+        return newid
