@@ -18,8 +18,7 @@ class LOAD_DW_DimOrganization(JSONJob):
         self.source_database = ''
 
         self.new_id = self.getLastId()
-        self.url = 'https://api.pipedrive.com/v1/organizations?start=' + str(
-            self.new_id) + '&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'
+        self.url = 'https://api.pipedrive.com/v1/organizations?start={}&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'.format(self.new_id)
 
 
         #reads all the fields from Pipedrive API
@@ -236,7 +235,7 @@ class LOAD_DW_DimOrganization(JSONJob):
         query = ("SELECT * FROM {}".format(self.target_table))
 
         lastid = cursor.execute(query)
-        print("LAST IDDDDDDDDDDD")
+        print("LAST ID")
         print(lastid)
         # start with id =0
         newid = lastid

@@ -1,6 +1,8 @@
 from base.jobs import JSONJob
+import pymysql
+from settings import conf
 
-class LOAD_DW_User(JSONJob):
+class LOAD_DW_DimUser(JSONJob):
     def configure(self):
         self.url = 'https://api.pipedrive.com/v1/users?api_token=5119919dca43c62ca026750611806c707f78a745'
         self.auth_user = 'Right At School'
@@ -11,6 +13,9 @@ class LOAD_DW_User(JSONJob):
         self.source_database = ''
         self.object_key = "data"
         #self.file_name = 'sources/ActivityEnrollmentSample.csv'
+
+        self.new_id = self.getLastId()
+        self.url = 'https://api.pipedrive.com/v1/users?api_token=5119919dca43c62ca026750611806c707f78a745&start={}&limit=500'.format(self.new_id)
 
     def getColumnMapping(self):
         return [
@@ -107,3 +112,20 @@ class LOAD_DW_User(JSONJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+    def getLastId(self):
+        cnn = pymysql.connect(user=conf["mysql"]["DW"]["user"], password=conf["mysql"]["DW"]["password"],
+                              host=conf["mysql"]["DW"]["host"],
+                              database=conf["mysql"]["DW"]["database"])
+        cursor = cnn.cursor()
+
+        query = ("SELECT * FROM {}".format(self.target_table))
+
+        lastid = cursor.execute(query)
+        print("LAST ID:")
+        print(lastid)
+        # start with id =0
+        newid = lastid
+        cursor.close()
+        cnn.close()
+        return newid

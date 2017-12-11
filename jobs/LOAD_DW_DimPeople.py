@@ -14,7 +14,7 @@ class LOAD_DW_DimPeople(JSONJob):
         self.object_key = "data"
 
         self.new_id = self.getLastId()
-        self.url = 'https://api.pipedrive.com/v1/persons?start='+ str(self.new_id) + '&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'
+        self.url = 'https://api.pipedrive.com/v1/persons?start={}&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'.format(self.new_id)
 
     def getColumnMapping(self):
         return [
@@ -166,7 +166,7 @@ class LOAD_DW_DimPeople(JSONJob):
         query = ("SELECT * FROM {}".format(self.target_table))
 
         lastid = cursor.execute(query)
-        print("LAST IDDDDDDDDDDD")
+        print("LAST ID")
         print(lastid)
         # start with id =0
         newid = lastid

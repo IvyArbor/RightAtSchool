@@ -1,11 +1,11 @@
 from base.jobs import JSONJob
-from helpers.time import getTimeId
+import pymysql
+from settings import conf
 
 
 # class for customer_controller dimension
-class LOAD_DW_Stage(JSONJob):
+class LOAD_DW_DimStage(JSONJob):
     def configure(self):
-        self.url = 'https://api.pipedrive.com/v1/stages?api_token=5119919dca43c62ca026750611806c707f78a745'
         self.auth_user = 'Right At School'
         self.auth_password = 'https://companydomain.pipedrive.com/v1/persons/?api_token=5119919dca43c62ca026750611806c707f78a745'
         self.target_database = 'rightatschool_testdb'
@@ -13,22 +13,24 @@ class LOAD_DW_Stage(JSONJob):
         self.source_table = ''
         self.source_database = ''
         self.object_key = "data"
-        #self.file_name = 'sources/ActivityEnrollmentSample.csv'
+
+        self.new_id = self.getLastId()
+        self.url = 'https://api.pipedrive.com/v1/stages?api_token=5119919dca43c62ca026750611806c707f78a745&start={}&limit=500'.format(self.new_id)
 
     def getColumnMapping(self):
         return [
-                "id",
-                "order_nr",
-                "name",
-                "active_flag",
-                "deal_probability",
-                "pipeline_id",
-                "rotten_flag",
-                "rotten_days",
-                "add_time",
-                "update_time",
-                "pipeline_name"
-            ]
+            "id",
+            "order_nr",
+            "name",
+            "active_flag",
+            "deal_probability",
+            "pipeline_id",
+            "rotten_flag",
+            "rotten_days",
+            "add_time",
+            "update_time",
+            "pipeline_name"
+        ]
 
     def getTarget(self):
         # print('target')
@@ -38,18 +40,18 @@ class LOAD_DW_Stage(JSONJob):
     def prepareRow(self, row):
         # print('prepare')
         myfields = [
-                "id",
-                "order_nr",
-                "name",
-                "active_flag",
-                "deal_probability",
-                "pipeline_id",
-                "rotten_flag",
-                #"rotten_days",
-                "add_time",
-                "update_time",
-                "pipeline_name"
-            ]
+            "id",
+            "order_nr",
+            "name",
+            "active_flag",
+            "deal_probability",
+            "pipeline_id",
+            "rotten_flag",
+            #"rotten_days",
+            "add_time",
+            "update_time",
+            "pipeline_name"
+        ]
         # print(myfields)
         newrow = {}
         for f in myfields:
@@ -93,3 +95,20 @@ class LOAD_DW_Stage(JSONJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+    def getLastId(self):
+        cnn = pymysql.connect(user=conf["mysql"]["DW"]["user"], password=conf["mysql"]["DW"]["password"],
+                              host=conf["mysql"]["DW"]["host"],
+                              database=conf["mysql"]["DW"]["database"])
+        cursor = cnn.cursor()
+
+        query = ("SELECT * FROM {}".format(self.target_table))
+
+        lastid = cursor.execute(query)
+        print("LAST ID:")
+        print(lastid)
+        # start with id =0
+        newid = lastid
+        cursor.close()
+        cnn.close()
+        return newid
