@@ -2,26 +2,12 @@ from base.jobs import JSONJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from helpers.time import getTimeId
 import pymysql
-
-# connection to database RAS; takes the ID of the last inserted row which later is used for pagination
-cnn = pymysql.connect(user='rastestmaster', password='RasTest0',
-                              host='rightatschool-testenv.cblobk4u47xy.us-east-2.rds.amazonaws.com',
-                              database='rightatschool_testdb')
-cursor = cnn.cursor()
-
-query = ("SELECT * FROM DimOrganization")
-
-lastid = cursor.execute(query)
-print("LAST ID:",lastid)
-newid = lastid
-cursor.close()
-cnn.close()
+from settings import conf
 
 # class for Organization dimension
 class LOAD_DW_DimOrganization(JSONJob):
 
     def configure(self):
-        self.url = 'https://api.pipedrive.com/v1/organizations?start='+ str(newid) + '&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'
         self.auth_user = 'Right At School'
         self.auth_password = '5119919dca43c62ca026750611806c707f78a745'
         self.object_key = 'data'
@@ -30,6 +16,11 @@ class LOAD_DW_DimOrganization(JSONJob):
         self.target_table1 = 'DimLocation'
         self.source_table = ''
         self.source_database = ''
+
+        self.new_id = self.getLastId()
+        self.url = 'https://api.pipedrive.com/v1/organizations?start=' + str(
+            self.new_id) + '&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'
+
 
         #reads all the fields from Pipedrive API
     def getColumnMapping(self):
@@ -234,3 +225,20 @@ class LOAD_DW_DimOrganization(JSONJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+    def getLastId(self):
+        cnn = pymysql.connect(user=conf["mysql"]["DW"]["user"], password=conf["mysql"]["DW"]["password"],
+                              host=conf["mysql"]["DW"]["host"],
+                              database=conf["mysql"]["DW"]["database"])
+        cursor = cnn.cursor()
+
+        query = ("SELECT * FROM {}".format(self.target_table))
+
+        lastid = cursor.execute(query)
+        print("LAST IDDDDDDDDDDD")
+        print(lastid)
+        # start with id =0
+        newid = lastid
+        cursor.close()
+        cnn.close()
+        return newid
