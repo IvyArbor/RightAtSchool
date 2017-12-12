@@ -34,6 +34,7 @@ class DimSchoolLocation(CSVJob):
         # print('prepare')
         myfields = [
             'NCES SCHOOL ID',
+            'NCES DISTRICT ID',
             'SCHOOL NAME',
             'DISTRICT',
             'STATE'
@@ -49,14 +50,10 @@ class DimSchoolLocation(CSVJob):
 
     # Override the following method if the data needs to be transformed before insertion
     def insertRow(self, cursor, row):
-        # print('prep:',row)
-        # print(row['RecType'])
-        # target.insert(row)
-        # print("Inserting row:")
-        # row.keys()
         if row["NCES SCHOOL ID"] != "NCES SCHOOL ID":
             databasefieldvalues = [
                 'NCESSchoolId',
+                'NCESDistrictId',
                 'SchoolName',
                 'District',
                 'State'
