@@ -222,6 +222,31 @@ class ExcelJob(FileJob):
         self.reader.close()
         self.archive_file()
 
+
+from readers.streamreader import LocalStreamReader
+from readers.xlsreader import XlsReader
+from readers.s3reader import S3Reader
+class XlsJob(FileJob):
+    def getSource(self):
+        if not self.file_name: return []
+        reader = LocalStreamReader(self.file_name)
+        #reader = S3Reader(self.bucket_name, self.file_name)
+        self.column_mapping = self.getColumnMapping()
+        source = XlsReader(reader, self.sheet_name, self.column_mapping, self.first_data_row)
+        # self.reader = ExcelReader(self.file_name, self.sheet_name, self.column_mapping, self.first_data_row)
+        # Get a reader of S3
+        # Get a text parser using the column specs
+        # Return an iterator of rows
+        return source.rows()
+
+    # @abstractmethod
+    # def getColumnMapping(self):
+    #     pass
+
+    def close(self):
+        self.reader.close()
+        self.archive_file()
+
 from readers.streamreader import LocalStreamReader
 from readers.csvreader import CSVReader
 class CSVJob(FileJob):

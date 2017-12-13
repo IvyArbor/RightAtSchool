@@ -1,4 +1,4 @@
-from base.jobs import ExcelJob
+from base.jobs import XlsJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
@@ -6,7 +6,7 @@ from helpers.time import getTimeId
 
 
 # class for customer dimension
-class LOAD_DW_FactLabor(ExcelJob):
+class LOAD_DW_FactLabor(XlsJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'FactLabor'
@@ -19,7 +19,7 @@ class LOAD_DW_FactLabor(ExcelJob):
         # self.bucket_folder = 'Rebate'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/LABOR REPORT-JHSU(JHSU)-6351-4134.xlsx'
+        self.file_name = 'sources/LABOR REPORT-JHSU(JHSU)-6395-4147.xls'
         self.sheet_name = 'LABOR REPORT-JHSU'
 
     def getColumnMapping(self):
@@ -40,6 +40,8 @@ class LOAD_DW_FactLabor(ExcelJob):
             'CombinedRate',
             'TotalPay',
             'NCESID',
+            'Location',
+            'Department',
             'Count',
             ]
 
@@ -49,6 +51,9 @@ class LOAD_DW_FactLabor(ExcelJob):
 
     # Override the following method if the data needs to be transformed before insertion
     def prepareRow(self, row):
+        del row['Location']
+        del row['Department']
+        #print(row)
         row["LocationId"] = row["LocationId"].lstrip().split(" ")[0]
         departmentName = row["DepartmentId"]
         row["DepartmentId"] = departmentName.split(" ")[0]
@@ -82,7 +87,6 @@ class LOAD_DW_FactLabor(ExcelJob):
             row['DepartmentCategory'] = decriptionvalues[row['DepartmentName']]
         except KeyError:
             row['DepartmentCategory'] = ''
-           # row['DepartmentCategory'] = None
         print('PREPARE', row)
         return row
 
