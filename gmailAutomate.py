@@ -17,7 +17,7 @@ except ImportError:
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/gmail-python-quickstart.json
-SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
+SCOPES = 'https://www.googleapis.com/auth/gmail.modify'
 CLIENT_SECRET_FILE = 'client_secret_Gmail.json'
 APPLICATION_NAME = 'Gmail API Python Quickstart'
 
@@ -61,7 +61,7 @@ def get_credentials():
 
 
 messages = []
-def ListMessagesMatchingQuery(service, user_id, query='NOVA4000Alerts'):
+def ListMessagesMatchingQuery(service, user_id, query=''):
   """List all Messages of the user's mailbox matching the query.
 
   Args:
@@ -97,7 +97,7 @@ def ListMessagesMatchingQuery(service, user_id, query='NOVA4000Alerts'):
 credentials = get_credentials()
 http = credentials.authorize(httplib2.Http())
 service = discovery.build('gmail', 'v1', http=http)
-ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me')
+ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts is:unread')
 
 
 def GetAttachments(service, user_id, msg_id, store_dir):
@@ -134,6 +134,10 @@ def GetAttachments(service, user_id, msg_id, store_dir):
 #     print (x["id"])
 #     GetAttachments(service, 'me', x["id"], store_dir="laborReports/")
 
-#for x in messages:
 print (messages[0]["id"])
+
+#this will get all UNREAD email attachments from NovaTime email
 GetAttachments(service, 'me', messages[0]["id"], store_dir="laborReports/")
+
+#this will mark the message as read
+markAsRead = service.users().messages().modify(userId='me', id=messages[0]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
