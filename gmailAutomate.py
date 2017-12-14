@@ -22,6 +22,9 @@ CLIENT_SECRET_FILE = 'client_secret_Gmail.json'
 APPLICATION_NAME = 'Gmail API Python Quickstart'
 
 #create directory is it does not exist
+import shutil
+shutil.rmtree('laborReports/', ignore_errors=True)
+
 if not os.path.exists("laborReports/"):
     os.makedirs("laborReports/")
 
@@ -125,6 +128,6 @@ def GetAttachments(service, user_id, msg_id, store_dir):
   except errors.HttpError as error:
     print('An error occurred: %s' % error)
 
-for x in messages:
-    print (x["id"])
-    GetAttachments(service, 'me', x["id"], store_dir="laborReports/")
+#for x in messages:
+print (messages[0]["id"])
+GetAttachments(service, 'me', messages[0]["id"], store_dir="laborReports/")
