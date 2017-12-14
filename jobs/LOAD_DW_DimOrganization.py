@@ -16,9 +16,8 @@ class LOAD_DW_DimOrganization(JSONJob):
         self.target_table1 = 'DimLocation'
         self.source_table = ''
         self.source_database = ''
-
         self.new_id = self.getLastId()
-        self.url = 'https://api.pipedrive.com/v1/organizations?start={}&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'.format(self.new_id)
+        self.url = 'https://api.pipedrive.com/v1/organizations?start={}&sort=id%20ASC&api_token=5119919dca43c62ca026750611806c707f78a745&limit=500'.format(self.new_id)
 
 
         #reads all the fields from Pipedrive API
@@ -75,6 +74,7 @@ class LOAD_DW_DimOrganization(JSONJob):
             '71274bbb5d87c782d9419647bc7b94e0f50eeb38',
             'e77369569ad28775e07f07f64179aa730fe80a89',
             'd9d3c11ed8ab078eb2cf1aaedcfb2f4c638a2c6b',
+            '55db3a0ac45a4c62892546ebfcfdb7f770beb422',
             'owner_name',
             'cc_email',
             ]
@@ -114,7 +114,8 @@ class LOAD_DW_DimOrganization(JSONJob):
             'c8d36c70267b1df922299591d3d08e1d7992fd56',
             '71274bbb5d87c782d9419647bc7b94e0f50eeb38',
             'e77369569ad28775e07f07f64179aa730fe80a89',
-            'd9d3c11ed8ab078eb2cf1aaedcfb2f4c638a2c6b'
+            'd9d3c11ed8ab078eb2cf1aaedcfb2f4c638a2c6b',
+            '55db3a0ac45a4c62892546ebfcfdb7f770beb422'
             ]
         # print(myfields)
         newrow = {}
@@ -144,8 +145,10 @@ class LOAD_DW_DimOrganization(JSONJob):
             'NumberOfElementarySchools',
             'FreeAndReducedLunch',
             'HowIntroduced',
-            'CurrentProvider'
+            'CurrentProvider',
+            'NCESId'
         ]
+
         #Taking only the fields that should be pushed to DimLocation
         OrganizationLocationFields = [
             row["address"],
@@ -160,6 +163,7 @@ class LOAD_DW_DimOrganization(JSONJob):
             row["address_postal_code"],
             row["address_formatted_address"]
           ]
+
         #Fields that populate DimLocation
         databasefieldvalues1 = [
             'Street',
@@ -174,18 +178,17 @@ class LOAD_DW_DimOrganization(JSONJob):
             'ZipOrPostalCode',
             'FullCombinedAddress'
         ]
+
         #inserting data in DimLocation
         name_placeholders1 = ", ".join(["`{}`".format(s) for s in databasefieldvalues1])
-        print('OrgLocationFields',name_placeholders1)
+        print('Location Fields: ',name_placeholders1)
         value_placeholders1 = ", ".join(['%s'] * len(OrganizationLocationFields))
-        print('OrgLocationValues',value_placeholders1)
+        print('Location Values:',value_placeholders1)
 
         sql1 = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table1, name_placeholders1, value_placeholders1)
         cursor.execute(sql1, tuple(OrganizationLocationFields))
 
         #populating "LocationId"(Foreign key field) in DimOrganization with respective values from DimLocation
-        print ("Last ID of Organization Location:")
-        print (cursor.lastrowid)
         row["LocationId"] = cursor.lastrowid
 
         del row["address"],
@@ -202,24 +205,17 @@ class LOAD_DW_DimOrganization(JSONJob):
 
         row["owner_id"] = row["owner_id"]["name"]
 
-        # modifying DATETIME fields
-        #row["add_time"] = getTimeId(cursor, self.target_connection, row["add_time"])
-        #row["update_time"] = getTimeId(cursor, self.target_connection, row["update_time"])
-        #row["next_activity_date"] = getTimeId(cursor, self.target_connection, row["next_activity_date"])
-        #row["last_activity_date"] = getTimeId(cursor, self.target_connection, row["last_activity_date"])
-
         # inserting data in DimOrganization
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
-        print('DimOrganizationFields',name_placeholders)
+        print('DimOrganization Fields:',name_placeholders)
         value_placeholders = ", ".join(['%s'] * len(row))
-        print('DimOrganization Values',value_placeholders)
-
+        print('DimOrganization Values:',value_placeholders)
+        print("")
         sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
         self.target_connection.commit()
 
-        # increases pagination for the next call
-        #newid = lastid + 1
+        #increases pagination
         self.new_id += 1
 
     def close(self):
@@ -228,17 +224,19 @@ class LOAD_DW_DimOrganization(JSONJob):
 
     def getLastId(self):
         cnn = pymysql.connect(user=conf["mysql"]["DW"]["user"], password=conf["mysql"]["DW"]["password"],
-                              host=conf["mysql"]["DW"]["host"],
-                              database=conf["mysql"]["DW"]["database"])
+                       host=conf["mysql"]["DW"]["host"],
+                      database=conf["mysql"]["DW"]["database"])
         cursor = cnn.cursor()
 
-        query = ("SELECT * FROM {}".format(self.target_table))
+        query = ("SELECT OrganizationId FROM {} ORDER BY OrganizationId DESC LIMIT 1".format(self.target_table))
+        cursor.execute(query)
+        last_id = cursor.fetchone()
+        if last_id == None:
+            newid=0
+        else:
+            newid = last_id[0]
 
-        lastid = cursor.execute(query)
-        print("LAST ID")
-        print(lastid)
-        # start with id =0
-        newid = lastid
+        print("LastID:",newid)
         cursor.close()
         cnn.close()
         return newid
