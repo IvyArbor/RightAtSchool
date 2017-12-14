@@ -3,9 +3,17 @@ from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
 from helpers.time import getTimeId
+import os
 
 
-# class for customer dimension
+fileList = os.listdir("laborReports/")
+file = fileList[0]
+print("FILEEEEEE:" , file)
+
+
+# file = os.path.basename("laborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls")
+# print("FILE", file)
+
 class LOAD_DW_FactLabor(XlsJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
@@ -14,14 +22,11 @@ class LOAD_DW_FactLabor(XlsJob):
         self.first_data_row = 2
         self.delimiter = ","
         self.quotechar = '"'
-        # self.pick_file_to_process(folder = None, pattern = 'LDI_reject_claim_detail_06_05_2017.txt')
-        # self.bucket_name = 'ldi.datafile.to-process'
-        # self.bucket_folder = 'Rebate'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/LABOR REPORT-JHSU(JHSU)-6395-4147.xls'
+        #self.file_name = 'laborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls'
+        self.file_name = 'laborReports/' + file
         self.sheet_name = 'LABOR REPORT-JHSU'
-
     def getColumnMapping(self):
         return [
             'LocationId',
@@ -143,7 +148,9 @@ class LOAD_DW_FactLabor(XlsJob):
         sql1 = "INSERT INTO `{}` ({}) VALUES ({}) ".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql1, tuple(row.values()))
 
-
-def close(self):
+    def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+
+
