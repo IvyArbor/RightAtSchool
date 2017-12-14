@@ -19,8 +19,13 @@ conf = {
         "hostname": env.get('SFTP_HOSTNAME'),
         "username": env.get('SFTP_USERNAME'),
         "password": env.get('SFTP_PASSWORD'),
-        "directory": 'OUT/Extracts',
-        "filename_pattern": 'LDIEXTRACT_*.txt'
+        "port": env.get('SFTP_PORT')
+    },
+    "sftp_ats": {
+        "hostname": env.get('SFTP_ATS_HOSTNAME'),
+        "username": env.get('SFTP_ATS_USERNAME'),
+        "password": env.get('SFTP_ATS_PASSWORD'),
+        "port": env.get('SFTP_ATS_PORT')
     },
     'mysql': {
         "AUDIT": {

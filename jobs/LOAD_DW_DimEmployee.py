@@ -1,20 +1,23 @@
-from base.jobs import CSVJob
+from base.jobs import CSVJob, SFTCSVJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from dateutil import parser
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 # class for employee dimension
-class LOAD_DW_DimEmployee(CSVJob):
+class LOAD_DW_DimEmployee(SFTCSVJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'DimEmployee'
         self.delimiter = ","
         self.quotechar = '"'
-        self.file_name = 'sources/RightAtSchool_11292017.csv'
+        #self.file_name = 'sources/RightAtSchool_11292017.csv'
         self.ignore_firstline = True
         self.source_table = ''
         self.source_database = ''
+
+        self.sftp = "HR"
+        self.file_path = self._getFilePath()
 
         # the same as those in the database
     def getColumnMapping(self):
@@ -101,3 +104,7 @@ class LOAD_DW_DimEmployee(CSVJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
+
+    def _getFilePath(self):
+        d = datetime.now() - timedelta(days=1)
+        return "/mnt/sftp-filetransfer-bucket/RightAtSchool_{}{}{}.csv".format(d.month, d.day, d.year)

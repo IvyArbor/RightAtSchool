@@ -276,11 +276,15 @@ from readers.streamreader import SFTPStreamReader
 class SFTCSVJob(FileJob):
     def getSource(self):
         if not self.file_path: return []
+
+        sftp = "sftp"
+        if self.sftp == "ATS": sftp = "sftp_ats"
+
         reader = SFTPStreamReader(self.file_path,
-                                  self.conf["sftp"]["hostname"],
+                                  self.conf[sftp]["hostname"],
                                   22,
-                                  self.conf["sftp"]["username"],
-                                  self.conf["sftp"]["password"])
+                                  self.conf[sftp]["username"],
+                                  self.conf[sftp]["password"])
 
         self.column_mapping = self.getColumnMapping()
         source = CSVReader(reader, column_mapping=self.column_mapping, delimiter=self.delimiter, quotechar=self.quotechar)

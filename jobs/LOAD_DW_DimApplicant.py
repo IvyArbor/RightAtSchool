@@ -1,9 +1,10 @@
 from base.jobs import SFTCSVJob, CSVJob
 from helpers.time import getTimeId
 import csv
+from datetime import datetime, timedelta
 
 # class for customer dimension
-class LOAD_DW_DimApplicant(CSVJob):
+class LOAD_DW_DimApplicant(SFTCSVJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'DimApplicant'
@@ -11,11 +12,13 @@ class LOAD_DW_DimApplicant(CSVJob):
         self.quotechar = '"'
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'sources/ATS/12062017.csv'
+        #self.file_name = 'sources/ATS/12062017.csv'
         self.ignore_firstline = True
 
         self.location_map = self._getLocationMap()
-        #self.file_path = "/mnt/sftp-filetransfer-bucket/RightAtSchool_11202017.csv"
+
+        self.sftp = "ATS"
+        self.file_path = self._getFilePath()
 
     def getColumnMapping(self):
         return [
@@ -146,3 +149,7 @@ class LOAD_DW_DimApplicant(CSVJob):
         row2 = {"LastState": 0}
         sql = 'UPDATE {} SET {} WHERE `ApplicantId`={}'.format(self.target_table, ', '.join('{}=%s'.format(k) for k in row2), row["Applicant ID"])
         cursor.execute(sql, tuple(row2.values()))
+
+    def _getFilePath(self):
+        d = datetime.now() - timedelta(days=1)
+        return "/{}{}{}.csv".format(d.month, d.day, d.year)
