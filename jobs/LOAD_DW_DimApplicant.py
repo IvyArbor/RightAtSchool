@@ -94,7 +94,8 @@ class LOAD_DW_DimApplicant(SFTCSVJob):
 
             row["ReqLocationState"] = row["Req Location"].split("-")[0].strip()
             row["ReqLocationDistrict"] = row["Req Location"].split("-")[1].strip()
-            row["Req Location Code"] = self._getLocationCode(row["Req Location"])
+            if row["Req Location Code"] == "" or row["Req Location Code"] == None:
+                row["Req Location Code"] = self._getLocationCode(row["Req Location"])
             del row["Req Location"]
 
             row["Entry Date"] = getTimeId(cursor, self.target_connection, row["Entry Date"])
