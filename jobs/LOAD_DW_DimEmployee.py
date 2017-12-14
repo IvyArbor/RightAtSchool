@@ -11,13 +11,12 @@ class LOAD_DW_DimEmployee(SFTCSVJob):
         self.target_table = 'DimEmployee'
         self.delimiter = ","
         self.quotechar = '"'
-        #self.file_name = 'sources/RightAtSchool_11292017.csv'
         self.ignore_firstline = True
         self.source_table = ''
         self.source_database = ''
-
         self.sftp = "HR"
         self.file_path = self._getFilePath()
+        #self.file_name = 'sources/RightAtSchool_11292017.csv'
 
         # the same as those in the database
     def getColumnMapping(self):
@@ -33,7 +32,8 @@ class LOAD_DW_DimEmployee(SFTCSVJob):
             'PayRate',
             'JobTitle',
             'EmploymentStatus',
-            'HireDate'
+            'HireDate',
+            'NCESId'
             ]
 
     def getTarget(self):
