@@ -47,6 +47,7 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
                 'JobTitle',
                 'EmploymentStatus',
                 'HireDate',
+                'NCESId',
                 'extra_registration'
             ]
         # print(myfields)
@@ -76,6 +77,7 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
             'JobTitle',
             'EmploymentStatus',
             'HireDate',
+            'NCESId',
             'Team',
             'Role'
         ]
