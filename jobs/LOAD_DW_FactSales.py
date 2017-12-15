@@ -20,7 +20,7 @@ class LOAD_DW_FactSales(JSONJob):
     def getColumnMapping(self):
         return [
             'id',
-            'public_id',
+            #'public_id',
             'creator_user_id',
             'user_id',
             'person_id',
