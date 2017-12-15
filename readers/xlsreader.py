@@ -7,7 +7,7 @@ class XlsReader(object):
         self.col_names = col_names
         self.reader = reader
         # self.workbook = load_workbook('sources/Quickbooks_FactFinance.xlsx', data_only=True)
-        self.workbook = open_workbook(filename = reader.getFile())
+        self.workbook = open_workbook(filename = reader.getFile(), encoding_override="utf-8")
         #Specifying the sheet name we want to read.
         self.sheet = self.workbook.sheet_by_name(sheet_name)
         self.max_row = self.sheet.nrows
