@@ -16,6 +16,7 @@ class LOAD_DW_DimEmployee(SFTCSVJob):
         self.source_database = ''
         self.sftp = "HR"
         self.file_path = self._getFilePath()
+        print("PATH:",self.file_path)
         #self.file_name = 'sources/RightAtSchool_11292017.csv'
 
         # the same as those in the database
@@ -106,5 +107,6 @@ class LOAD_DW_DimEmployee(SFTCSVJob):
         # self.active_cursor.close()
 
     def _getFilePath(self):
-        d = datetime.now() - timedelta(days=1)
-        return "/mnt/sftp-filetransfer-bucket/RightAtSchool_{}{}{}.csv".format(d.month, d.day, d.year)
+        d = datetime.now() - timedelta(days = 6)
+        d = d.strftime("%m%d%Y")
+        return "/mnt/sftp-filetransfer-bucket/RightAtSchool_{}.csv".format(d)
