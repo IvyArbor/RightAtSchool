@@ -20,7 +20,7 @@ class LOAD_DW_FactSales(JSONJob):
     def getColumnMapping(self):
         return [
             'id',
-            'public_id',
+            #'public_id',
             'creator_user_id',
             'user_id',
             'person_id',
@@ -174,13 +174,15 @@ class LOAD_DW_FactSales(JSONJob):
                               database=conf["mysql"]["DW"]["database"])
         cursor = cnn.cursor()
 
-        query = ("SELECT * FROM {}".format(self.target_table))
+        query = ("SELECT SalesId FROM {} ORDER BY SalesId DESC LIMIT 1".format(self.target_table))
+        cursor.execute(query)
+        last_id = cursor.fetchone()
+        if last_id == None:
+            newid = 0
+        else:
+            newid = last_id[0]
 
-        lastid = cursor.execute(query)
-        print("LAST ID:")
-        print(lastid)
-        # start with id =0
-        newid = lastid
+        print("LastID:", newid)
         cursor.close()
         cnn.close()
         return newid
