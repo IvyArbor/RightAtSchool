@@ -1,32 +1,29 @@
-from base.jobs import XlsJob
+from base.jobs import CSVJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
 from helpers.time import getTimeId
-import os
-
-
-fileList = os.listdir("laborReports/")
-file = fileList[0]
-print("FILEEEEEE:" , file)
+# import os
+#
+# fileList = os.listdir("laborReports/")
+# file = fileList[0]
 
 
 # file = os.path.basename("laborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls")
 # print("FILE", file)
 
-class LOAD_DW_FactLabor(XlsJob):
+class LOAD_DW_FactLabor(CSVJob):
     def configure(self):
         self.target_database = 'rightatschool_testdb'
         self.target_table = 'FactLabor'
         self.target_table1 = 'DimDepartment'
-        self.first_data_row = 2
         self.delimiter = ","
         self.quotechar = '"'
+        self.ignore_firstline = False
         self.source_table = ''
         self.source_database = ''
-        #self.file_name = 'laborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls'
-        self.file_name = 'laborReports/' + file
-        self.sheet_name = 'LABOR REPORT-JHSU'
+        self.file_name = 'laborReports/TestCSV.csv'
+        #self.file_name = 'laborReports/' + file
     def getColumnMapping(self):
         return [
             'LocationId',
@@ -47,35 +44,42 @@ class LOAD_DW_FactLabor(XlsJob):
             'NCESID',
             'Location',
             'Department',
-            'Count',
+            'COUNT'
             ]
 
     def getTarget(self):
-        # print('target')
+        # print('target')c
         return self.target_connection.cursor()
 
     # Override the following method if the data needs to be transformed before insertion
     def prepareRow(self, row):
+        if 'COUNT' not in row:
+            row['COUNT'] = ''
         del row['Location']
         del row['Department']
         #print(row)
         row["LocationId"] = row["LocationId"].lstrip().split(" ")[0]
         departmentName = row["DepartmentId"]
         row["DepartmentId"] = departmentName.split(" ")[0]
-        row["EmployeeId"] = row["EmployeeId"].split(" ")[0]
+        empid = row["EmployeeId"].lstrip().split(" ")
+        row["EmployeeId"] = empid[0]
         row['DepartmentName'] = departmentName.split(" ",1)[1].strip('[]')
-
         statusvalues = {
             '1': 'Open Status',
             '2': 'Approved Status',
             '3': 'Payroll Status',
         }
+
+        print("EmployeeId::::::")
+        print(row['EmployeeId'])
+        print("EmployeeId::::::")
+
         try:
             row['ApprovalStatus'] = statusvalues[row['ApprovalStatus']]
         except KeyError:
             row['DepartmentCategory'] = 'The Approval Status value is blank!'
 
-        decriptionvalues = {
+        descriptionvalues = {
             'ADMINISTRATION': 'Non-Program Time',
             'RC BEFORE SCHOOL': 'Program Time',
             'RC AFTER SCHOOL': 'Program Time',
@@ -89,10 +93,9 @@ class LOAD_DW_FactLabor(XlsJob):
             'None': 'None',
         }
         try:
-            row['DepartmentCategory'] = decriptionvalues[row['DepartmentName']]
+            row['DepartmentCategory'] = descriptionvalues[row['DepartmentName']]
         except KeyError:
             row['DepartmentCategory'] = ''
-        print('PREPARE', row)
         return row
 
 
@@ -131,16 +134,17 @@ class LOAD_DW_FactLabor(XlsJob):
             'CombinedRate',
             'TotalPay',
             'NCESID',
-            'Count',
+            'COUNT'
         ]
+
+
+        row['Location'] = ''
+        row['Department'] = ''
         labor = {k: row[k] for k in laborFields}
         self.insertDict(cursor, labor, self.target_table)
         self.target_connection.commit()
 
-
     def insertDict(self, cursor, row, table_name):
-        print("ROW",row)
-        print(table_name)
         name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
         value_placeholders = ", ".join(['%s'] * len(row))
 

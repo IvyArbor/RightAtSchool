@@ -130,14 +130,15 @@ def GetAttachments(service, user_id, msg_id, store_dir):
   except errors.HttpError as error:
     print('An error occurred: %s' % error)
 
-# for x in messages:
-#     print (x["id"])
-#     GetAttachments(service, 'me', x["id"], store_dir="laborReports/")
+for x in messages:
+    print (x["id"])
+    GetAttachments(service, 'me', x["id"], store_dir="laborReports/")
+    #markAsRead = service.users().messages().modify(userId='me', id=messages[x]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
 
-print (messages[0]["id"])
-
-#this will get all UNREAD email attachments from NovaTime email
-GetAttachments(service, 'me', messages[0]["id"], store_dir="laborReports/")
-
-#this will mark the message as read
-markAsRead = service.users().messages().modify(userId='me', id=messages[0]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
+# print (messages[0]["id"])
+#
+# #this will get all UNREAD email attachments from NovaTime email
+# GetAttachments(service, 'me', messages[0]["id"], store_dir="laborReports/")
+#
+# #this will mark the message as read
+# markAsRead = service.users().messages().modify(userId='me', id=messages[0]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
