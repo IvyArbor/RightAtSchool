@@ -23,7 +23,7 @@ class LOAD_DW_FactLaborOld(CSVJob):
         self.ignore_firstline = False
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'laborReports/LaborHistorical/LABOR - 2017 - MONTHS 1-7.csv'
+        self.file_name = 'laborReports/LaborHistorical/LABOR - 2017 - MONTHS 8-12.csv'
         #self.file_name = 'laborReports/' + file
 
     def getColumnMapping(self):
@@ -78,14 +78,18 @@ class LOAD_DW_FactLaborOld(CSVJob):
             'RC BEFORE SCHOOL': 'Program Time',
             'RC AFTER SCHOOL': 'Program Time',
             'RECESS': 'Recess',
-            'Training': 'Program Time',
+            'Training': 'Training',
             'SPECIALTY': 'Program Time',
             'JK WRAP': 'Program Time',
             '5TH DAY': 'Program Time',
-            'Licensing': 'Non-Program Time',
+            'Licensing': 'Licensing',
             'RAS ELC': 'Program Time',
+            'SUMMER CAMP': 'Program Time',
+            'TUTOR RIGHT': 'Non-Program Time',
+            'EOD': 'Electives',
             'None': 'None',
         }
+
         try:
             row['DepartmentCategory'] = decriptionvalues[row['DepartmentName']]
         except KeyError:
