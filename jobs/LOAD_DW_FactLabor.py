@@ -3,10 +3,10 @@ from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from datetime import datetime
 from dateutil import parser
 from helpers.time import getTimeId
-# import os
-#
-# fileList = os.listdir("laborReports/")
-# file = fileList[0]
+import os
+
+fileList = os.listdir("laborReports/")
+file = fileList[0]
 
 
 # file = os.path.basename("laborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls")
@@ -22,8 +22,8 @@ class LOAD_DW_FactLabor(CSVJob):
         self.ignore_firstline = False
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'laborReports/TestCSV.csv'
-        #self.file_name = 'laborReports/' + file
+        # self.file_name = 'laborReports/TestCSV.csv'
+        self.file_name = 'laborReports/' + file
     def getColumnMapping(self):
         return [
             'LocationId',
@@ -154,7 +154,11 @@ class LOAD_DW_FactLabor(CSVJob):
 
     def close(self):
         """Here we should archive the file instead"""
-        # self.active_cursor.close()
 
+        path = 'laborReports/'
+        f = open(path, 'wb')
+        f.write(file) #name of the processed file
+        f.close()
+        # self.active_cursor.close()
 
 
