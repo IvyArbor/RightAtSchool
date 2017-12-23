@@ -82,6 +82,7 @@ class LOAD_DW_FactLaborOld(CSVJob):
             'SPECIALTY': 'Program Time',
             'JK WRAP': 'Program Time',
             '5TH DAY': 'Program Time',
+            '5TH DAY FRIDAY': 'Program Time',
             'Licensing': 'Licensing',
             'RAS ELC': 'Program Time',
             'SUMMER CAMP': 'Program Time',
