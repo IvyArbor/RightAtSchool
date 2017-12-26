@@ -5,16 +5,13 @@ from dateutil import parser
 from helpers.time import getTimeId
 import os
 
-# fileList = os.fsdecode("laborReports/")
-# for file in os.listdir(fileList):
-#     filename = os.fsdecode(file)
-#     print('FILENAME::::::' + filename)
 
 # file = os.path.basename("laborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls")
 # print("FILE", file)
 
-fileList = os.listdir("laborReports/")
+fileList = os.listdir("payPeriodReports/")
 filename = fileList[0]
+
 
 class LOAD_DW_FactLabor(CSVJob):
     def configure(self):
@@ -27,7 +24,7 @@ class LOAD_DW_FactLabor(CSVJob):
         self.source_table = ''
         self.source_database = ''
         # self.file_name = 'laborReports/TestCSV.csv'
-        self.file_name = 'laborReports/' + filename
+        self.file_name = 'payPeriodReports/' + filename
     def getColumnMapping(self):
         return [
             'LocationId',
@@ -74,9 +71,9 @@ class LOAD_DW_FactLabor(CSVJob):
             '3': 'Payroll Status',
         }
 
-        # print("EmployeeId::::::")
-        # print(row['EmployeeId'])
-        # print("EmployeeId::::::")
+        print("EmployeeId::::::")
+        print(row['EmployeeId'])
+        print("EmployeeId::::::")
 
         try:
             row['ApprovalStatus'] = statusvalues[row['ApprovalStatus']]
