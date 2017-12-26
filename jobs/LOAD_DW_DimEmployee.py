@@ -2,6 +2,7 @@ from base.jobs import CSVJob, SFTCSVJob
 from pygrametl.tables import Dimension, TypeOneSlowlyChangingDimension
 from dateutil import parser
 from datetime import datetime, timedelta
+import shutil
 
 
 # class for employee dimension
@@ -65,11 +66,11 @@ class LOAD_DW_DimEmployee(SFTCSVJob):
         self.target_connection.commit()
 
     def insertDict(self, cursor, row, table_name):
-        print("ROW:",row)
-        print("TableName:",table_name)
         name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
         value_placeholders = ", ".join(['%s'] * len(row))
 
+        print("ROW to be inserted:")
+        print(row)
         # insert values
         sql = "INSERT INTO `{}` ({}) VALUES ({})".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
@@ -83,6 +84,8 @@ class LOAD_DW_DimEmployee(SFTCSVJob):
         for key in exclude_keys:
             del row[key]
 
+        print("ROW to be updated:")
+        print(row)
         sql = 'UPDATE {} SET {} WHERE `EmployeeId`={}'.format(table_name, ', '.join('{}=%s'.format(k) for k in row), row["EmployeeId"])
         cursor.execute(sql, tuple(row.values()))
 
@@ -102,11 +105,12 @@ class LOAD_DW_DimEmployee(SFTCSVJob):
         else:
             return 1
 
-    def close(self):
-        """Here we should archive the file instead"""
-        # self.active_cursor.close()
+    #def close(self):
+        #"""Here we should archive the file instead"""
+            # self.active_cursor.close()
+        #self.archive_file()
 
     def _getFilePath(self):
-        d = datetime.now() - timedelta(days = 6)
+        d = datetime.now()- timedelta(days=1)
         d = d.strftime("%m%d%Y")
         return "/mnt/sftp-filetransfer-bucket/RightAtSchool_{}.csv".format(d)
