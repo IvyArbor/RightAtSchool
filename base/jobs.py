@@ -273,6 +273,7 @@ class CSVJob(FileJob):
 
 
 from readers.streamreader import SFTPStreamReader
+import paramiko
 class SFTCSVJob(FileJob):
     def getSource(self):
         if not self.file_path: return []
@@ -291,8 +292,30 @@ class SFTCSVJob(FileJob):
 
         return source.rows()
 
+
+    def archive_file(self):
+        sftp = "sftp"
+        if self.sftp == "ATS": sftp = "sftp_ats"
+        #
+        print("Archive file name: {}".format(self.file_path))
+
+        # Using paramiko to read the file
+        #creating new SSH Client
+        ssh = paramiko.SSHClient()
+         # The following line is required if you want the script to be able to access a server that's not yet in the known_hosts file
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        #making the connection
+        ssh.connect(self.conf[sftp]["hostname"], username=self.conf[sftp]["username"], password=self.conf[sftp]["password"])
+
+        # now move the file to the sudo required area!
+        # if sftp != "sftp_ats":
+        archive_destination = self.file_path.replace("/mnt/sftp-filetransfer-bucket/", "/mnt/sftp-filetransfer-bucket-archive/")
+        stdin, stdout, stderr = ssh.exec_command(
+            "sudo -S -p '' mv {} {}".format(self.file_path, archive_destination))
+        stdin.write(self.conf[sftp]["password"] + "\n")
+        stdin.flush()
+
     def close(self):
-        self.reader.close()
         self.archive_file()
 
 import requests
