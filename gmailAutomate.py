@@ -21,7 +21,7 @@ SCOPES = 'https://www.googleapis.com/auth/gmail.modify'
 CLIENT_SECRET_FILE = 'client_secret_Gmail.json'
 APPLICATION_NAME = 'Gmail API Python Quickstart'
 
-
+'''
 #removed directory with data
 import shutil
 shutil.rmtree('laborReports/', ignore_errors=True)
@@ -30,6 +30,14 @@ shutil.rmtree('laborReports/', ignore_errors=True)
 if not os.path.exists("laborReports/"):
     os.makedirs("laborReports/")
 
+#removed directory with data
+import shutil
+shutil.rmtree('payPeriodReports/', ignore_errors=True)
+
+#create directory is it does not exist
+if not os.path.exists("payPeriodReports/"):
+    os.makedirs("payPeriodReports/")
+'''
 
 def get_credentials():
     """Gets valid user credentials from storage.
@@ -97,8 +105,6 @@ def ListMessagesMatchingQuery(service, user_id, query=''):
 credentials = get_credentials()
 http = credentials.authorize(httplib2.Http())
 service = discovery.build('gmail', 'v1', http=http)
-ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts is:unread')
-
 
 def GetAttachments(service, user_id, msg_id, store_dir):
   """Get and store attachment from Message with given id.
@@ -130,15 +136,27 @@ def GetAttachments(service, user_id, msg_id, store_dir):
   except errors.HttpError as error:
     print('An error occurred: %s' % error)
 
+
+ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT-JHSU after:2017/12/20 is:unread')
 for x in messages:
     print (x["id"])
     GetAttachments(service, 'me', x["id"], store_dir="laborReports/")
-    #markAsRead = service.users().messages().modify(userId='me', id=messages[x]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
+#markAsRead = service.users().messages().modify(userId='me', id=messages[x]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
+
+ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me').clear()
+ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT_PAST PAY PERIOD-JHSU after:2017/12/20 is:unread')
+ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT_PAST PAY PERIOD2-JHSU after:2017/12/20 is:unread')
+for y in messages:
+    print (y["id"])
+    GetAttachments(service, 'me', y["id"], store_dir="payPeriodReports/")
+#markAsRead = service.users().messages().modify(userId='me', id=messages[x]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
+
+
 
 # print (messages[0]["id"])
 #
-# #this will get all UNREAD email attachments from NovaTime email
-# GetAttachments(service, 'me', messages[0]["id"], store_dir="laborReports/")
+# # #this will get all UNREAD email attachments from NovaTime email
+# GetAttachments(service, 'me', messages[0]["id"], store_dir="payPeriodReports/")
 #
-# #this will mark the message as read
+# # #this will mark the message as read
 # markAsRead = service.users().messages().modify(userId='me', id=messages[0]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
