@@ -126,7 +126,7 @@ class LOAD_DW_FactLabor(CSVJob):
             self.insertDict(cursor, department, self.target_table1)
         self.target_connection.commit()
 
-        laborFields = [
+        laborfields = [
             'LocationId',
             'DepartmentId',
             'EmployeeSeq',
@@ -149,8 +149,19 @@ class LOAD_DW_FactLabor(CSVJob):
 
         row['Location'] = ''
         row['Department'] = ''
-        labor = {k: row[k] for k in laborFields}
-        self.insertDict(cursor, labor, self.target_table)
+        labor = {k: row[k] for k in laborfields}
+        #self.insertDict(cursor, labor, self.target_table)
+
+        if self._checkRow(cursor, row) == None:
+            print('result is NONE')
+
+            self.insertDict(cursor, labor, self.target_table)
+        else:
+            print('result is ELSE')
+            self.updateDict(cursor, labor, self.target_table, laborfields)
+
+        print('result is before insert')
+
         self.target_connection.commit()
 
     def insertDict(self, cursor, row, table_name):
@@ -161,7 +172,30 @@ class LOAD_DW_FactLabor(CSVJob):
         sql1 = "INSERT INTO `{}` ({}) VALUES ({}) ".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql1, tuple(row.values()))
 
-    
+    print('result is before update')
+
+    def updateDict(self, cursor, row, table_name, laborfields):
+        print("update row", row)
+        sql = 'UPDATE {} SET {} WHERE `EmployeeId` = {} AND `WorkDate` = {} AND `In` = {}'.format(table_name, ', '.join('{}=%s'.format(k) for k in laborfields), (row["EmployeeId"],row["WorkDate"], row["In"]))
+        cursor.execute(sql, tuple(row.values()))
+
+    def _checkRow(self, cursor, row):
+        query = """
+               SELECT `EmployeeId`, `WorkDate`, `In`
+               FROM `FactLabor`
+               WHERE `EmployeeId` = %s AND`WorkDate` = %s AND`In` = %s
+               LIMIT 1
+           """
+
+        cursor.execute(query, (row["EmployeeId"],row["WorkDate"], row["In"]))
+
+        query_result = cursor.fetchone()
+        if query_result == None:
+            print('result is NONE')
+            return None
+        else:
+            return 1
+
     def close(self):
         sftp = 'sftp'
 
