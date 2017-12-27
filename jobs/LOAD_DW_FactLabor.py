@@ -163,19 +163,16 @@ class LOAD_DW_FactLabor(CSVJob):
 
     
     def close(self):
+        sftp = 'sftp'
 
         ssh= paramiko.SSHClient()
         # The following line is required if you want the script to be able to access a server that's not yet in the known_hosts file
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         # making the connection
-        ssh.connect(hostname = '13.59.37.249', username = 'downloader', password = 'Downloader@RAS')
+        ssh.connect(hostname = self.conf[sftp]['hostname'], username = self.conf[sftp]['username'], password = self.conf[sftp]['password'])
 
         sftp = ssh.open_sftp()
-        print('NURANE PARA')
         localpath = 'laborReports/' + filename
-        print('LOCALPATH', localpath)
         destinationpath = '/mnt/novatimelabor-archive/' + filename
-        print("DESTINATIONPATH", destinationpath)
         sftp.put(localpath, destinationpath)
-        print('SUCESSSSS')
         sftp.close()
