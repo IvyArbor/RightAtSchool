@@ -88,12 +88,48 @@ class LOAD_DW_FactRecord(JSONCypherWorxJob):
         # row["created_date"] = datetime.fromtimestamp(int(row["created_date"])) if row["created_date"] != "0" else print ("Can't get time for created_date")
         # row["expiration_date"] = datetime.fromtimestamp(int(row["expiration_date"])) if row["expiration_date"] != "0" else print ("Can't get time for expiration_date")
 
+
+        if self._checkRow(cursor, row) == None:
+            self.insertDict(cursor, row, self.target_table, databasefieldvalues)
+        else:
+            self.updateDict(cursor, row, self.target_table, databasefieldvalues)
+
+
+        #name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
+        #value_placeholders = ", ".join(['%s'] * len(row))
+
+        #sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
+        #cursor.execute(sql, tuple(row.values()))
+        self.target_connection.commit()
+
+
+    def insertDict(self, cursor, row, table_name, databasefieldvalues):
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
 
-        sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
+        # insert values
+        sql = "INSERT INTO `{}` ({}) VALUES ({})".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
-        self.target_connection.commit()
+
+    def updateDict(self, cursor, row, table_name, databasefieldvalues):
+        sql = 'UPDATE {} SET {} WHERE `RecordId`={}'.format(table_name, ', '.join('{}=%s'.format(k) for k in databasefieldvalues), row["record_id"])
+        cursor.execute(sql, tuple(row.values()))
+
+    def _checkRow(self, cursor, row):
+        query = """
+            SELECT `RecordId`
+            FROM `FactRecord`
+            WHERE `RecordId` = %s
+            LIMIT 1
+        """
+
+        cursor.execute(query, (row["record_id"]))
+
+        query_result = cursor.fetchone()
+        if query_result == None:
+            return None
+        else:
+            return 1
 
     def close(self):
         """Here we should archive the file instead"""
