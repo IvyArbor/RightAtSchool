@@ -4,6 +4,7 @@ from datetime import datetime
 from dateutil import parser
 from helpers.time import getTimeId
 import os
+import paramiko
 
 
 # file = os.path.basename("laborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls")
@@ -158,6 +159,19 @@ class LOAD_DW_FactLabor(CSVJob):
         cursor.execute(sql1, tuple(row.values()))
 
     def close(self):
-        """Here we should archive the file instead"""
+
+        ssh= paramiko.SSHClient()
+        # The following line is required if you want the script to be able to access a server that's not yet in the known_hosts file
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # making the connection
+        ssh.connect(hostname = '13.59.37.249', username = 'downloader', password = 'Downloader@RAS')
+
+        sftp = ssh.open_sftp()
+        localpath = 'payPeriodReports/' + filename
+        print('LOCALPATH', localpath)
+        destinationpath = '/mnt/novatimelabor-archive/' + filename
+        print("DESTINATIONPATH", destinationpath)
+        sftp.put(localpath, destinationpath)
+        sftp.close()
 
 

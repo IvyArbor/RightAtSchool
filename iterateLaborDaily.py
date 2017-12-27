@@ -1,5 +1,4 @@
 import os
-
 fileList = os.listdir("laborReports/")
 # file = fileList[0]
 
