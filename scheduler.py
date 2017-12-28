@@ -37,6 +37,7 @@ class RightAtSchoolScheduler(object):
 
         self.scheduler.add_job(self.integratePipeDrive, 'cron', day="1-31", hour="1-24")
         self.scheduler.add_job(self.integrateCypherWorx, 'cron', day="1-31", hour=8)
+        # self.scheduler.add_job(self.integrateNovatime, 'cron', day="1-31", hour=9)
         self.scheduler.add_job(self.integrateQuickBooks, 'cron', day="1-31", hour=9)
         self.scheduler.add_job(self.integrateATS, 'cron', day="1-31", hour=10)
         self.scheduler.add_job(self.integrateHR, 'cron', day="1-31", hour=11)
@@ -81,6 +82,12 @@ class RightAtSchoolScheduler(object):
         for job in CyperworxJobs:
             os.system("python job.py {}".format(job))
 
+    def integrateCypherWorx(self):
+        print("Integrate CypherWorx")
+        CyperworxJobs = ["LOAD_DW_DimCourse","LOAD_DW_DimEmployee","LOAD_DW_FactRecord"]
+
+        for job in CyperworxJobs:
+            os.system("python job.py {}".format(job))
 
     def integrateQuickBooks(self):
         print("Integrate QuickBooks")

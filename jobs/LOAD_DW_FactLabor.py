@@ -74,11 +74,6 @@ class LOAD_DW_FactLabor(CSVJob):
             '2': 'Approved Status',
             '3': 'Payroll Status',
         }
-
-        # print("EmployeeId::::::")
-        # print(row['EmployeeId'])
-        # print("EmployeeId::::::")
-
         try:
             row['ApprovalStatus'] = statusvalues[row['ApprovalStatus']]
         except KeyError:
@@ -126,7 +121,7 @@ class LOAD_DW_FactLabor(CSVJob):
             self.insertDict(cursor, department, self.target_table1)
         self.target_connection.commit()
 
-        laborFields = [
+        laborfields = [
             'LocationId',
             'DepartmentId',
             'EmployeeSeq',
@@ -149,9 +144,15 @@ class LOAD_DW_FactLabor(CSVJob):
 
         row['Location'] = ''
         row['Department'] = ''
-        labor = {k: row[k] for k in laborFields}
-        self.insertDict(cursor, labor, self.target_table)
+        labor = {k: row[k] for k in laborfields}
+        #self.insertDict(cursor, labor, self.target_table)
+
+        if self._checkRow(cursor, labor) == None:
+            self.insertDict(cursor, labor, self.target_table)
+        else:
+            self.updateDict(cursor, labor, self.target_table, laborfields)
         self.target_connection.commit()
+
 
     def insertDict(self, cursor, row, table_name):
         name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
@@ -161,16 +162,33 @@ class LOAD_DW_FactLabor(CSVJob):
         sql1 = "INSERT INTO `{}` ({}) VALUES ({}) ".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql1, tuple(row.values()))
 
-    
+    def updateDict(self, cursor, row, table_name, laborfields):
+        sql = 'UPDATE {} SET {} WHERE `EmployeeId`={} AND `WorkDate`={} AND `In`=\'{}\''.format(table_name, ', '.join('`{}`=%s'.format(k) for k in laborfields), row["EmployeeId"], row["WorkDate"], row["In"])
+        cursor.execute(sql, tuple(row.values()))
+
+    def _checkRow(self, cursor, row):
+        query = """
+               SELECT *
+               FROM `{}`
+               WHERE `EmployeeId` = %s AND `WorkDate` = %s AND `In` = %s
+               LIMIT 1
+           """.format(self.target_table)
+
+        cursor.execute(query, (row["EmployeeId"],row["WorkDate"], row["In"]))
+
+        query_result = cursor.fetchone()
+        if query_result == None:
+            return None
+        else:
+            return 1
+
     def close(self):
         sftp = 'sftp'
-
         ssh= paramiko.SSHClient()
         # The following line is required if you want the script to be able to access a server that's not yet in the known_hosts file
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         # making the connection
         ssh.connect(hostname = self.conf[sftp]['hostname'], username = self.conf[sftp]['username'], password = self.conf[sftp]['password'])
-
         sftp = ssh.open_sftp()
         localpath = 'laborReports/' + filename
         destinationpath = '/mnt/novatimelabor-archive/' + filename
