@@ -6,16 +6,16 @@ from helpers.time import getTimeId
 from settings import conf
 # import os
 #
-# fileList = os.listdir("laborReports/")
+# fileList = os.listdir("dailyLaborReports/")
 # file = fileList[0]
 
 
-# file = os.path.basename("laborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls")
+# file = os.path.basename("dailyLaborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls")
 # print("FILE", file)
 
 class LOAD_DW_FactLaborOld(CSVJob):
     def configure(self):
-        self.target_database = 'rightatschool_testdb'
+        self.target_database = 'rightatschool_productiondb'
         self.target_table = 'FactLabor'
         self.target_table1 = 'DimDepartment'
         self.delimiter = ","
@@ -23,8 +23,8 @@ class LOAD_DW_FactLaborOld(CSVJob):
         self.ignore_firstline = False
         self.source_table = ''
         self.source_database = ''
-        self.file_name = 'laborReports/LaborHistorical/LABOR - 2017 - MONTHS 8-12.csv'
-        #self.file_name = 'laborReports/' + file
+        self.file_name = 'dailyLaborReports/LaborHistorical/LABOR - 2017 - MONTHS 8-12.csv'
+        #self.file_name = 'dailyLaborReports/' + file
 
     def getColumnMapping(self):
         return [

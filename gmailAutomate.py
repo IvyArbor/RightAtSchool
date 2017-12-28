@@ -24,19 +24,19 @@ APPLICATION_NAME = 'Gmail API Python Quickstart'
 '''
 #removed directory with data
 import shutil
-shutil.rmtree('laborReports/', ignore_errors=True)
+shutil.rmtree('dailyLaborReports/', ignore_errors=True)
 
 #create directory is it does not exist
-if not os.path.exists("laborReports/"):
-    os.makedirs("laborReports/")
+if not os.path.exists("dailyLaborReports/"):
+    os.makedirs("dailyLaborReports/")
 
 #removed directory with data
 import shutil
-shutil.rmtree('payPeriodReports/', ignore_errors=True)
+shutil.rmtree('payPeriodLaborReports/', ignore_errors=True)
 
 #create directory is it does not exist
-if not os.path.exists("payPeriodReports/"):
-    os.makedirs("payPeriodReports/")
+if not os.path.exists("payPeriodLaborReports/"):
+    os.makedirs("payPeriodLaborReports/")
 '''
 
 def get_credentials():
@@ -138,20 +138,21 @@ def GetAttachments(service, user_id, msg_id, store_dir):
 
 
 ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT-JHSU after:2017/12/20 is:unread')
+ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT_PAST PAY PERIOD-JHSU after:2017/12/20 is:unread')
+
 i=0
 for x in messages:
     print (x["id"])
-    GetAttachments(service, 'me', x["id"], store_dir="laborReports/")
+    GetAttachments(service, 'me', x["id"], store_dir="dailyLaborReports/")
     markAsRead = service.users().messages().modify(userId='me', id=messages[i]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
     i+=1
 
 ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me').clear()
-ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT_PAST PAY PERIOD-JHSU after:2017/12/20 is:unread')
 ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT_PAST PAY PERIOD2-JHSU after:2017/12/20 is:unread')
 i=0
 for y in messages:
     print (y["id"])
-    GetAttachments(service, 'me', y["id"], store_dir="payPeriodReports/")
+    GetAttachments(service, 'me', y["id"], store_dir="payPeriodLaborReports/")
     markAsRead = service.users().messages().modify(userId='me', id=messages[i]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
     i+=1
 
@@ -160,7 +161,7 @@ for y in messages:
 # print (messages[0]["id"])
 #
 # # #this will get all UNREAD email attachments from NovaTime email
-# GetAttachments(service, 'me', messages[0]["id"], store_dir="payPeriodReports/")
+# GetAttachments(service, 'me', messages[0]["id"], store_dir="payPeriodLaborReports/")
 #
 # # #this will mark the message as read
 # markAsRead = service.users().messages().modify(userId='me', id=messages[0]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()

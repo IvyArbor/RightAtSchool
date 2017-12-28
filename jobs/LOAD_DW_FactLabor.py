@@ -6,20 +6,20 @@ from helpers.time import getTimeId
 import os
 import paramiko
 
-# fileList = os.fsdecode("laborReports/")
+# fileList = os.fsdecode("dailyLaborReports/")
 # for file in os.listdir(fileList):
 #     filename = os.fsdecode(file)
 #     print('FILENAME::::::' + filename)
 
-# file = os.path.basename("laborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls")
+# file = os.path.basename("dailyLaborReports/LABOR REPORT-JHSU(JHSU)-6418-4149.xls")
 # print("FILE", file)
 
-fileList = os.listdir("laborReports/")
+fileList = os.listdir("dailyLaborReports/")
 filename = fileList[0]
 
 class LOAD_DW_FactLabor(CSVJob):
     def configure(self):
-        self.target_database = 'DW'
+        self.target_database ='rightatschool_productiondb'
         self.target_table = 'FactLabor'
         self.target_table1 = 'DimDepartment'
         self.delimiter = ","
@@ -27,8 +27,8 @@ class LOAD_DW_FactLabor(CSVJob):
         self.ignore_firstline = False
         self.source_table = ''
         self.source_database = ''
-        # self.file_name = 'laborReports/TestCSV.csv'
-        self.file_name = 'laborReports/' + filename
+        # self.file_name = 'dailyLaborReports/TestCSV.csv'
+        self.file_name = 'dailyLaborReports/' + filename
     def getColumnMapping(self):
         return [
             'LocationId',
@@ -190,7 +190,7 @@ class LOAD_DW_FactLabor(CSVJob):
         # making the connection
         ssh.connect(hostname = self.conf[sftp]['hostname'], username = self.conf[sftp]['username'], password = self.conf[sftp]['password'])
         sftp = ssh.open_sftp()
-        localpath = 'laborReports/' + filename
+        localpath = 'dailyLaborReports/' + filename
         destinationpath = '/mnt/novatimelabor-archive/' + filename
         sftp.put(localpath, destinationpath)
         sftp.close()
