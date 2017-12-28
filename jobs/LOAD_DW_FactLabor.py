@@ -74,11 +74,6 @@ class LOAD_DW_FactLabor(CSVJob):
             '2': 'Approved Status',
             '3': 'Payroll Status',
         }
-
-        # print("EmployeeId::::::")
-        # print(row['EmployeeId'])
-        # print("EmployeeId::::::")
-
         try:
             row['ApprovalStatus'] = statusvalues[row['ApprovalStatus']]
         except KeyError:
@@ -152,17 +147,12 @@ class LOAD_DW_FactLabor(CSVJob):
         labor = {k: row[k] for k in laborfields}
         #self.insertDict(cursor, labor, self.target_table)
 
-        if self._checkRow(cursor, row) == None:
-            print('result is NONE')
-
+        if self._checkRow(cursor, labor) == None:
             self.insertDict(cursor, labor, self.target_table)
         else:
-            print('result is ELSE')
             self.updateDict(cursor, labor, self.target_table, laborfields)
-
-        print('result is before insert')
-
         self.target_connection.commit()
+
 
     def insertDict(self, cursor, row, table_name):
         name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
@@ -172,26 +162,22 @@ class LOAD_DW_FactLabor(CSVJob):
         sql1 = "INSERT INTO `{}` ({}) VALUES ({}) ".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql1, tuple(row.values()))
 
-    print('result is before update')
-
     def updateDict(self, cursor, row, table_name, laborfields):
-        print("update row", row)
-        sql = 'UPDATE {} SET {} WHERE `EmployeeId` = {} AND `WorkDate` = {} AND `In` = {}'.format(table_name, ', '.join('{}=%s'.format(k) for k in laborfields), (row["EmployeeId"],row["WorkDate"], row["In"]))
+        sql = 'UPDATE {} SET {} WHERE `EmployeeId`={} AND `WorkDate`={} AND `In`=\'{}\''.format(table_name, ', '.join('`{}`=%s'.format(k) for k in laborfields), row["EmployeeId"], row["WorkDate"], row["In"])
         cursor.execute(sql, tuple(row.values()))
 
     def _checkRow(self, cursor, row):
         query = """
-               SELECT `EmployeeId`, `WorkDate`, `In`
-               FROM `FactLabor`
-               WHERE `EmployeeId` = %s AND`WorkDate` = %s AND`In` = %s
+               SELECT *
+               FROM `{}`
+               WHERE `EmployeeId` = %s AND `WorkDate` = %s AND `In` = %s
                LIMIT 1
-           """
+           """.format(self.target_table)
 
         cursor.execute(query, (row["EmployeeId"],row["WorkDate"], row["In"]))
 
         query_result = cursor.fetchone()
         if query_result == None:
-            print('result is NONE')
             return None
         else:
             return 1
