@@ -138,18 +138,22 @@ def GetAttachments(service, user_id, msg_id, store_dir):
 
 
 ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT-JHSU after:2017/12/20 is:unread')
+i=0
 for x in messages:
     print (x["id"])
     GetAttachments(service, 'me', x["id"], store_dir="laborReports/")
-#markAsRead = service.users().messages().modify(userId='me', id=messages[x]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
+    markAsRead = service.users().messages().modify(userId='me', id=messages[i]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
+    i+=1
 
 ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me').clear()
 ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT_PAST PAY PERIOD-JHSU after:2017/12/20 is:unread')
 ListMessagesMatchingQuery(discovery.build('gmail', 'v1', http=http), 'me', 'NOVA4000Alerts ASC15315: LABOR REPORT_PAST PAY PERIOD2-JHSU after:2017/12/20 is:unread')
+i=0
 for y in messages:
     print (y["id"])
     GetAttachments(service, 'me', y["id"], store_dir="payPeriodReports/")
-#markAsRead = service.users().messages().modify(userId='me', id=messages[x]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
+    markAsRead = service.users().messages().modify(userId='me', id=messages[i]["id"], body={ 'removeLabelIds': ['UNREAD']}).execute()
+    i+=1
 
 
 
