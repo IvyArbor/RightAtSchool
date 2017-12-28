@@ -176,7 +176,7 @@ class LOAD_DW_FactLabor(CSVJob):
 
     def updateDict(self, cursor, row, table_name, laborfields):
         print("update row", row)
-        sql = 'UPDATE {} SET {} WHERE `EmployeeId` = {} AND `WorkDate` = {} AND `In` = {}'.format(table_name, ', '.join('{}=%s'.format(k) for k in laborfields), (row["EmployeeId"],row["WorkDate"], row["In"]))
+        sql = 'UPDATE {} SET {LocationId = '+ row["LocationId"] + ',DepartmentId = '+ row["DepartmentId"] + ', EmployeeSeq = '+ row["EmployeeSeq"] + ',  ApprovalStatus =  '+ row["ApprovalStatus"] + ', TimedComp ='+ row["TimedComp"] + ', Date ='+ row["Date"] + ', Out = '+ row["Out"] + ', RegHrs = '+ row["RegHrs"] + ', WorkDate1 = '+ row["WorkDate1"] + ', DailyTotal = '+ row["DailyTotal"] + ', CombinedRate = '+ row["CombinedRate"] + ', TotalPay =  '+ row["TotalPay"] + ', NCESID ='+ row["NCESID"] + ', COUNT ='+ row["COUNT"] +'} WHERE `EmployeeId` = {} AND `WorkDate` = {} AND `In` = {}'.format(table_name, ', '.join('{}=%s'.format(k) for k in laborfields), (row["EmployeeId"],row["WorkDate"], row["In"]))
         cursor.execute(sql, tuple(row.values()))
 
     def _checkRow(self, cursor, row):
