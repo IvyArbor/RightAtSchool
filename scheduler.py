@@ -41,7 +41,6 @@ class RightAtSchoolScheduler(object):
         self.scheduler.add_job(self.integrateQuickBooks, 'cron', day="1-31", hour=9)
         self.scheduler.add_job(self.integrateATS, 'cron', day="1-31", hour=10)
         self.scheduler.add_job(self.integrateHR, 'cron', day="1-31", hour=11)
-        self.scheduler.add_job(self.integrateActiveNet, 'cron', day="1-31", hour=12)
 
         self.scheduler.start()
 
@@ -77,17 +76,11 @@ class RightAtSchoolScheduler(object):
 
     def integrateCypherWorx(self):
         print("Integrate CypherWorx")
-        CyperworxJobs = ["LOAD_DW_DimCourse","LOAD_DW_DimEmployee","LOAD_DW_FactRecord"]
+        CyperworxJobs = ["LOAD_DW_DimCourse","LOAD_DW_DimUser_Cypherworx","LOAD_DW_FactRecord"]
 
         for job in CyperworxJobs:
             os.system("python job.py {}".format(job))
 
-    def integrateCypherWorx(self):
-        print("Integrate CypherWorx")
-        CyperworxJobs = ["LOAD_DW_DimCourse","LOAD_DW_DimEmployee","LOAD_DW_FactRecord"]
-
-        for job in CyperworxJobs:
-            os.system("python job.py {}".format(job))
 
     def integrateQuickBooks(self):
         print("Integrate QuickBooks")
@@ -95,6 +88,10 @@ class RightAtSchoolScheduler(object):
 
     def integrateHR(self):
         print("Integrate HR")
+        HRJobs = ["LOAD_DW_DimEmployee"]
+
+        for job in HRJobs:
+            os.system("python job.py {}".format(job))
 
 
     def integrateATS(self):
@@ -103,10 +100,6 @@ class RightAtSchoolScheduler(object):
 
         for job in ATSJobs:
             os.system("python job.py {}".format(job))
-
-
-    def integrateActiveNet(self):
-        print("Integrate ActiveNet")
 
 
 RightAtSchoolScheduler(True)
