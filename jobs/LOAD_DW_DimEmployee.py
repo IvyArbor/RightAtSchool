@@ -8,7 +8,7 @@ import shutil
 # class for employee dimension
 class LOAD_DW_DimEmployee(SFTCSVJob):
     def configure(self):
-        self.target_database = 'rightatschool_testdb'
+        self.target_database = 'rightatschool_productiondb'
         self.target_table = 'DimEmployee'
         self.delimiter = ","
         self.quotechar = '"'
