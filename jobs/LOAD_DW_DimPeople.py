@@ -7,7 +7,7 @@ class LOAD_DW_DimPeople(JSONJob):
         self.auth_user = 'Right At School'
         self.auth_password = '5119919dca43c62ca026750611806c707f78a745'
         #self.data = 'people'
-        self.target_database = 'rightatschool_testdb'
+        self.target_database = 'rightatschool_productiondb'
         self.target_table = 'DimPeople'
         self.source_table = ''
         self.source_database = ''

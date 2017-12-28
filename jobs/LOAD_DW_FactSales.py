@@ -8,7 +8,7 @@ class LOAD_DW_FactSales(JSONJob):
         self.auth_user = 'Right At School'
         self.auth_password = 'https://companydomain.pipedrive.com/v1/persons/?api_token=5119919dca43c62ca026750611806c707f78a745'
         #self.data = 'deals'
-        self.target_database = 'rightatschool_testdb'
+        self.target_database = 'rightatschool_productiondb'
         self.target_table = 'FactSales'
         self.source_table = ''
         self.source_database = ''
