@@ -53,7 +53,6 @@ conf = {
             "ssl": None if env.get('STG_USE_SSL') == 'No' else {
                 'ca': env.get('STG_SSL_CA_BUNDLE'),
             },
-        },
         "DW": {
             "host": env.get('DW_HOST'),
             "user": env.get('DW_USER'),
