@@ -11,7 +11,7 @@ class LOAD_DW_DimOrganization(JSONJob):
         self.auth_user = 'Right At School'
         self.auth_password = '5119919dca43c62ca026750611806c707f78a745'
         self.object_key = 'data'
-        self.target_database = 'rightatschool_testdb'
+        self.target_database = 'rightatschool_productiondb'
         self.target_table = 'DimOrganization'
         self.target_table1 = 'DimLocation'
         self.source_table = ''

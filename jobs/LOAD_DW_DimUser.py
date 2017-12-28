@@ -7,7 +7,7 @@ class LOAD_DW_DimUser(JSONJob):
         self.url = 'https://api.pipedrive.com/v1/users?api_token=5119919dca43c62ca026750611806c707f78a745'
         self.auth_user = 'Right At School'
         self.auth_password = 'https://api.pipedrive.com/v1/users?api_token=5119919dca43c62ca026750611806c707f78a745'
-        self.target_database = 'rightatschool_testdb'
+        self.target_database = 'rightatschool_productiondb'
         self.target_table = 'DimUser'
         self.source_table = ''
         self.source_database = ''
