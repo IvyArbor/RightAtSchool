@@ -37,10 +37,12 @@ class RightAtSchoolScheduler(object):
 
         self.scheduler.add_job(self.integratePipeDrive, 'cron', day="1-31", hour="1-24")
         self.scheduler.add_job(self.integrateCypherWorx, 'cron', day="1-31", hour=8)
-        # self.scheduler.add_job(self.integrateNovatime, 'cron', day="1-31", hour=9)
+        self.scheduler.add_job(self.integrateNovatimeDaily, 'cron', day="1-31", hour=6) #daily report
+        self.scheduler.add_job(self.integrateNovatimeDaily, 'cron', day="1-31", hour=18) #pay period daily report
+        self.scheduler.add_job(self.integrateNovatimePayPeriod(), 'cron', day_of_week="2", hour=23) # weekly pay period
         self.scheduler.add_job(self.integrateQuickBooks, 'cron', day="1-31", hour=9)
         self.scheduler.add_job(self.integrateATS, 'cron', day="1-31", hour=10)
-        self.scheduler.add_job(self.integrateHR, 'cron', day="1-31", hour=11)
+        # self.scheduler.add_job(self.integrateHR, 'cron', day="1-31", hour=11)
         self.scheduler.add_job(self.integrateActiveNet, 'cron', day="1-31", hour=12)
 
         self.scheduler.start()
@@ -81,13 +83,25 @@ class RightAtSchoolScheduler(object):
 
         for job in CyperworxJobs:
             os.system("python job.py {}".format(job))
+# Novatime
+    def integrateNovatimeDaily(self):
+        print("Integrate NovatimeDaily")
+        # NovatimeDailyJobs = ["LOAD_DW_FactLabor"]
+        os.system("python gmailAutomate.py")
+        os.system("python iterateLaborDaily.py")
 
-    def integrateCypherWorx(self):
-        print("Integrate CypherWorx")
-        CyperworxJobs = ["LOAD_DW_DimCourse","LOAD_DW_DimEmployee","LOAD_DW_FactRecord"]
+        # for job in NovatimeDailyJobs:
+        #     os.system("python job.py {}".format(job))
 
-        for job in CyperworxJobs:
-            os.system("python job.py {}".format(job))
+    def integrateNovatimePayPeriod(self):
+        print("Integrate NovatimePayPeriod")
+        # NovatimePayPeriodJobs = ["LOAD_DW_FactLabor_PayPeriod"]
+        os.system("python gmailAutomate.py")
+        os.system("python iterateLaborPayPeriod.py")
+
+        # for job in NovatimePayPeriodJobs:
+        #     os.system("python job.py {}".format(job))
+
 
     def integrateQuickBooks(self):
         print("Integrate QuickBooks")
