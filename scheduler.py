@@ -39,7 +39,7 @@ class RightAtSchoolScheduler(object):
         self.scheduler.add_job(self.integrateCypherWorx, 'cron', day="1-31", hour=8)
         self.scheduler.add_job(self.integrateNovatimeDaily, 'cron', day="1-31", hour=6) #daily report
         self.scheduler.add_job(self.integrateNovatimeDaily, 'cron', day="1-31", hour=18) #pay period daily report
-        self.scheduler.add_job(self.integrateNovatimePayPeriod(), 'cron', day_of_week="2", hour=23) # weekly pay period
+        self.scheduler.add_job(self.integrateNovatimePayPeriod, 'cron', day_of_week=2, hour=23) # weekly pay period
         self.scheduler.add_job(self.integrateQuickBooks, 'cron', day="1-31", hour=9)
         self.scheduler.add_job(self.integrateATS, 'cron', day="1-31", hour=10)
         # self.scheduler.add_job(self.integrateHR, 'cron', day="1-31", hour=11)
