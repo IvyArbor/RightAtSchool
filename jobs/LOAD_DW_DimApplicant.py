@@ -2,17 +2,19 @@ from base.jobs import SFTCSVJob, CSVJob
 from helpers.time import getTimeId
 import csv
 from datetime import datetime, timedelta
+from dateutil import parser
+
 
 # class for customer dimension
 class LOAD_DW_DimApplicant(SFTCSVJob):
     def configure(self):
-        self.target_database = 'rightatschool_testdb'
+        self.target_database = 'rightatschool_productiondb'
         self.target_table = 'DimApplicant'
         self.delimiter = ","
         self.quotechar = '"'
         self.source_table = ''
         self.source_database = ''
-        #self.file_name = 'sources/ATS/12062017.csv'
+        #self.file_name = "Applicant History/12112017.csv"
         self.ignore_firstline = True
 
         self.location_map = self._getLocationMap()
@@ -89,32 +91,35 @@ class LOAD_DW_DimApplicant(SFTCSVJob):
                 'PositionTitle',
                 'ReqLocationState',
                 'ReqLocationDistrict',
-                'ReqLocationCode'
+                'DistrictNCESID',
+                'LastState'
             ]
+
+            if row["Req Location"][0] == 'z':
+                row["Req Location"] = row["Req Location"][1:]
 
             row["ReqLocationState"] = row["Req Location"].split("-")[0].strip()
             row["ReqLocationDistrict"] = row["Req Location"].split("-")[1].strip()
             if row["Req Location Code"] == "" or row["Req Location Code"] == None:
                 row["Req Location Code"] = self._getLocationCode(row["Req Location"])
             del row["Req Location"]
+            row["LastState"] = 1
 
-            row["Entry Date"] = getTimeId(cursor, self.target_connection, row["Entry Date"])
-            row["Activity Date"] = getTimeId(cursor, self.target_connection, row["Activity Date"])
+            row["Entry Date"] = parser.parse(row["Entry Date"])
+            row["Activity Date"] = parser.parse(row["Activity Date"])
 
             name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
             value_placeholders = ", ".join(['%s'] * len(row))
 
-            if self._checkRow(cursor, row) == 1:
+            result = self._checkRow(cursor, row)
+            if result == 1:
                 self._updateApplicant(cursor, row)
+            if result == 0:
+                row["LastState"] = 0
 
             sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
             cursor.execute(sql, tuple(row.values()))
             self.target_connection.commit()
-
-    def close(self):
-        """Here we should archive the file instead"""
-        # self.active_cursor.close()
-
 
     def _getLocationMap(self):
         with open('sources/ATS - LocationMap.csv', 'r') as f:
@@ -132,9 +137,9 @@ class LOAD_DW_DimApplicant(SFTCSVJob):
 
     def _checkRow(self, cursor, row):
         query = """
-            SELECT `ApplicantId`
+            SELECT `ApplicantId`, `ActivityDate`
             FROM `DimApplicant`
-            WHERE `ApplicantId` = %s
+            WHERE `ApplicantId` = %s AND `LastState` = 1
             LIMIT 1
         """
 
@@ -144,7 +149,9 @@ class LOAD_DW_DimApplicant(SFTCSVJob):
         if query_result == None:
             return None
         else:
-            return 1
+            if query_result[1] < row["Activity Date"]:
+                return 1
+            return 0
 
     def _updateApplicant(self, cursor, row):
         row2 = {"LastState": 0}
