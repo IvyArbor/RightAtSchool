@@ -19,9 +19,9 @@ filename = fileList[0]
 
 class LOAD_DW_FactLabor(CSVJob):
     def configure(self):
-        self.target_database = 'rightatschool_testdb'
-        self.target_table = 'TestFactLabor'
-        self.target_table1 = 'TestDimDepartment'
+        self.target_database = 'DW'
+        self.target_table = 'FactLabor'
+        self.target_table1 = 'DimDepartment'
         self.delimiter = ","
         self.quotechar = '"'
         self.ignore_firstline = False
