@@ -10,7 +10,7 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
         self.auth_user = 'Right At School'
         self.auth_password = '29AD1B22C11CA60D3CB34D65C063103636F0D35D65ED45A751F98FC5C1CA293C'
         self.data = 'user'
-        self.target_database = 'rightatschool_testdb'
+        self.target_database = 'rightatschool_productiondb'
         self.target_table = 'DimEmployee'
         self.source_table = ''
         self.source_database = ''
