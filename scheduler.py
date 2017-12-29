@@ -79,7 +79,7 @@ class RightAtSchoolScheduler(object):
 
     def integrateCypherWorx(self):
         print("Integrate CypherWorx")
-        CyperworxJobs = ["LOAD_DW_DimCourse","LOAD_DW_DimEmployee","LOAD_DW_FactRecord"]
+        CyperworxJobs = ["LOAD_DW_DimCourse","LOAD_DW_DimUser_Cypherworx","LOAD_DW_FactRecord"]
 
         for job in CyperworxJobs:
             os.system("python job.py {}".format(job))
