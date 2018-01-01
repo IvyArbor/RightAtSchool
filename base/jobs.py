@@ -314,13 +314,11 @@ class SFTCSVJob(FileJob):
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-            ssh.connect(self.conf[sftp]["hostname"], username=self.conf[sftp]["username"],
-                        password=self.conf[sftp]["password"])
+            ssh.connect(self.conf[sftp]["hostname"], username=self.conf[sftp]["username"], password=self.conf[sftp]["password"])
 
             archive_destination = "/archive{}".format(self.file_path)
 
-            stdin, stdout, stderr = ssh.exec_command(
-                "sudo -S -p '' mv {} {}".format(self.file_path, archive_destination))
+            stdin, stdout, stderr = ssh.exec_command("sudo -S -p '' mv {} {}".format(self.file_path, archive_destination))
             stdin.write(self.conf[sftp]["password"] + "\n")
             stdin.flush()
 
