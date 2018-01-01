@@ -318,7 +318,7 @@ class SFTCSVJob(FileJob):
                         password=self.conf[sftp]["password"])
 
             archive_destination = "/archive{}".format(self.file_path)
-            
+
             stdin, stdout, stderr = ssh.exec_command(
                 "sudo -S -p '' mv {} {}".format(self.file_path, archive_destination))
             stdin.write(self.conf[sftp]["password"] + "\n")
