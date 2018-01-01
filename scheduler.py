@@ -38,7 +38,7 @@ class RightAtSchoolScheduler(object):
         self.scheduler.add_job(self.integratePipeDrive, 'cron', day="1-31", hour=8)
         self.scheduler.add_job(self.integrateCypherWorx, 'cron', day="1-31", hour=9)
         self.scheduler.add_job(self.integrateNovatimeDaily, 'cron', day="1-31", hour=7) #daily report
-        self.scheduler.add_job(self.integrateNovatimeDaily, 'cron', day="1-31", hour=19) #pay period daily report
+        self.scheduler.add_job(self.integrateNovatimeDailyPayPeriodDaily, 'cron', day="1-31", hour=19) #pay period daily report
         self.scheduler.add_job(self.integrateNovatimePayPeriod, 'cron', day_of_week=2, hour=20) # weekly pay period
         self.scheduler.add_job(self.integrateQuickBooks, 'cron', day="1-31", hour=9)
         self.scheduler.add_job(self.integrateATS, 'cron', day="1-31", hour=14)
@@ -96,6 +96,12 @@ class RightAtSchoolScheduler(object):
         # NovatimePayPeriodJobs = ["LOAD_DW_FactLabor_PayPeriod"]
         os.system("python gmailAutomate.py")
         os.system("python iterateLaborPayPeriod.py")
+
+    def integrateNovatimeDailyPayPeriodDaily(self):
+        print("Integrate NovatimeDaily")
+        # NovatimeDailyJobs = ["LOAD_DW_FactLabor"]
+        os.system("python gmailAutomate.py")
+        os.system("python iterateLaborDaily.py")
 
     def integrateQuickBooks(self):
         print("Integrate QuickBooks")
