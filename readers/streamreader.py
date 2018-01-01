@@ -59,7 +59,7 @@ class S3StreamReader(LocalStreamReader):
 import paramiko
 
 class SFTPStreamReader(LocalStreamReader):
-    def __init__(self, file_path, host, port, username, password, chunk_size = 1048576):
+    def __init__(self, file_path, host, port, username, password, chunk_size = 2048576):
         self.chunk_size = chunk_size
         self.file_path = file_path
         self.host = host
