@@ -160,4 +160,12 @@ class LOAD_DW_DimApplicant(SFTCSVJob):
 
     def _getFilePath(self):
         d = datetime.now() - timedelta(days=1)
-        return "/{}{}{}.csv".format(d.month, d.day, d.year)
+        month = d.month
+        if len(str(d.month)) == 1:
+            month = "0{}".format(d.month)
+
+        day = d.day
+        if len(str(d.day)) == 1:
+            day = "0{}".format(d.day)
+
+        return "/{}{}{}.csv".format(month, day, d.year)
