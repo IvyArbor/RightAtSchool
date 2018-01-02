@@ -35,12 +35,9 @@ class LOAD_DW_DimCourse(JSONCypherWorxJob):
             'score',
             'expiration'
         ]
-        # print(myfields)
         newrow = {}
         for f in myfields:
             newrow[f] = row[f] if f in row else None
-        #print('new:', newrow)
-
         return newrow
 
     # Override the following method if the data needs to be transformed before insertion
@@ -55,14 +52,45 @@ class LOAD_DW_DimCourse(JSONCypherWorxJob):
 
         row["title"] = row["title"].encode("utf-8")
 
-        name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
-        print("Course Fields: ",name_placeholders)
-        value_placeholders = ", ".join(['%s'] * len(row))
-        print("Course Values: ",value_placeholders)
-
-        sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
-        cursor.execute(sql, tuple(row.values()))
+        if self._checkRow(cursor, row) == None:
+            self.insertDict(cursor, row, self.target_table, databasefieldvalues)
+        else:
+            self.updateDict(cursor, row, self.target_table, databasefieldvalues)
         self.target_connection.commit()
+
+
+    def insertDict(self, cursor, row, table_name, databasefieldvalues):
+        name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
+        value_placeholders = ", ".join(['%s'] * len(row))
+
+        print("Row to be inserted in ",table_name)
+        print(row)
+        # insert values
+        sql = "INSERT INTO `{}` ({}) VALUES ({})".format(table_name, name_placeholders, value_placeholders)
+        cursor.execute(sql, tuple(row.values()))
+
+    def updateDict(self, cursor, row, table_name, databasefieldvalues):
+        print("Row to be updated in ",table_name)
+        print(row)
+        sql = 'UPDATE {} SET {} WHERE `CourseId`={}'.format(table_name, ', '.join('{}=%s'.format(k) for k in databasefieldvalues), row["id"])
+        cursor.execute(sql, tuple(row.values()))
+
+    def _checkRow(self, cursor, row):
+        query = """
+            SELECT `CourseId`
+            FROM `DimCourse`
+            WHERE `CourseId` = %s
+            LIMIT 1
+        """
+
+        cursor.execute(query, (row["id"]))
+
+        query_result = cursor.fetchone()
+        if query_result == None:
+            return None
+        else:
+            return 1
+
 
     def close(self):
         """Here we should archive the file instead"""
