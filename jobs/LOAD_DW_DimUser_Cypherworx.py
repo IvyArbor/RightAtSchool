@@ -81,9 +81,12 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
             'Team',
             'Role'
         ]
-
-        row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
-        row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
+        if row["extra_registration"] != None:
+            row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
+            row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
+        else:
+            row["Team"] = None
+            row["Role"] = None
         del row["extra_registration"]
 
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
