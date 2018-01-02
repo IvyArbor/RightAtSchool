@@ -53,6 +53,8 @@ class LOAD_DW_DimCourse(JSONCypherWorxJob):
             'Expiration'
         ]
 
+        row["title"] = row["title"].encode("utf-8")
+
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         print("Course Fields: ",name_placeholders)
         value_placeholders = ", ".join(['%s'] * len(row))
