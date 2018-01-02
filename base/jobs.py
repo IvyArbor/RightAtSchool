@@ -311,6 +311,14 @@ class SFTCSVJob(FileJob):
             stdin.write(self.conf[sftp]["password"] + "\n")
             stdin.flush()
         else:
+            transport = paramiko.Transport(self.conf[sftp]["hostname"], 22)
+            transport.connect(username=self.conf[sftp]["username"], password=self.conf[sftp]["password"])
+            sftp = paramiko.SFTPClient.from_transport(transport)
+
+            archive_destination = "/archive{}".format(self.file_path)
+            sftp.rename(self.file_path, archive_destination)
+
+            '''
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
@@ -321,6 +329,7 @@ class SFTCSVJob(FileJob):
             stdin, stdout, stderr = ssh.exec_command("sudo -S -p '' mv {} {}".format(self.file_path, archive_destination))
             stdin.write(self.conf[sftp]["password"] + "\n")
             stdin.flush()
+            '''
 
     def close(self):
         self.archive_file()
