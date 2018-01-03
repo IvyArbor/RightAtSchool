@@ -159,7 +159,7 @@ class LOAD_DW_DimApplicant(SFTCSVJob):
         cursor.execute(sql, tuple(row2.values()))
 
     def _getFilePath(self):
-        d = datetime.now() - timedelta(days=1)
+        d = datetime.now()
         month = d.month
         if len(str(d.month)) == 1:
             month = "0{}".format(d.month)
