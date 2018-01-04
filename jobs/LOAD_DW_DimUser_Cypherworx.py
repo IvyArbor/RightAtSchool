@@ -81,20 +81,58 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
             'Team',
             'Role'
         ]
-        team = row["extra_registration"]["The Right At School team I belong to is:"]
-        role =  row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
-        if row["extra_registration"] is not None:
-            if row["extra_registration"]["The Right At School team I belong to is:"] is not None:
-                row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
-            else:
-                row["Team"] = None
-            if row["extra_registration"]["The Right At School team I belong to is:"] is None:
-                row["Team"] = None
-            elif row["extra_registration"]["My role at Right At School is: (please choose accurately)"] is None:
-                row["Role"] = None
-        else:
-            row["Team"] = None
-            row["Role"] = None
+
+        registrationValues = {
+            "The Right At School team I belong to is:": row["extra_registration"]["The Right At School team I belong to is:"],
+            "My role at Right At School is: (please choose accurately)": row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
+        }
+
+        for key, value in registrationValues.items():
+            try:
+                if key == "The Right At School team I belong to is:":
+                    row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
+                else:
+                    row["Team"] = None
+
+                if key == "My role at Right At School is: (please choose accurately)":
+                    row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
+                else:
+                    row["Role"] = None
+
+                if key[0] == '' and key[1] == '':
+                    row["Team"] = None
+                    row["Role"] = None
+
+            except KeyError:
+                print('An exception happened!')
+
+
+
+
+        # if  row["extra_registration"] == None:
+        #     row["Team"]= None
+        #     row["Role"]= None
+        #
+        # else:
+        #     try:
+        #         keys = list(row["extra_registration"].keys())
+        #         key0 = 'The Right At School team I belong to is:'
+        #         key1 = 'My role at Right At School is: (please choose accurately)'
+        #         #case when we have both Team and Role
+        #         if keys[0] == key0 and keys[1]==key1:
+        #             row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
+        #             row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
+        #         else:
+        #             #case only when we have Role
+        #             if keys[0] == key1:
+        #                 row["Team"] = ""
+        #                 row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
+        #     except IndexError:
+        #         #case only when we have Team
+        #         row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
+        #         row["Role"] = ""
+
+
         del row["extra_registration"]
 
         if self._checkRow(cursor, row) == None:

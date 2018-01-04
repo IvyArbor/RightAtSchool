@@ -20,8 +20,8 @@ filename = fileList[0]
 class LOAD_DW_FactLabor(CSVJob):
     def configure(self):
         self.target_database ='rightatschool_productiondb'
-        self.target_table = 'FactLabor'
-        self.target_table1 = 'DimDepartment'
+        self.target_table = 'TestFactLabor'
+        self.target_table1 = 'TestDimDepartment'
         self.delimiter = ","
         self.quotechar = '"'
         self.ignore_firstline = False
