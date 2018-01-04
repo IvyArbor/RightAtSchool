@@ -35,13 +35,13 @@ class RightAtSchoolScheduler(object):
 
         self.initLogging()
 
-        self.scheduler.add_job(self.integratePipeDrive, 'cron', day="1-31", hour=8)
+        self.scheduler.add_job(self.integratePipeDrive, 'cron', day="1-31", hour=11)
         self.scheduler.add_job(self.integrateCypherWorx, 'cron', day="1-31", hour=9)
         self.scheduler.add_job(self.integrateNovatimeDaily, 'cron', day="1-31", hour=7) #daily report
         self.scheduler.add_job(self.integrateNovatimeDailyPayPeriodDaily, 'cron', day="1-31", hour=19) #pay period daily report
-        self.scheduler.add_job(self.integrateNovatimePayPeriod, 'cron', day_of_week=3, hour=9) # weekly pay period
+        self.scheduler.add_job(self.integrateNovatimePayPeriod, 'cron', day_of_week=3, hour=8) # weekly pay period
         self.scheduler.add_job(self.integrateQuickBooks, 'cron', day="1-31", hour=9)
-        self.scheduler.add_job(self.integrateATS, 'cron', day="1-31", hour=15)
+        self.scheduler.add_job(self.integrateATS, 'cron', day="1-31", hour=14)
         self.scheduler.add_job(self.integrateHR, 'cron', day="1-31", hour=10)
 
         self.scheduler.start()
