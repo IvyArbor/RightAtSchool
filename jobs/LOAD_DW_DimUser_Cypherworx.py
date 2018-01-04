@@ -10,8 +10,8 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
         self.auth_user = 'Right At School'
         self.auth_password = '29AD1B22C11CA60D3CB34D65C063103636F0D35D65ED45A751F98FC5C1CA293C'
         self.data = 'user'
-        self.target_database = 'rightatschool_productiondb'
-        self.target_table = 'DimEmployee'
+        self.target_database = 'rightatschool_testdb'
+        self.target_table = 'TestDimEmployee'
         self.source_table = ''
         self.source_database = ''
         #self.file_name = ''
@@ -81,23 +81,60 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
             'Team',
             'Role'
         ]
-        if row["extra_registration"] != None:
-            row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
-            row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
+        team = row["extra_registration"]["The Right At School team I belong to is:"]
+        role =  row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
+        if row["extra_registration"] is not None:
+            if row["extra_registration"]["The Right At School team I belong to is:"] is not None:
+                row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
+            else:
+                row["Team"] = None
+            if row["extra_registration"]["The Right At School team I belong to is:"] is None:
+                row["Team"] = None
+            elif row["extra_registration"]["My role at Right At School is: (please choose accurately)"] is None:
+                row["Role"] = None
         else:
             row["Team"] = None
             row["Role"] = None
         del row["extra_registration"]
 
+        if self._checkRow(cursor, row) == None:
+            self.insertDict(cursor, row, self.target_table, databasefieldvalues)
+        else:
+            self.updateDict(cursor, row, self.target_table, databasefieldvalues)
+        self.target_connection.commit()
+
+    def insertDict(self, cursor, row, table_name, databasefieldvalues):
         name_placeholders = ", ".join(["`{}`".format(s) for s in databasefieldvalues])
         value_placeholders = ", ".join(['%s'] * len(row))
 
-        print('NAMES', name_placeholders)
-        print('VALUES', value_placeholders)
-
-        sql = "INSERT INTO `{}` ({}) VALUES ({}) ".format(self.target_table, name_placeholders, value_placeholders)
+        print("Row to be inserted in ", table_name)
+        print(row)
+        # insert values
+        sql = "INSERT INTO `{}` ({}) VALUES ({})".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql, tuple(row.values()))
-        self.target_connection.commit()
+
+    def updateDict(self, cursor, row, table_name, databasefieldvalues):
+        print("Row to be updated in ", table_name)
+        print(row)
+        sql = 'UPDATE {} SET {} WHERE `UserId`={}'.format(table_name, ', '.join(
+            '{}=%s'.format(k) for k in databasefieldvalues), row["id"])
+        cursor.execute(sql, tuple(row.values()))
+
+    def _checkRow(self, cursor, row):
+        query = """
+             SELECT `UserId`
+             FROM `TestDimEmployee`
+             WHERE `UserId` = %s
+             LIMIT 1
+         """
+
+        cursor.execute(query, (row["id"]))
+
+        query_result = cursor.fetchone()
+        if query_result == None:
+            return None
+        else:
+            return 1
 
     def close(self):
         """Here we should archive the file instead"""
