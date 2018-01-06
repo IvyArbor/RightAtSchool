@@ -20,8 +20,8 @@ filename = fileList[0]
 class LOAD_DW_FactLabor(CSVJob):
     def configure(self):
         self.target_database ='rightatschool_productiondb'
-        self.target_table = 'TestFactLabor'
-        self.target_table1 = 'TestDimDepartment'
+        self.target_table = 'FactLabor'
+        self.target_table1 = 'DimDepartment'
         self.delimiter = ","
         self.quotechar = '"'
         self.ignore_firstline = False
@@ -157,12 +157,15 @@ class LOAD_DW_FactLabor(CSVJob):
     def insertDict(self, cursor, row, table_name):
         name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
         value_placeholders = ", ".join(['%s'] * len(row))
-
+        print("Row to be inserted into ",table_name)
+        print(row)
         # insert only unique values for department, ignore duplicates
         sql1 = "INSERT INTO `{}` ({}) VALUES ({}) ".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql1, tuple(row.values()))
 
     def updateDict(self, cursor, row, table_name, laborfields):
+        print("Row to be updated into ",table_name)
+        print(row)
         sql = 'UPDATE {} SET {} WHERE `EmployeeId`={} AND `WorkDate`={} AND `In`=\'{}\''.format(table_name, ', '.join('`{}`=%s'.format(k) for k in laborfields), row["EmployeeId"], row["WorkDate"], row["In"])
         cursor.execute(sql, tuple(row.values()))
 
