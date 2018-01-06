@@ -11,7 +11,7 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
         self.auth_password = '29AD1B22C11CA60D3CB34D65C063103636F0D35D65ED45A751F98FC5C1CA293C'
         self.data = 'user'
         self.target_database = 'rightatschool_testdb'
-        self.target_table = 'TestDimEmployee'
+        self.target_table = 'DimEmployee'
         self.source_table = ''
         self.source_database = ''
         #self.file_name = ''
@@ -50,14 +50,9 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
                 'NCESId',
                 'extra_registration'
             ]
-        # print(myfields)
         newrow = {}
         for f in myfields:
             newrow[f] = row[f] if f in row else None
-        # newrow = { f:row[f] for f in set(myfields) }
-
-        #print('new:', newrow)
-
         return newrow
 
     # Override the following method if the data needs to be transformed before insertion
@@ -81,57 +76,28 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
             'Team',
             'Role'
         ]
+        if  row["extra_registration"] == None:
+            row["Team"]= None
+            row["Role"]= None
 
-        registrationValues = {
-            "The Right At School team I belong to is:": row["extra_registration"]["The Right At School team I belong to is:"],
-            "My role at Right At School is: (please choose accurately)": row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
-        }
-
-        for key, value in registrationValues.items():
+        else:
             try:
-                if key == "The Right At School team I belong to is:":
+                keys = list(row["extra_registration"].keys())
+                key0 = 'The Right At School team I belong to is:'
+                key1 = 'My role at Right At School is: (please choose accurately)'
+                #case when we have both Team and Role
+                if keys[0] == key0 and keys[1]==key1:
                     row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
-                else:
-                    row["Team"] = None
-
-                if key == "My role at Right At School is: (please choose accurately)":
                     row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
                 else:
-                    row["Role"] = None
-
-                if key[0] == '' and key[1] == '':
-                    row["Team"] = None
-                    row["Role"] = None
-
-            except KeyError:
-                print('An exception happened!')
-
-
-
-
-        # if  row["extra_registration"] == None:
-        #     row["Team"]= None
-        #     row["Role"]= None
-        #
-        # else:
-        #     try:
-        #         keys = list(row["extra_registration"].keys())
-        #         key0 = 'The Right At School team I belong to is:'
-        #         key1 = 'My role at Right At School is: (please choose accurately)'
-        #         #case when we have both Team and Role
-        #         if keys[0] == key0 and keys[1]==key1:
-        #             row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
-        #             row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
-        #         else:
-        #             #case only when we have Role
-        #             if keys[0] == key1:
-        #                 row["Team"] = ""
-        #                 row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
-        #     except IndexError:
-        #         #case only when we have Team
-        #         row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
-        #         row["Role"] = ""
-
+                    #case when we have only Role
+                    if keys[0] == key1:
+                        row["Team"] = ""
+                        row["Role"] = row["extra_registration"]["My role at Right At School is: (please choose accurately)"]
+            except IndexError:
+                #case when we have only Team
+                row["Team"] = row["extra_registration"]["The Right At School team I belong to is:"]
+                row["Role"] = ""
 
         del row["extra_registration"]
 
@@ -161,7 +127,7 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
     def _checkRow(self, cursor, row):
         query = """
              SELECT `UserId`
-             FROM `TestDimEmployee`
+             FROM `DimEmployee`
              WHERE `UserId` = %s
              LIMIT 1
          """
@@ -177,4 +143,3 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
-
