@@ -50,7 +50,6 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
                 'NCESId',
                 'extra_registration'
             ]
-        # print(myfields)
         newrow = {}
         for f in myfields:
             newrow[f] = row[f] if f in row else None
@@ -81,7 +80,6 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
         if  row["extra_registration"] == None:
             row["Team"]= None
             row["Role"]= None
-        
         else:
             try:
                 keys = list(row["extra_registration"].keys())
@@ -145,4 +143,3 @@ class LOAD_DW_DimUser_Cypherworx(JSONCypherWorxJob):
     def close(self):
         """Here we should archive the file instead"""
         # self.active_cursor.close()
-

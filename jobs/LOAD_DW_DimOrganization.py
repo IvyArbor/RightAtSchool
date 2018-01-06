@@ -228,7 +228,7 @@ class LOAD_DW_DimOrganization(JSONJob):
                       database=conf["mysql"]["DW"]["database"])
         cursor = cnn.cursor()
 
-        query = ("SELECT OrganizationId FROM {} ORDER BY OrganizationId DESC LIMIT 1".format(self.target_table))
+        query = ("SELECT COUNT(*) FROM {}".format(self.target_table))
         cursor.execute(query)
         last_id = cursor.fetchone()
         if last_id == None:
