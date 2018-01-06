@@ -119,7 +119,7 @@ class LOAD_DW_DimUser(JSONJob):
                               database=conf["mysql"]["DW"]["database"])
         cursor = cnn.cursor()
 
-        query = ("SELECT UserId FROM {} ORDER BY UserId DESC LIMIT 1".format(self.target_table))
+        query = ("SELECT COUNT(*) FROM {}".format(self.target_table))
         cursor.execute(query)
         last_id = cursor.fetchone()
         if last_id == None:
