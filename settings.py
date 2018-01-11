@@ -47,12 +47,12 @@ conf = {
             },
         },
         "rightatschool_productiondb": {
-            "host": env.get('STG_HOST'),
-            "user": env.get('STG_USER'),
-            "password": env.get('STG_PASSWORD'),
-            "database": env.get('STG_DATABASE'),
-            "ssl": None if env.get('STG_USE_SSL') == 'No' else {
-                'ca': env.get('STG_SSL_CA_BUNDLE'),
+            "host": env.get('DW_HOST_PROD'),
+            "user": env.get('DW_USER_PROD'),
+            "password": env.get('DW_PASSWORD_PROD'),
+            "database": env.get('DW_DATABASE_PROD'),
+            "ssl": None if env.get('DW_USE_SSL_PROD') == 'No' else {
+                'ca': env.get('DW_SSL_CA_BUNDLE'),
             },
         },
         "DW": {
