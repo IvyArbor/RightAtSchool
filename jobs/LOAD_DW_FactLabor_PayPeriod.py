@@ -16,12 +16,12 @@ filename = fileList[0]
 
 class LOAD_DW_FactLabor_PayPeriod(CSVJob):
     def configure(self):
-        self.target_database = 'rightatschool_productiondb'
-        self.target_table = 'FactLabor'
+        self.target_database = 'rightatschool_testdb'
+        self.target_table = 'TestFactLabor'
         self.target_table1 = 'DimDepartment'
         self.delimiter = ","
         self.quotechar = '"'
-        self.ignore_firstline = False
+        self.ignore_firstline = True
         self.source_table = ''
         self.source_database = ''
         self.file_name = 'payPeriodLaborReports/' + filename
@@ -92,7 +92,7 @@ class LOAD_DW_FactLabor_PayPeriod(CSVJob):
             'SUMMER CAMP': 'Program Time',
             'TUTOR RIGHT': 'Non-Program Time',
             'EOD': 'Electives',
-            'None': 'None',
+            'None': 'None'
         }
         try:
             row['DepartmentCategory'] = descriptionvalues[row['DepartmentName']]
@@ -144,8 +144,6 @@ class LOAD_DW_FactLabor_PayPeriod(CSVJob):
         row['Department'] = ''
 
         labor = {k: row[k] for k in laborfields}
-        self.insertDict(cursor, labor, self.target_table)
-        self.target_connection.commit()
         if self._checkRow(cursor, labor) == None:
             self.insertDict(cursor, labor, self.target_table)
         else:
@@ -156,14 +154,14 @@ class LOAD_DW_FactLabor_PayPeriod(CSVJob):
     def insertDict(self, cursor, row, table_name):
         name_placeholders = ", ".join(["`{}`".format(s) for s in row.keys()])
         value_placeholders = ", ".join(['%s'] * len(row))
-        print("Row to be inserted:")
+        print("Row to be inserted into ",table_name)
         print(row)
         # insert only unique values for department, ignore duplicates
         sql1 = "INSERT INTO `{}` ({}) VALUES ({}) ".format(table_name, name_placeholders, value_placeholders)
         cursor.execute(sql1, tuple(row.values()))
 
     def updateDict(self, cursor, row, table_name, laborfields):
-        print("Row to be updated:")
+        print("Row to be updated into ",table_name)
         print(row)
         sql = 'UPDATE {} SET {} WHERE `EmployeeId`={} AND `WorkDate`={} AND `In`=\'{}\''.format(table_name, ', '.join('`{}`=%s'.format(k) for k in laborfields), row["EmployeeId"], row["WorkDate"], row["In"])
         cursor.execute(sql, tuple(row.values()))
@@ -184,7 +182,7 @@ class LOAD_DW_FactLabor_PayPeriod(CSVJob):
         else:
             return 1
 
-    
+
     def close(self):
         sftp = 'sftp'
         ssh= paramiko.SSHClient()
